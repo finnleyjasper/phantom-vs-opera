@@ -8,6 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Production/Main Menu.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/Production/Main.unity
+    guid: 4d7364742d5cb4e7da2d2d236648b7d1
+  - enabled: 1
+    path: Assets/Scenes/Production/Game Over.unity
+    guid: 3fa0756fae0134ff18ade547437bcad0
+  - enabled: 1
+    path: Assets/Scenes/DEV/fernando_Playground.unity
+    guid: 151825983fa6c45be8af3c0e284f3a0c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
