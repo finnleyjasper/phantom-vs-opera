@@ -121,6 +121,30 @@ public class InputIndicatorManager : MonoBehaviour
         return beat;
     }
 
+    // Call this from any external script to spawn an attack.
+    // indicatorIndex: which lane (0-based), -1 = random lane.
+    // leadTime: seconds until the note reaches the hit zone.
+    public BeatNote SpawnAttack(int indicatorIndex = -1, float leadTime = 2f, bool isSpecial = false)
+    {
+        if (_indicators.Count == 0)
+        {
+            Debug.LogWarning("[Attack] No indicators set up — cannot spawn attack");
+            return null;
+        }
+
+        if (indicatorIndex < 0 || indicatorIndex >= _indicators.Count)
+            indicatorIndex = UnityEngine.Random.Range(0, _indicators.Count);
+
+        float hitTime = _songTime + leadTime;
+        BeatNote beat = AddBeatNote(indicatorIndex, hitTime, isSpecial);
+
+        if (_debugLogHits)
+            Debug.Log($"[Attack] Spawned attack on lane {indicatorIndex} [{_indicators[indicatorIndex].InputKey}], " +
+                      $"hits at {hitTime:F2}s (lead {leadTime:F1}s)");
+
+        return beat;
+    }
+
     public void StartPlaying()
     {
         _isPlaying = true;
@@ -222,10 +246,11 @@ public class InputIndicatorManager : MonoBehaviour
         return Mathf.Abs(_songTime - beat.HitTime) <= _perfectWindow;
     }
 
-    // Returns true for Perfect, false for Fail. Enable _debugLogHits in the Inspector to print results.
+    // Sends "success" or "fail" to the Player's HandleAttackResult method, then destroys the Attack object.
     private bool HandleResult(int indicatorIndex, HitResult result)
     {
         bool success = result == HitResult.Perfect;
+        string outcome = success ? "success" : "fail";
 
         if (_debugLogHits)
         {
@@ -233,10 +258,19 @@ public class InputIndicatorManager : MonoBehaviour
                 ? _indicators[indicatorIndex].InputKey.ToString()
                 : "Unknown";
 
-            if (success)
-                Debug.Log($"<color=green>PERFECT!</color> Indicator {indicatorIndex} [{keyName}] at {_songTime:F2}s");
-            else
-                Debug.Log($"<color=red>FAIL!</color> Indicator {indicatorIndex} [{keyName}] at {_songTime:F2}s");
+            Debug.Log($"[Attack] Indicator {indicatorIndex} [{keyName}] outcome: {outcome} at {_songTime:F2}s");
+        }
+
+        if (_player != null)
+        {
+            _player.SendMessage("HandleAttackResult", outcome, SendMessageOptions.DontRequireReceiver);
+
+            if (_debugLogHits)
+                Debug.Log($"[Attack] Sent \"{outcome}\" to Player ({_player.name})");
+        }
+        else if (_debugLogHits)
+        {
+            Debug.LogWarning("[Attack] No Player assigned — result not delivered");
         }
 
         OnHitResult?.Invoke(indicatorIndex, result);
