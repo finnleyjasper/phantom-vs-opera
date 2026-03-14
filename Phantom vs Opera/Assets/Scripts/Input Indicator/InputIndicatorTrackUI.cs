@@ -22,6 +22,7 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
     [Header("Hit Zone & Notes")]
     [SerializeField] private float _hitZoneXPercent = 0.07f;
+    [SerializeField] private float _hitZoneSize = 42f;
     [SerializeField] private float _noteSize = 42f;
     [SerializeField] private Sprite _hitZoneSprite;
     [SerializeField] private Sprite _specialSprite;
@@ -132,7 +133,7 @@ public class InputIndicatorTrackUI : MonoBehaviour
         {
             hitLine.sprite = _hitZoneSprite;
             hitLine.preserveAspect = true;
-            hitRect.sizeDelta = new Vector2(_noteSize, 0f);
+            hitRect.sizeDelta = new Vector2(_hitZoneSize, 0f);
         }
         else
         {

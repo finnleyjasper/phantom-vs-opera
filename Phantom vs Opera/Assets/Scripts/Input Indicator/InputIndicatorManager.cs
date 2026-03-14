@@ -36,14 +36,13 @@ public class InputIndicatorManager : MonoBehaviour
     [Header("Beat Map")]
     [SerializeField] private List<BeatNote> _beatMap = new();
 
-    [Header("Manual Spawn")]
-    [SerializeField] private bool _enableManualSpawn = true;
-    [SerializeField] private float _manualSpawnLeadTime = 2f;
-
     [Header("Debug / Test")]
     [SerializeField] private bool _generateTestBeats = true;
     [SerializeField] private int _testBeatCount = 20;
     [SerializeField] private float _testBeatInterval = 1f;
+    [SerializeField] private bool _debugLogHits = false;
+    [SerializeField] private bool _enableManualSpawn = true;
+    [SerializeField] private float _manualSpawnLeadTime = 2f;
 
     private float _songTime;
     private bool _isPlaying;
@@ -223,23 +222,25 @@ public class InputIndicatorManager : MonoBehaviour
         return Mathf.Abs(_songTime - beat.HitTime) <= _perfectWindow;
     }
 
-    private void HandleResult(int indicatorIndex, HitResult result)
+    // Returns true for Perfect, false for Fail. Enable _debugLogHits in the Inspector to print results.
+    private bool HandleResult(int indicatorIndex, HitResult result)
     {
-        string keyName = indicatorIndex < _indicators.Count
-            ? _indicators[indicatorIndex].InputKey.ToString()
-            : "Unknown";
+        bool success = result == HitResult.Perfect;
 
-        switch (result)
+        if (_debugLogHits)
         {
-            case HitResult.Perfect:
+            string keyName = indicatorIndex < _indicators.Count
+                ? _indicators[indicatorIndex].InputKey.ToString()
+                : "Unknown";
+
+            if (success)
                 Debug.Log($"<color=green>PERFECT!</color> Indicator {indicatorIndex} [{keyName}] at {_songTime:F2}s");
-                break;
-            case HitResult.Fail:
+            else
                 Debug.Log($"<color=red>FAIL!</color> Indicator {indicatorIndex} [{keyName}] at {_songTime:F2}s");
-                break;
         }
 
         OnHitResult?.Invoke(indicatorIndex, result);
+        return success;
     }
 
     // Spawns D, F, J, K indicators if none are assigned in the Inspector.
