@@ -277,10 +277,10 @@ public class InputIndicatorManager : MonoBehaviour
         return success;
     }
 
-    // Spawns D, F, J, K indicators if none are assigned in the Inspector.
+    // Spawns arrow key indicators if none are assigned in the Inspector.
     private void CreateDefaultIndicators()
     {
-        Key[] defaultKeys = { Key.D, Key.F, Key.J, Key.K };
+        Key[] defaultKeys = { Key.UpArrow, Key.DownArrow, Key.LeftArrow, Key.RightArrow };
 
         foreach (var key in defaultKeys)
         {
