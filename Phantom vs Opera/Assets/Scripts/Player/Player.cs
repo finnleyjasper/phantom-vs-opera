@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
         {
             _isAlive = false;
             Debug.Log("isAlive status: " + _isAlive);
-            Debug.Log("initial health bar: " + _healthBar);
+            Debug.Log("health bar: " + _healthBar + "Game over !");
             LoadSceneGameOver();
         }
     }
@@ -79,8 +79,8 @@ public class Player : MonoBehaviour
         if (_successBar >= 10)
         {
             _hasWon = true;
-            Debug.Log("hasWon status: " + _hasWon);
-            Debug.Log("initial success bar: " + _successBar);
+            Debug.Log("hasWon status: " + _hasWon + "You won !");
+            Debug.Log("success bar: " + _successBar);
             LoadSceneMainMenu();
         }
     }
