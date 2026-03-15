@@ -21,8 +21,8 @@ public class Player : MonoBehaviour
         _isAlive = true;
         _hasWon = false;
 
-        Debug.Log("Starting health: " + _healthBar);
-        Debug.Log("Starting success: " + _successBar);
+        Debug.Log("Initial health: " + _healthBar);
+        Debug.Log("Initial success: " + _successBar);
     }
 
     public bool IsAlive //dk what type - DELETE
@@ -68,7 +68,7 @@ public class Player : MonoBehaviour
         {
             _isAlive = false;
             Debug.Log("isAlive status: " + _isAlive);
-            Debug.Log("health bar: " + _healthBar + "Game over !");
+            Debug.Log("health bar: " + _healthBar + " Game over !");
             LoadSceneGameOver();
         }
     }
@@ -79,7 +79,7 @@ public class Player : MonoBehaviour
         if (_successBar >= 10)
         {
             _hasWon = true;
-            Debug.Log("hasWon status: " + _hasWon + "You won !");
+            Debug.Log("hasWon status: " + _hasWon + " You won !");
             Debug.Log("success bar: " + _successBar);
             LoadSceneMainMenu();
         }
@@ -92,10 +92,13 @@ public class Player : MonoBehaviour
         {
             _successBar ++;
             Debug.Log("success bar: " + _successBar);
+            Debug.Log("health bar: " + _healthBar);
         }
 
         else
         {
+            _successBar = Mathf.Max(0, _successBar); //Success bar cannot go below 0
+
             _successBar --;
             _healthBar --;
             Debug.Log("success bar: " + _successBar);
