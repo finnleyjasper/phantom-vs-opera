@@ -3,17 +3,15 @@ using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
-    // # DELETE ALL - "DELETE"
-    // # Also refine comments - DELETE
-
-        private bool _isAlive; //idk what type - DELETE
-        private bool _hasWon; //idk what type - DELETE
+    //Private Variables 
+        private bool _isAlive; 
+        private bool _hasWon; 
         private int _healthBar;
         private int _successBar;
         private string _sceneGameOver = "Game Over";
         private string _sceneMainMenu = "Main Menu";
 
-    //Set up Initial health/success levels
+    //Set up Initial health/success levels in Start
     void Start()
     {
         _healthBar = 10;
@@ -25,12 +23,13 @@ public class Player : MonoBehaviour
         Debug.Log("Initial success: " + _successBar);
     }
 
-    public bool IsAlive //dk what type - DELETE
+    //Properties
+    public bool IsAlive 
     {
         get { return _isAlive; }
     }
 
-    public bool HasWon //dk what type - DELETE
+    public bool HasWon 
     {
         get { return _hasWon; }
     }
@@ -97,10 +96,13 @@ public class Player : MonoBehaviour
 
         else
         {
-            _successBar = Mathf.Max(0, _successBar); //Success bar cannot go below 0
-
             _successBar --;
             _healthBar --;
+
+            //Clamps - succes + health bars cannot go below 0
+            _successBar = Mathf.Max(0, _successBar);
+            _healthBar = Mathf.Max(0, _healthBar);
+
             Debug.Log("success bar: " + _successBar);
             Debug.Log("health bar: " + _healthBar);
         }
@@ -110,8 +112,3 @@ public class Player : MonoBehaviour
     }
 }
 
-///Player should have isAlive & hasWon properties GameManager can check based on number of success/losses
-///Player should include a method called by the Attack object to TAKE damage on a fail, or BUILD success master on success
-///When this method is called, Player should check if it meets conditions to change isAlive or hasWon
-///Will take in (string success/fail) as a perm and react accordingly
-///Console or onscreen result should be included when method is called so user can see outcome (or a bar if you're feeling fancy)
