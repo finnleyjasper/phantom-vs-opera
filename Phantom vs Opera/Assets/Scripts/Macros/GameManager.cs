@@ -35,6 +35,11 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
     }
+    public void SetGameState(GameState newState)
+    {
+        _currentGameState = newState;
+        Debug.Log("Game State changed to: " + _currentGameState);
+    }
 
     // Switches scene based on result - called from player
     public void GameOver(GameState result)
@@ -48,6 +53,7 @@ public class GameManager : MonoBehaviour
         else
         {
             SceneManager.LoadScene(EndSceneName);
+            Debug.Log("Game State changed to: " + _currentGameState);
         }
     }
 
