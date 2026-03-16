@@ -7,11 +7,11 @@ public class EndScreen : MonoBehaviour
 
     void Start()
     {
-        if (GameResult.result == "win")
+        if (GameManager.Instance.CurrentGameState == GameManager.GameState.Win)
         {
             resultText.text = "You Win!";
         }
-        else if (GameResult.result == "lose")
+        else if (GameManager.Instance.CurrentGameState == GameManager.GameState.Win)
         {
             resultText.text = "You Lose!";
         }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlaySceneManager : MonoBehaviour
+public class DEBUGPlaySceneManager : MonoBehaviour
 {
     [Header("Scene Settings")]
     public string endSceneName;
@@ -12,23 +12,14 @@ public class PlaySceneManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             Debug.Log("Debug: Player Wins");
-            GoToEndScreen("win");
+            GameManager.Instance.GameOver(GameManager.GameState.Win);
         }
 
         // Debug lose key
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             Debug.Log("Debug: Player Loses");
-            GoToEndScreen("lose");
+            GameManager.Instance.GameOver(GameManager.GameState.Lose);
         }
-    }
-
-    public void GoToEndScreen(string result)
-    {
-        Debug.Log("Game Ended: " + result);
-
-        GameResult.result = result;
-
-        SceneManager.LoadScene(endSceneName);
     }
 }
