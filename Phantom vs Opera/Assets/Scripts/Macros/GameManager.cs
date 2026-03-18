@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     // Switches scene based on result - called from player
     public void GameOver(GameState result)
     {
-        _currentGameState = result;
+        SetGameState(result);
 
         if (string.IsNullOrEmpty(EndSceneName))
         {
@@ -53,7 +53,6 @@ public class GameManager : MonoBehaviour
         else
         {
             SceneManager.LoadScene(EndSceneName);
-            Debug.Log("Game State changed to: " + _currentGameState);
         }
     }
 
