@@ -92,8 +92,8 @@ public class Player : MonoBehaviour
             _healthBar --;
 
             //Clamps - succes + health bars cannot go below 0
-            _successBar = Mathf.Max(0, _successBar);
-            _healthBar = Mathf.Max(0, _healthBar);
+            _successBar = Mathf.Clamp(_successBar, 0, 10);
+            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
 
             Debug.Log("success bar: " + _successBar);
             Debug.Log("health bar: " + _healthBar);
