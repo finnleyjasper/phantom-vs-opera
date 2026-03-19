@@ -10,7 +10,10 @@ public class Player : MonoBehaviour
 
     //Reference to PlayerBarUI Script 
     [Header("Player Health Bar UI")]
-    [SerializeField] private PlayerBarUI playerBarUI;
+    [SerializeField] private PlayerBarUI playerHealthBarUI;
+
+    [Header("Player Success Bar UI")]
+    [SerializeField] private PlayerBarUI playerSuccessBarUI;
 
 
     //Set up Initial health/success levels in Start
@@ -23,6 +26,9 @@ public class Player : MonoBehaviour
 
         Debug.Log("Initial health: " + _healthBar);
         Debug.Log("Initial success: " + _successBar);
+
+        playerHealthBarUI.UpdatePlayerHealthUI();
+        playerSuccessBarUI.UpdatePlayerSuccessUI();
     }
 
     //Properties
@@ -83,7 +89,6 @@ public class Player : MonoBehaviour
 
         else
         {
-            _successBar --;
             _healthBar --;
 
             //Clamps - succes + health bars cannot go below 0
@@ -96,7 +101,9 @@ public class Player : MonoBehaviour
 
         ManageHealthBar();
         ManageSuccessBar();
-        playerBarUI.UpdatePlayerHealthUI();
+        playerHealthBarUI.UpdatePlayerHealthUI();
+        playerSuccessBarUI.UpdatePlayerSuccessUI();
+
     }
 }
 
