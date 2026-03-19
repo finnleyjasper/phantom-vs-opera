@@ -4,11 +4,10 @@ using UnityEngine.UI;
 
 public class PlayerBarUI : MonoBehaviour
 {
-    //DELETE !! 
     //Private Variables 
         private int _maxHealth = 10;
-        private int _maxSuccess = 10; //dk if this is 10 - DELETE
-        
+        private int _maxSuccess = 10; 
+
         [Header("Health Bar Filling")]
         [SerializeField] private Image _healthBarFilling;
 
@@ -23,7 +22,7 @@ public class PlayerBarUI : MonoBehaviour
 
     public Player player;
 
-    //Initializing Health / Success Text 
+    //Initializing Health/Success Text 
     void Start() 
     {
         UpdatePlayerBarText();
@@ -38,7 +37,7 @@ public class PlayerBarUI : MonoBehaviour
     //Method for Updating Player Health Bar UI 
     public void UpdatePlayerHealthUI()
     {
-        float healthFillingAmount = (float)player.HealthBar / _maxHealth; //does this work? why r we dividing, cant I just set current health from Player script - DELETE
+        float healthFillingAmount = (float)player.HealthBar / _maxHealth;
         _healthBarFilling.fillAmount = healthFillingAmount; //setting fill amount value to current health 
         UpdatePlayerBarText();
     }
@@ -46,18 +45,8 @@ public class PlayerBarUI : MonoBehaviour
     //Method for Updating Player Success Bar UI 
     public void UpdatePlayerSuccessUI()
     {
-        float successFillingAmount = (float)player.SuccessBar / _maxSuccess; //does this work? why r we dividing, cant I just set current health from Player script - DELETE
+        float successFillingAmount = (float)player.SuccessBar / _maxSuccess; 
         _successBarFilling.fillAmount = successFillingAmount; //setting fill amount value to current success 
         UpdatePlayerBarText();
     }
-
-
-    /*
-
-
-    void Update() //dk if needs this - DELETE
-    {
-        
-    }
-    */
 }
