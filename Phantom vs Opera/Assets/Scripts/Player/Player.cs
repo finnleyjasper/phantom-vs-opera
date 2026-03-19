@@ -8,6 +8,13 @@ public class Player : MonoBehaviour
         private int _healthBar;
         private int _successBar;
 
+    //Reference to PlayerBarUI Script 
+    [Header("Player Health Bar UI")]
+    [SerializeField] private PlayerBarUI playerHealthBarUI;
+
+    [Header("Player Success Bar UI")]
+    [SerializeField] private PlayerBarUI playerSuccessBarUI;
+
 
     //Set up Initial health/success levels in Start
     void Start()
@@ -19,9 +26,23 @@ public class Player : MonoBehaviour
 
         Debug.Log("Initial health: " + _healthBar);
         Debug.Log("Initial success: " + _successBar);
+
+        playerHealthBarUI.UpdatePlayerHealthUI();
+        playerSuccessBarUI.UpdatePlayerSuccessUI();
     }
 
     //Properties
+
+    public int HealthBar
+    {
+        get { return _healthBar; }
+    }
+
+    public int SuccessBar
+    {
+        get { return _successBar; }
+    }
+
     public bool IsAlive
     {
         get { return _isAlive; }
@@ -68,12 +89,11 @@ public class Player : MonoBehaviour
 
         else
         {
-            _successBar --;
             _healthBar --;
 
             //Clamps - succes + health bars cannot go below 0
-            _successBar = Mathf.Max(0, _successBar);
-            _healthBar = Mathf.Max(0, _healthBar);
+            _successBar = Mathf.Clamp(_successBar, 0, 10);
+            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
 
             Debug.Log("success bar: " + _successBar);
             Debug.Log("health bar: " + _healthBar);
@@ -81,6 +101,9 @@ public class Player : MonoBehaviour
 
         ManageHealthBar();
         ManageSuccessBar();
+        playerHealthBarUI.UpdatePlayerHealthUI();
+        playerSuccessBarUI.UpdatePlayerSuccessUI();
+
     }
 }
 
