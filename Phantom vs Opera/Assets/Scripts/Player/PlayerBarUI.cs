@@ -28,6 +28,7 @@ public class PlayerBarUI : MonoBehaviour
         UpdatePlayerBarText();
     }
 
+    //Method to Update Health/Success Text
     private void UpdatePlayerBarText()
     {
         _healthBarText.text = "Health: " + player.HealthBar;
