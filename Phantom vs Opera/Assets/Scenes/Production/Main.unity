@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3eb8206fce76ff4e8c14a482a254b16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputIndicatorManager
-  _player: {fileID: 0}
+  _player: {fileID: 1784096368}
   _indicators:
   - {fileID: 1776557801}
   _perfectWindow: 0.15
