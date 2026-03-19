@@ -8,6 +8,10 @@ public class Player : MonoBehaviour
         private int _healthBar;
         private int _successBar;
 
+    //Reference to PlayerBarUI Script 
+    [Header("Player Health Bar UI")]
+    [SerializeField] private PlayerBarUI playerBarUI;
+
 
     //Set up Initial health/success levels in Start
     void Start()
@@ -22,6 +26,17 @@ public class Player : MonoBehaviour
     }
 
     //Properties
+
+    public int HealthBar
+    {
+        get { return _healthBar; }
+    }
+
+    public int SuccessBar
+    {
+        get { return _successBar; }
+    }
+
     public bool IsAlive
     {
         get { return _isAlive; }
@@ -81,6 +96,7 @@ public class Player : MonoBehaviour
 
         ManageHealthBar();
         ManageSuccessBar();
+        playerBarUI.UpdatePlayerHealthUI();
     }
 }
 
