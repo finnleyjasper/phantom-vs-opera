@@ -105,5 +105,30 @@ public class Player : MonoBehaviour
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
     }
+
+    /* 
+     
+     * To Do : 
+     * Issue 17 (Falling Attacks) - On collision w/ Player = call isHit(int Damage) method within Player
+     * Issue 16 (Platforms) - ?
+     
+     * Left + Right Movement - (Use basic keyboard input)
+     * Jump + Land on Platforms - (Use basic keyboard input)
+     * Be able to jump down from platforms - (Use basic keyboard input)
+     
+     * Health = decrease when a falling object hits Player
+     * Player should call GameManager's GameOver(GameState Lose) when this occurs (ie. game over - player loses)
+     
+     * Success = increase over time
+     * Player should call GameManager's GameOver(GameState Win) when success bar is full (ie. game over - player wins)
+     * Perhaps the length of the game (how long the player needs to suvive) is a property in GameManager, changable in the editor
+      
+     * Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player 
+     * Should cause Player health to decrease & check for Game Over condiiton (if Player is dead)
+     
+     * If time : 
+     * Slide mechanic 
+     * run option 
+    */
 }
 
