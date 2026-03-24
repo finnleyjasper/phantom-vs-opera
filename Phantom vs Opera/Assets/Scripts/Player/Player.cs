@@ -82,14 +82,14 @@ public class Player : MonoBehaviour
     {
         if (outcome == "success")
         {
-            _successBar ++;
+            _successBar++;
             Debug.Log("success bar: " + _successBar);
             Debug.Log("health bar: " + _healthBar);
         }
 
         else
         {
-            _healthBar --;
+            _healthBar--;
 
             //Clamps - succes + health bars cannot go below 0
             _successBar = Mathf.Clamp(_successBar, 0, 10);
@@ -99,24 +99,39 @@ public class Player : MonoBehaviour
             Debug.Log("health bar: " + _healthBar);
         }
 
-    //Method for when Falling Object hits Player = health decreases - Method is called by falling objects
-
-    //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player - DELETE
-    //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead) - DELETE
-    public void IsHit(int Damage)
-    {
-        //hi
-    }
-
-
-        //end 
-
         ManageHealthBar();
         ManageSuccessBar();
         playerHealthBarUI.UpdatePlayerHealthUI();
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
     }
+
+    //Method for when Falling Object hits Player = health decreases - Method is called by falling objects
+
+    //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player - Delete
+    //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead) - Delete
+    public void IsHit(int Damage)
+    {
+        if (Damage > 0) //Don't know if this is correct?? is this if statement correct TT - Delete
+        {
+            _healthBar -= Damage; //Dont know if this correct??  - Delete
+
+            //Clamps - succes + health bars cannot go below 0
+            _successBar = Mathf.Clamp(_successBar, 0, 10);
+            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
+
+           // Debug.Log("success bar: " + _successBar); - Dont know if want this - Delete
+            Debug.Log("health bar: " + _healthBar);
+        }
+        // REMEMBER TO EDIT ALL THIS - WAS JUST USING AS A FORMAT - Delete
+        ManageHealthBar();
+        ManageSuccessBar();
+        playerHealthBarUI.UpdatePlayerHealthUI();
+        playerSuccessBarUI.UpdatePlayerSuccessUI();
+    }
+
+
+    //end 
 
     /* 
      
