@@ -109,6 +109,7 @@ public class Player : MonoBehaviour
     /* 
      
      * To Do : 
+     * **Update Player to integrate changes made in Issues #16 + #17 - So, when they are finished w/ their issues, come back and make needed changes  :
      * Issue 17 (Falling Attacks) - On collision w/ Player = call isHit(int Damage) method within Player
      * Issue 16 (Platforms) - ?
      
