@@ -99,6 +99,18 @@ public class Player : MonoBehaviour
             Debug.Log("health bar: " + _healthBar);
         }
 
+    //Method for when Falling Object hits Player = health decreases - Method is called by falling objects
+
+    //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player - DELETE
+    //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead) - DELETE
+    public void IsHit(int Damage)
+    {
+        //hi
+    }
+
+
+        //end 
+
         ManageHealthBar();
         ManageSuccessBar();
         playerHealthBarUI.UpdatePlayerHealthUI();
@@ -124,8 +136,8 @@ public class Player : MonoBehaviour
      * Player should call GameManager's GameOver(GameState Win) when success bar is full (ie. game over - player wins)
      * Perhaps the length of the game (how long the player needs to suvive) is a property in GameManager, changable in the editor
       
-     * Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player 
-     * Should cause Player health to decrease & check for Game Over condiiton (if Player is dead)
+     * //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player 
+     * //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead)
      
      * If time : 
      * Slide mechanic 
