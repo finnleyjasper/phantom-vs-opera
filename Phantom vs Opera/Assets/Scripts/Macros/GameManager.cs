@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public static GameManager Instance;
 
+    // Variable for Game Length 
+    [SerializeField] private float _GameLength = 10f; //IDK IF THIS IS RIGHT - Delete 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -61,5 +64,9 @@ public class GameManager : MonoBehaviour
     {
         get{ return _currentGameState;}
     }
+
+    // Game Length Property 
+    //public GameLength //Finish this !!! Delete
+
 
 }
