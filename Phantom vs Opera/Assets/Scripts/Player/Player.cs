@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
     }
 
     //Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
-    public void ManageHealthBar()
+    public void PlayerHealthLose()
     {
         if (_healthBar <= 0)
         {
@@ -66,7 +66,7 @@ public class Player : MonoBehaviour
     }
 
     //Method to Manage Success Bar - sets initial success bar level, sets results for reaching certain success level (i.e. winning game)
-    public void ManageSuccessBar()
+    public void PlayerSuccessWin()
     {
         if (_successBar >= 10)
         {
@@ -78,6 +78,7 @@ public class Player : MonoBehaviour
     }
 
     //Method called by Attack object - on fail = takes damage, on success = builds success
+    //Can I delete this method ? - Delete
     public void HandleAttackResult(string outcome)
     {
         if (outcome == "success")
@@ -99,8 +100,8 @@ public class Player : MonoBehaviour
             Debug.Log("health bar: " + _healthBar);
         }
 
-        ManageHealthBar();
-        ManageSuccessBar();
+        PlayerHealthLose();
+        PlayerSuccessWin();
         playerHealthBarUI.UpdatePlayerHealthUI();
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
@@ -110,28 +111,19 @@ public class Player : MonoBehaviour
 
     //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player - Delete
     //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead) - Delete
-    public void IsHit(int Damage)
+    public void IsHit(int damage)
     {
-        if (Damage > 0) //Don't know if this is correct?? is this if statement correct TT - Delete
+        _healthBar -= damage; 
+        _healthBar = Mathf.Clamp(_healthBar, 0, 10); //Clamp - health bars cannot go below 0 or above 10
+        Debug.Log("health bar: " + _healthBar);
+     
+        if (_healthBar <= 0)
         {
-            _healthBar -= Damage; //Dont know if this correct??  - Delete
-
-            //Clamps - succes + health bars cannot go below 0
-            _successBar = Mathf.Clamp(_successBar, 0, 10);
-            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
-
-           // Debug.Log("success bar: " + _successBar); - Dont know if want this - Delete
-            Debug.Log("health bar: " + _healthBar);        
+            PlayerHealthLose(); 
         }
-        // REMEMBER TO EDIT ALL THIS - WAS JUST USING AS A FORMAT - Delete
-        ManageHealthBar();
-        ManageSuccessBar();
-        playerHealthBarUI.UpdatePlayerHealthUI();
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
+
+        playerHealthBarUI.UpdatePlayerHealthUI(); 
     }
-
-
-    //end 
 
     /* 
      
@@ -143,7 +135,6 @@ public class Player : MonoBehaviour
 
      * Issue 16 (Platforms) -
      * Player can jump / walk / run / etc on platforms properly - make sure collider works 
-     * 
      
      * Left + Right Movement - (Use basic keyboard input)
      * Jump + Land on Platforms - (Use basic keyboard input) 
