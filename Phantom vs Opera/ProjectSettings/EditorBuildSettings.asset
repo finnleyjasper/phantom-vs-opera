@@ -15,7 +15,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Production/Game Over.unity
     guid: 3fa0756fae0134ff18ade547437bcad0
   - enabled: 1
-    path: Assets/Scenes/DEV/fernando_Playground.unity
+    path: Assets/Scenes/DEV/branch_fernando_Playground.unity
     guid: 151825983fa6c45be8af3c0e284f3a0c
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
