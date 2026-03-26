@@ -9,10 +9,10 @@ public class PlayerController : MonoBehaviour
 
     // Variables for Editable KeyCodes 
     [Header("Left & Right Movement")]
-    [SerializeField] private KeyCode _xLeftKeyCode;
-    [SerializeField] private KeyCode _xRightKeyCode;
-    [SerializeField] private KeyCode _zFrontKeyCode;
-    [SerializeField] private KeyCode _zBackKeyCode;
+    [SerializeField] private KeyCode _xLeftKeyCode = KeyCode.LeftArrow;
+    [SerializeField] private KeyCode _xRightKeyCode = KeyCode.RightArrow;
+    [SerializeField] private KeyCode _zFrontKeyCode = KeyCode.UpArrow;
+    [SerializeField] private KeyCode _zBackKeyCode = KeyCode.DownArrow;
 
     [Header("Jump Keycode")]
     [SerializeField] private KeyCode _jumpKeyCode = KeyCode.Space; 
