@@ -24,7 +24,7 @@ public class GameManager : MonoBehaviour
 
     // Variables for Game Length 
     [SerializeField] private float _gameLength = 10f; // Stores overall game length 
-    private float _gameTimer = 0; // Stores time that passes
+    private float _gameTimer = 0f; // Stores time that passes
 
     private void Awake()
     {
@@ -73,7 +73,7 @@ public class GameManager : MonoBehaviour
     // Properties
     public GameState CurrentGameState
     {
-        get{ return _currentGameState;}
+        get { return _currentGameState;}
     }
 
     public float GameLength

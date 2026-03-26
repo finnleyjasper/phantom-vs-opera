@@ -125,16 +125,20 @@ public class Player : MonoBehaviour
     // Method for when Player wins if game time ends 
     public void PlayerSuccessTimer()
     {
-        float remainingGameTime = GameManager.Instance.GameLength - GameManager.Instance.GameTimer;
-        _successBar = remainingGameTime;
+        _successBar = GameManager.Instance.GameTimer;
         _successBar = Mathf.Clamp(_successBar, 0, 10); // Clamps - succes + health bars cannot go below 0
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
         // Calls win condition if game length is reached 
-        if (GameManager.Instance.GameTimer >= GameManager.Instance.GameLength)
+        if (_successBar >= GameManager.Instance.GameLength)
         {
             ManagePlayerWin();
         }
+    }
+
+    void Update()
+    {
+        PlayerSuccessTimer();
     }
 
     /* 
