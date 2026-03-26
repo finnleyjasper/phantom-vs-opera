@@ -23,7 +23,7 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public static GameManager Instance;
 
     // Variables for Game Length 
-    [SerializeField] private float _gameLength = 20f; // Stores overall game length 
+    [SerializeField] private float _gameLength = 10f; // Stores overall game length 
     private float _gameTimer = 0; // Stores time that passes
 
     private void Awake()
