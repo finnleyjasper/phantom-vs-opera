@@ -149,6 +149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fafe89b13c00b14fab7e9cdc8c89911, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::InputIndicatorTrackUI
+  _viewPrefab: {fileID: 0}
+  _noteViewPrefab: {fileID: 0}
   _barPadding: 12
   _trackHeight: 100
   _topMargin: 10
@@ -175,6 +177,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InputIndicatorManager
   _player: {fileID: 0}
   _indicators: []
+  _indicatorPrefab: {fileID: 0}
+  _indicatorParent: {fileID: 0}
   _perfectWindow: 0.15
   _beatMap: []
   _generateTestBeats: 1

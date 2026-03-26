@@ -10,6 +10,12 @@ using TMPro;
 [RequireComponent(typeof(InputIndicatorManager))]
 public class InputIndicatorTrackUI : MonoBehaviour
 {
+    [Header("Prefab View (Optional)")]
+    [SerializeField] private InputIndicatorTrackUIView _viewPrefab;
+
+    [Header("Prefabs (Optional)")]
+    [SerializeField] private InputIndicatorNoteView _noteViewPrefab;
+
     [Header("Bar Layout")]
     [SerializeField] private float _barPadding = 12f;
     [SerializeField] private float _trackHeight = 52f;
@@ -31,6 +37,8 @@ public class InputIndicatorTrackUI : MonoBehaviour
     private InputIndicatorManager _manager;
     private RectTransform _trackRect;
     private Image _hitZoneImage;
+    private Color _hitZoneBaseColor;
+    private Coroutine _hitZoneFlashRoutine;
     private readonly Dictionary<BeatNote, RectTransform> _noteVisuals = new();
 
     private static readonly Color[] _indicatorColors =
@@ -52,8 +60,12 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
     private void Start()
     {
-        var canvasRect = BuildCanvas();
-        BuildBar(canvasRect);
+        if (!TryUsePrefabView())
+        {
+            var canvasRect = BuildCanvas();
+            BuildBar(canvasRect);
+        }
+
         SpawnAllNotes();
 
         _manager.OnBeatConsumed += HandleBeatConsumed;
@@ -74,6 +86,26 @@ public class InputIndicatorTrackUI : MonoBehaviour
     private void Update()
     {
         UpdateNotePositions();
+    }
+
+    private bool TryUsePrefabView()
+    {
+        if (_viewPrefab == null) return false;
+
+        var view = Instantiate(_viewPrefab, transform, false);
+        view.name = _viewPrefab.name;
+
+        if (view.TrackRect == null || view.HitZoneImage == null)
+        {
+            Debug.LogWarning("[IndicatorTrackUI] View prefab missing TrackRect/HitZoneImage, falling back to code UI.");
+            Destroy(view.gameObject);
+            return false;
+        }
+
+        _trackRect = view.TrackRect;
+        _hitZoneImage = view.HitZoneImage;
+        _hitZoneBaseColor = _hitZoneImage.color;
+        return true;
     }
 
     // Creates a screen-space overlay canvas for the track.
@@ -142,6 +174,7 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
         hitRect.anchoredPosition = Vector2.zero;
         _hitZoneImage = hitLine;
+        _hitZoneBaseColor = _hitZoneImage.color;
     }
 
     private void SpawnAllNotes()
@@ -160,8 +193,53 @@ public class InputIndicatorTrackUI : MonoBehaviour
         InputIndicator indicator = _manager.Indicators[idx];
         Color color = _indicatorColors[idx % _indicatorColors.Length];
 
-        var note = CreateImage("Note", _trackRect, color);
-        var rt = note.rectTransform;
+        RectTransform rt;
+        Image noteImage;
+        InputIndicatorNoteView view = null;
+
+        if (_noteViewPrefab != null)
+        {
+            view = Instantiate(_noteViewPrefab, _trackRect, false);
+            view.name = "Note";
+
+            if (view.NoteImage == null)
+            {
+                Debug.LogWarning("[IndicatorTrackUI] NoteView prefab missing NoteImage; using fallback note creation.");
+                Destroy(view.gameObject);
+                view = null;
+            }
+        }
+
+        if (view != null)
+        {
+            noteImage = view.NoteImage;
+            rt = noteImage.rectTransform;
+            noteImage.color = color;
+
+            if (view.KeyLabel != null)
+            {
+                view.KeyLabel.text = indicator.InputKey.ToString();
+                view.KeyLabel.alignment = TextAlignmentOptions.Center;
+                view.KeyLabel.fontStyle = FontStyles.Bold;
+            }
+
+            if (view.SpecialIcon != null)
+                view.SpecialIcon.gameObject.SetActive(beat.IsSpecial && _specialSprite != null);
+
+            if (beat.IsSpecial && _specialSprite != null && view.SpecialIcon != null)
+            {
+                view.SpecialIcon.sprite = _specialSprite;
+                view.SpecialIcon.preserveAspect = true;
+                view.SpecialIcon.color = Color.white;
+            }
+        }
+        else
+        {
+            var note = CreateImage("Note", _trackRect, color);
+            noteImage = note;
+            rt = note.rectTransform;
+        }
+
         rt.anchorMin = new Vector2(_hitZoneXPercent, 0.5f);
         rt.anchorMax = new Vector2(_hitZoneXPercent, 0.5f);
         rt.pivot = new Vector2(0.5f, 0.5f);
@@ -170,24 +248,30 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
         if (indicator.NoteSprite != null)
         {
-            note.sprite = indicator.NoteSprite;
-            note.preserveAspect = true;
-            note.color = Color.white;
+            noteImage.sprite = indicator.NoteSprite;
+            noteImage.preserveAspect = true;
+            noteImage.color = Color.white;
+
+            if (view != null && view.KeyLabel != null)
+                view.KeyLabel.gameObject.SetActive(false);
         }
         else
         {
-            var label = CreateLabel("Key", rt, indicator.InputKey.ToString(), 20,
-                new Color(0f, 0f, 0f, 0.85f));
-            var lr = label.rectTransform;
-            lr.anchorMin = Vector2.zero;
-            lr.anchorMax = Vector2.one;
-            lr.offsetMin = Vector2.zero;
-            lr.offsetMax = Vector2.zero;
-            label.alignment = TextAlignmentOptions.Center;
-            label.fontStyle = FontStyles.Bold;
+            if (view == null || view.KeyLabel == null)
+            {
+                var label = CreateLabel("Key", rt, indicator.InputKey.ToString(), 20,
+                    new Color(0f, 0f, 0f, 0.85f));
+                var lr = label.rectTransform;
+                lr.anchorMin = Vector2.zero;
+                lr.anchorMax = Vector2.one;
+                lr.offsetMin = Vector2.zero;
+                lr.offsetMax = Vector2.zero;
+                label.alignment = TextAlignmentOptions.Center;
+                label.fontStyle = FontStyles.Bold;
+            }
         }
 
-        if (beat.IsSpecial && _specialSprite != null)
+        if (beat.IsSpecial && _specialSprite != null && (view == null || view.SpecialIcon == null))
         {
             var icon = CreateImage("Special", rt, Color.white, _specialSprite);
             var ir = icon.rectTransform;
@@ -268,12 +352,14 @@ public class InputIndicatorTrackUI : MonoBehaviour
             ? new Color(0f, 1f, 0.4f, 0.90f)
             : new Color(1f, 0.1f, 0.1f, 0.90f);
 
-        StartCoroutine(FlashHitZone(flash));
+        if (_hitZoneFlashRoutine != null)
+            StopCoroutine(_hitZoneFlashRoutine);
+
+        _hitZoneFlashRoutine = StartCoroutine(FlashHitZone(flash));
     }
 
     private IEnumerator FlashHitZone(Color flashColor)
     {
-        Color original = _hitZoneImage.color;
         _hitZoneImage.color = flashColor;
 
         const float duration = 0.18f;
@@ -282,11 +368,12 @@ public class InputIndicatorTrackUI : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            _hitZoneImage.color = Color.Lerp(flashColor, original, elapsed / duration);
+            _hitZoneImage.color = Color.Lerp(flashColor, _hitZoneBaseColor, elapsed / duration);
             yield return null;
         }
 
-        _hitZoneImage.color = original;
+        _hitZoneImage.color = _hitZoneBaseColor;
+        _hitZoneFlashRoutine = null;
     }
 
     private static Image CreateImage(string name, RectTransform parent, Color color,
