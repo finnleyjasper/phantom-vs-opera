@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Globalization;
 
 public class DebugMenu : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class DebugMenu : MonoBehaviour
     private bool _isOpen;
     private const int WindowId = 7581;
     private Vector2 _scroll;
+    private string _perfectWindowInput;
+    private string _noteSpeedInput;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void EnsureMenuExists()
@@ -28,6 +31,8 @@ public class DebugMenu : MonoBehaviour
     private void Start()
     {
         _isOpen = _startOpen;
+        _perfectWindowInput = DebugOptions.PerfectWindow.ToString("0.00", CultureInfo.InvariantCulture);
+        _noteSpeedInput = DebugOptions.NoteSpeed.ToString("0.00", CultureInfo.InvariantCulture);
     }
 
     private void Update()
@@ -62,6 +67,11 @@ public class DebugMenu : MonoBehaviour
             fixedHeight = 0f
         };
 
+        var textFieldStyle = new GUIStyle(GUI.skin.textField)
+        {
+            fontSize = _fontSize
+        };
+
         _scroll = GUILayout.BeginScrollView(_scroll, GUILayout.ExpandHeight(true));
 
         bool debugLogHits = GUILayout.Toggle(DebugOptions.DebugLogHits, "Debug Log Hits", toggleStyle,
@@ -75,11 +85,57 @@ public class DebugMenu : MonoBehaviour
             DebugOptions.SetManualSpawnEnabled(enableManualSpawn);
 
         GUILayout.Space(10f);
+        GUILayout.Label($"Perfect Window: {DebugOptions.PerfectWindow:F2}s", labelStyle, GUILayout.MinHeight(rowHeight));
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("- 0.01", GUILayout.MinHeight(rowHeight)))
+            DebugOptions.SetPerfectWindow(DebugOptions.PerfectWindow - 0.01f);
+        if (GUILayout.Button("+ 0.01", GUILayout.MinHeight(rowHeight)))
+            DebugOptions.SetPerfectWindow(DebugOptions.PerfectWindow + 0.01f);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        _perfectWindowInput = GUILayout.TextField(_perfectWindowInput, textFieldStyle, GUILayout.MinHeight(rowHeight));
+        if (GUILayout.Button("Apply", GUILayout.MinHeight(rowHeight)))
+        {
+            if (TryParseFloat(_perfectWindowInput, out float value))
+            {
+                DebugOptions.SetPerfectWindow(value);
+                _perfectWindowInput = DebugOptions.PerfectWindow.ToString("0.00", CultureInfo.InvariantCulture);
+            }
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(10f);
+        GUILayout.Label($"Note Speed: {DebugOptions.NoteSpeed:F2}", labelStyle, GUILayout.MinHeight(rowHeight));
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("- 0.05", GUILayout.MinHeight(rowHeight)))
+            DebugOptions.SetNoteSpeed(DebugOptions.NoteSpeed - 0.05f);
+        if (GUILayout.Button("+ 0.05", GUILayout.MinHeight(rowHeight)))
+            DebugOptions.SetNoteSpeed(DebugOptions.NoteSpeed + 0.05f);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        _noteSpeedInput = GUILayout.TextField(_noteSpeedInput, textFieldStyle, GUILayout.MinHeight(rowHeight));
+        if (GUILayout.Button("Apply", GUILayout.MinHeight(rowHeight)))
+        {
+            if (TryParseFloat(_noteSpeedInput, out float value))
+            {
+                DebugOptions.SetNoteSpeed(value);
+                _noteSpeedInput = DebugOptions.NoteSpeed.ToString("0.00", CultureInfo.InvariantCulture);
+            }
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(10f);
         GUILayout.Label($"Menu Key: {_menuKey}", labelStyle, GUILayout.MinHeight(rowHeight));
 
         GUILayout.EndScrollView();
 
         GUILayout.EndVertical();
         GUI.DragWindow();
+    }
+
+    private static bool TryParseFloat(string value, out float parsed)
+    {
+        return float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out parsed) ||
+               float.TryParse(value, NumberStyles.Float, CultureInfo.CurrentCulture, out parsed);
     }
 }

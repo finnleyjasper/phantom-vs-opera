@@ -1,33 +1,15 @@
 using System;
+using UnityEngine;
 
-// Central place for runtime debug flags.
-//
-// How to add a new option:
-// 1) Add a public read-only property:
-//      public static bool GodMode { get; private set; }
-//
-// 2) Add a setter method that raises OnOptionsChanged when the value changes:
-//      public static void SetGodMode(bool enabled)
-//      {
-//          if (GodMode == enabled) return;
-//          GodMode = enabled;
-//          OnOptionsChanged?.Invoke();
-//      }
-//
-// 3) (Optional) Initialize defaults in Initialize(...), OR just rely on the default 'false'.
-//
-// 4) Add a toggle row in DebugMenu.DrawWindow():
-//      bool godMode = GUILayout.Toggle(DebugOptions.GodMode, "God Mode", ...);
-//      if (godMode != DebugOptions.GodMode) DebugOptions.SetGodMode(godMode);
-//
-// 5) In your gameplay scripts, read the value:
-//      if (DebugOptions.GodMode) { ... }
 public static class DebugOptions
 {
     private static bool _initialized;
+    private static bool _timingDefaultsInitialized;
 
     public static bool DebugLogHits { get; private set; }
     public static bool EnableManualSpawn { get; private set; }
+    public static float PerfectWindow { get; private set; } = 0.15f;
+    public static float NoteSpeed { get; private set; } = 0.5f;
 
     public static event Action OnOptionsChanged;
 
@@ -38,6 +20,15 @@ public static class DebugOptions
         DebugLogHits = debugLogHitsDefault;
         EnableManualSpawn = manualSpawnDefault;
         _initialized = true;
+    }
+
+    public static void InitializeTimingDefaults(float perfectWindowDefault, float noteSpeedDefault)
+    {
+        if (_timingDefaultsInitialized) return;
+
+        PerfectWindow = Mathf.Clamp(perfectWindowDefault, 0.01f, 1f);
+        NoteSpeed = Mathf.Clamp(noteSpeedDefault, 0.01f, 5f);
+        _timingDefaultsInitialized = true;
     }
 
     public static void SetDebugLogHits(bool enabled)
@@ -53,6 +44,24 @@ public static class DebugOptions
         if (EnableManualSpawn == enabled) return;
 
         EnableManualSpawn = enabled;
+        OnOptionsChanged?.Invoke();
+    }
+
+    public static void SetPerfectWindow(float value)
+    {
+        value = Mathf.Clamp(value, 0.01f, 1f);
+        if (Mathf.Approximately(PerfectWindow, value)) return;
+
+        PerfectWindow = value;
+        OnOptionsChanged?.Invoke();
+    }
+
+    public static void SetNoteSpeed(float value)
+    {
+        value = Mathf.Clamp(value, 0.01f, 5f);
+        if (Mathf.Approximately(NoteSpeed, value)) return;
+
+        NoteSpeed = value;
         OnOptionsChanged?.Invoke();
     }
 }

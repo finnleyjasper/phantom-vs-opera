@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using TMPro;
 
@@ -24,7 +25,9 @@ public class InputIndicatorTrackUI : MonoBehaviour
     [SerializeField] private Sprite _trackSprite;
 
     [Header("Scroll")]
-    [SerializeField] private float _travelTime = 2f;
+    [Tooltip("Track lengths per second. 0.5 = takes 2 seconds to reach hit zone from spawn point.")]
+    [FormerlySerializedAs("_travelTime")]
+    [SerializeField] private float _input_spd = 0.5f;
 
     [Header("Hit Zone & Notes")]
     [SerializeField] private float _hitZoneXPercent = 0.07f;
@@ -56,6 +59,9 @@ public class InputIndicatorTrackUI : MonoBehaviour
     private void Awake()
     {
         _manager = GetComponent<InputIndicatorManager>();
+        DebugOptions.InitializeTimingDefaults(DebugOptions.PerfectWindow, _input_spd);
+        SyncFromDebugOptions();
+        DebugOptions.OnOptionsChanged += HandleDebugOptionsChanged;
     }
 
     private void Start()
@@ -75,6 +81,8 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
     private void OnDestroy()
     {
+        DebugOptions.OnOptionsChanged -= HandleDebugOptionsChanged;
+
         if (_manager != null)
         {
             _manager.OnBeatConsumed -= HandleBeatConsumed;
@@ -86,6 +94,16 @@ public class InputIndicatorTrackUI : MonoBehaviour
     private void Update()
     {
         UpdateNotePositions();
+    }
+
+    private void HandleDebugOptionsChanged()
+    {
+        SyncFromDebugOptions();
+    }
+
+    private void SyncFromDebugOptions()
+    {
+        _input_spd = DebugOptions.NoteSpeed;
     }
 
     private bool TryUsePrefabView()
@@ -293,6 +311,10 @@ public class InputIndicatorTrackUI : MonoBehaviour
 
         float trackWidth = _trackRect.rect.width;
         float travelWidth = trackWidth * (1f - _hitZoneXPercent);
+        float leftEdgeOffset = -trackWidth * _hitZoneXPercent;
+        float minVisibleX = leftEdgeOffset + (_noteSize * 0.5f);
+        float maxVisibleX = Mathf.Max(minVisibleX, travelWidth - (_noteSize * 0.5f));
+        float clampedSpeed = Mathf.Max(0.01f, _input_spd);
 
         List<BeatNote> cleanup = null;
 
@@ -309,13 +331,15 @@ public class InputIndicatorTrackUI : MonoBehaviour
             }
 
             float timeLeft = beat.HitTime - _manager.SongTime;
-            float t = timeLeft / _travelTime;
-            float x = t * travelWidth;
+            float t = timeLeft * clampedSpeed;
+            float xRaw = t * travelWidth;
+            float xVisible = Mathf.Clamp(xRaw, minVisibleX, maxVisibleX);
 
-            rt.anchoredPosition = new Vector2(x, 0f);
-            rt.gameObject.SetActive(t <= 1.05f);
+            rt.anchoredPosition = new Vector2(xVisible, 0f);
+            rt.gameObject.SetActive(t <= 1f && xRaw >= minVisibleX);
 
-            if (t < -0.3f)
+            // Despawn as soon as the note exits the track on the left.
+            if (xRaw < minVisibleX)
             {
                 Destroy(rt.gameObject);
                 cleanup ??= new List<BeatNote>();

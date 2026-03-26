@@ -156,7 +156,7 @@ MonoBehaviour:
   _topMargin: 10
   _barSprite: {fileID: 0}
   _trackSprite: {fileID: 0}
-  _travelTime: 2
+  _input_spd: 0.5
   _hitZoneXPercent: 0.07
   _hitZoneSize: 42
   _noteSize: 100

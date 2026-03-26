@@ -68,6 +68,7 @@ public class InputIndicatorManager : MonoBehaviour
     private void Awake()
     {
         DebugOptions.Initialize(_debugLogHits, _enableManualSpawn);
+        DebugOptions.InitializeTimingDefaults(_perfectWindow, DebugOptions.NoteSpeed);
         SyncDebugFlagsFromGlobal();
         DebugOptions.OnOptionsChanged += HandleDebugOptionsChanged;
 
@@ -190,6 +191,11 @@ public class InputIndicatorManager : MonoBehaviour
         DebugOptions.SetManualSpawnEnabled(enabled);
     }
 
+    public void SetPerfectWindow(float value)
+    {
+        DebugOptions.SetPerfectWindow(value);
+    }
+
     private static bool IsCtrlHeld()
     {
         return Keyboard.current != null &&
@@ -213,6 +219,7 @@ public class InputIndicatorManager : MonoBehaviour
     {
         _debugLogHits = DebugOptions.DebugLogHits;
         _enableManualSpawn = DebugOptions.EnableManualSpawn;
+        _perfectWindow = DebugOptions.PerfectWindow;
     }
 
     // Hold Ctrl/Shift + press an indicator key to place beats during play (for testing).
