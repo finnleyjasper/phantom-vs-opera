@@ -76,36 +76,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    //Method called by Attack object - on fail = takes damage, on success = builds success
-    //Can I delete this method ? - Delete
-    public void HandleAttackResult(string outcome)
-    {
-        if (outcome == "success")
-        {
-            _successBar++;
-            Debug.Log("success bar: " + _successBar);
-            Debug.Log("health bar: " + _healthBar);
-        }
-
-        else
-        {
-            _healthBar--;
-
-            // Clamps - succes + health bars cannot go below 0
-            _successBar = Mathf.Clamp(_successBar, 0, 10);
-            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
-
-            Debug.Log("success bar: " + _successBar);
-            Debug.Log("health bar: " + _healthBar);
-        }
-
-        ManagePlayerLose();
-        ManagePlayerWin();
-        playerHealthBarUI.UpdatePlayerHealthUI();
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
-
-    }
-
     // Method for when Falling Object hits Player = health decreases - method is called by falling objects
 
     public void IsHit(int damage)
@@ -140,35 +110,5 @@ public class Player : MonoBehaviour
     {
         PlayerSuccessTimer();
     }
-
-    /* 
-     
-     * To Do : 
-     * **Update Player to integrate changes made in Issues #16 + #17 - So, when they are finished w/ their issues, come back and make needed changes  :
-     * Issue 17 (Falling Attacks) - On collision w/ Player = call isHit(int Damage) method within Player :
-     * - IsHit
-     * - Falling Attacks will likely detect the collision w/ player and then call IsHit - so make sure ur player is able to be detectable (idk if u need this)
-
-     * Issue 16 (Platforms) -
-     * Player can jump / walk / run / etc on platforms properly - make sure collider works 
-     
-     * Left + Right Movement - (Use basic keyboard input)
-     * Jump + Land on Platforms - (Use basic keyboard input) 
-     * Be able to jump down from platforms - (Use basic keyboard input) - might need to incorporate collision (so player knows 'can i jump down from this?')
-     
-     * Health = decrease when a falling object hits Player
-     * Player should call GameManager's GameOver(GameState Lose) when this occurs (ie. game over - player loses)
-     
-     * //Success = increase over time
-     * //Player should call GameManager's GameOver(GameState Win) when success bar is full (ie. game over - player wins)
-     * //Perhaps the length of the game (how long the player needs to suvive) is a property in GameManager, changable in the editor
-      
-     * //Implement IsHit(int Damage) method - falling attacks will call if one collides w/ the player 
-     * //Should cause Player health to decrease & check for Game Over condiiton (if Player is dead)
-     
-     * If time : 
-     * Slide mechanic 
-     * run option 
-    */
 }
 

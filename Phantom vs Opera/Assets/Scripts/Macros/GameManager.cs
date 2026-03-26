@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     // Current state of the game - further functionality within GameManager will be based on this state
     // Should be changed within this script via methods called by other objects
-    [SerializeField] private GameState _currentGameState = GameState.Menu; // starts in main menu i assume
+    [SerializeField] private GameState _currentGameState = GameState.Play; // As we don't have a main menu yet, I temporarily changed starting state to Play 
 
     [HideInInspector] public static GameManager Instance;
 

@@ -1328,7 +1328,7 @@ MonoBehaviour:
   EndSceneName: Game Over
   MainMenuSceneName: Main Menu
   _currentGameState: 1
-  _gameLength: 10
+  _gameLength: 30
 --- !u!4 &1365729160
 Transform:
   m_ObjectHideFlags: 0

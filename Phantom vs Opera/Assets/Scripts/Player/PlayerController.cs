@@ -20,10 +20,10 @@ public class PlayerController : MonoBehaviour
 
     // Player's speed + force
     [Header("Speed")]
-    [SerializeField] private float _playerSpeed = 0.1f;
+    [SerializeField] private float _playerSpeed = 0.05f;
 
     [Header("Speed")]
-    [SerializeField] private float _playerForce = 500f;
+    [SerializeField] private float _playerForce = 300f;
 
     // Varibale to get Player's RigidBody Component
         private Rigidbody _player_RigidBody;
