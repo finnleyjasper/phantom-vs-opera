@@ -19,13 +19,19 @@ public class MusicPlatform : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayTone();
+            PlayTone("Player");
+        }
+
+        // Falling attack also triggers tone
+        if (collision.gameObject.CompareTag("FallingAttack"))
+        {
+            PlayTone("Falling Attack");
         }
     }
 
-    void PlayTone()
+    void PlayTone( string source)
     {
-        Debug.Log($"Platform {gameObject.name} played a {tone} tone");
+        Debug.Log($"Platform {gameObject.name} played a {tone} tone triggered by {source}");
     }
 
     void ApplyToneHeight()
