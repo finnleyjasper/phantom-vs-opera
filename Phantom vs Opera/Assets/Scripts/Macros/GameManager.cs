@@ -18,9 +18,13 @@ public class GameManager : MonoBehaviour
 
     // Current state of the game - further functionality within GameManager will be based on this state
     // Should be changed within this script via methods called by other objects
-    [SerializeField] private GameState _currentGameState = GameState.Menu; // starts in main menu i assume
+    [SerializeField] private GameState _currentGameState = GameState.Play; // As we don't have a main menu yet, I temporarily changed starting state to Play 
 
     [HideInInspector] public static GameManager Instance;
+
+    // Variables for Game Length 
+    [SerializeField] private float _gameLength = 10f; // Stores overall game length 
+    private float _gameTimer = 0f; // Stores time that passes
 
     private void Awake()
     {
@@ -55,11 +59,30 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(EndSceneName);
         }
     }
+    void Update()
+    {
+        if (_currentGameState != GameState.Play)
+        {
+            _gameTimer = 0; // Restart timer when game state is in lose/win/menu
+            return;
+        }
+        
+        _gameTimer += Time.deltaTime;
+    }
 
     // Properties
     public GameState CurrentGameState
     {
-        get{ return _currentGameState;}
+        get { return _currentGameState;}
     }
 
+    public float GameLength
+    {
+        get {  return _gameLength;}
+    }
+
+    public float GameTimer
+    {
+        get { return _gameTimer; }
+    }
 }

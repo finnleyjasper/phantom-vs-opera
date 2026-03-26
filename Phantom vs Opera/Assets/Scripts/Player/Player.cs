@@ -2,21 +2,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    //Private Variables
+    // Private Variables
         private bool _isAlive;
         private bool _hasWon;
         private int _healthBar;
-        private int _successBar;
+        private float _successBar;
 
-    //Reference to PlayerBarUI Script 
+    // Reference to PlayerBarUI Script 
     [Header("Player Health Bar UI")]
     [SerializeField] private PlayerBarUI playerHealthBarUI;
 
     [Header("Player Success Bar UI")]
     [SerializeField] private PlayerBarUI playerSuccessBarUI;
 
-
-    //Set up Initial health/success levels in Start
+    // Set up Initial health/success levels in Start
     void Start()
     {
         _healthBar = 10;
@@ -31,14 +30,14 @@ public class Player : MonoBehaviour
         playerSuccessBarUI.UpdatePlayerSuccessUI();
     }
 
-    //Properties
+    // Properties
 
     public int HealthBar
     {
         get { return _healthBar; }
     }
 
-    public int SuccessBar
+    public float SuccessBar
     {
         get { return _successBar; }
     }
@@ -53,8 +52,8 @@ public class Player : MonoBehaviour
         get { return _hasWon; }
     }
 
-    //Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
-    public void ManageHealthBar()
+    // Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
+    public void ManagePlayerLose()
     {
         if (_healthBar <= 0)
         {
@@ -65,8 +64,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    //Method to Manage Success Bar - sets initial success bar level, sets results for reaching certain success level (i.e. winning game)
-    public void ManageSuccessBar()
+    // Method to Manage Success Bar - sets initial success bar level, sets results for reaching certain success level (i.e. winning game)
+    public void ManagePlayerWin()
     {
         if (_successBar >= 10)
         {
@@ -77,33 +76,39 @@ public class Player : MonoBehaviour
         }
     }
 
-    //Method called by Attack object - on fail = takes damage, on success = builds success
-    public void HandleAttackResult(string outcome)
+    // Method for when Falling Object hits Player = health decreases - method is called by falling objects
+
+    public void IsHit(int damage)
     {
-        if (outcome == "success")
+        _healthBar -= damage; 
+        _healthBar = Mathf.Clamp(_healthBar, 0, 10); // Clamp - health bars cannot go below 0 or above 10
+        Debug.Log("health bar: " + _healthBar);
+     
+        if (_healthBar <= 0)
         {
-            _successBar ++;
-            Debug.Log("success bar: " + _successBar);
-            Debug.Log("health bar: " + _healthBar);
+            ManagePlayerLose(); 
         }
 
-        else
-        {
-            _healthBar --;
+        playerHealthBarUI.UpdatePlayerHealthUI(); 
+    }
 
-            //Clamps - succes + health bars cannot go below 0
-            _successBar = Mathf.Clamp(_successBar, 0, 10);
-            _healthBar = Mathf.Clamp(_healthBar, 0, 10);
-
-            Debug.Log("success bar: " + _successBar);
-            Debug.Log("health bar: " + _healthBar);
-        }
-
-        ManageHealthBar();
-        ManageSuccessBar();
-        playerHealthBarUI.UpdatePlayerHealthUI();
+    // Method for when Player wins if game time ends 
+    public void PlayerSuccessTimer()
+    {
+        _successBar = GameManager.Instance.GameTimer;
+        _successBar = Mathf.Clamp(_successBar, 0, 10); // Clamps - succes + health bars cannot go below 0
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
+        // Calls win condition if game length is reached 
+        if (_successBar >= GameManager.Instance.GameLength)
+        {
+            ManagePlayerWin();
+        }
+    }
+
+    void Update()
+    {
+        PlayerSuccessTimer();
     }
 }
 
