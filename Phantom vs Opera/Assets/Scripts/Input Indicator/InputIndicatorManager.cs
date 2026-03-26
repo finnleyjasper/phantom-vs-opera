@@ -29,6 +29,8 @@ public class InputIndicatorManager : MonoBehaviour
 
     [Header("Indicators")]
     [SerializeField] private List<InputIndicator> _indicators = new();
+    [SerializeField] private InputIndicator _indicatorPrefab;
+    [SerializeField] private Transform _indicatorParent;
 
     [Header("Timing")]
     [SerializeField] private float _perfectWindow = 0.15f;
@@ -65,6 +67,10 @@ public class InputIndicatorManager : MonoBehaviour
 
     private void Awake()
     {
+        DebugOptions.Initialize(_debugLogHits, _enableManualSpawn);
+        SyncDebugFlagsFromGlobal();
+        DebugOptions.OnOptionsChanged += HandleDebugOptionsChanged;
+
         if (_generateTestBeats && _indicators.Count == 0)
             CreateDefaultIndicators();
 
@@ -95,12 +101,29 @@ public class InputIndicatorManager : MonoBehaviour
             CheckPlayerInput();
     }
 
+    private void OnDestroy()
+    {
+        DebugOptions.OnOptionsChanged -= HandleDebugOptionsChanged;
+    }
+
     // Creates a new indicator at runtime and parents it under this object.
     public InputIndicator AddIndicator(Key key, Sprite noteSprite = null)
     {
-        var go = new GameObject($"Indicator_{key}");
-        go.transform.SetParent(transform);
-        var indicator = go.AddComponent<InputIndicator>();
+        Transform parent = _indicatorParent != null ? _indicatorParent : transform;
+
+        InputIndicator indicator;
+        if (_indicatorPrefab != null)
+        {
+            indicator = Instantiate(_indicatorPrefab, parent);
+            indicator.name = $"Indicator_{key}";
+        }
+        else
+        {
+            var go = new GameObject($"Indicator_{key}");
+            go.transform.SetParent(parent);
+            indicator = go.AddComponent<InputIndicator>();
+        }
+
         indicator.Initialize(key, noteSprite);
         _indicators.Add(indicator);
         return indicator;
@@ -156,6 +179,17 @@ public class InputIndicatorManager : MonoBehaviour
         _isPlaying = false;
     }
 
+    // Public API for any script that wants to change runtime debug settings.
+    public void SetDebugLogHits(bool enabled)
+    {
+        DebugOptions.SetDebugLogHits(enabled);
+    }
+
+    public void SetManualSpawnEnabled(bool enabled)
+    {
+        DebugOptions.SetManualSpawnEnabled(enabled);
+    }
+
     private static bool IsCtrlHeld()
     {
         return Keyboard.current != null &&
@@ -168,6 +202,17 @@ public class InputIndicatorManager : MonoBehaviour
         return Keyboard.current != null &&
                (Keyboard.current[Key.LeftShift].isPressed ||
                 Keyboard.current[Key.RightShift].isPressed);
+    }
+
+    private void HandleDebugOptionsChanged()
+    {
+        SyncDebugFlagsFromGlobal();
+    }
+
+    private void SyncDebugFlagsFromGlobal()
+    {
+        _debugLogHits = DebugOptions.DebugLogHits;
+        _enableManualSpawn = DebugOptions.EnableManualSpawn;
     }
 
     // Hold Ctrl/Shift + press an indicator key to place beats during play (for testing).
@@ -284,11 +329,7 @@ public class InputIndicatorManager : MonoBehaviour
 
         foreach (var key in defaultKeys)
         {
-            var go = new GameObject($"Indicator_{key}");
-            go.transform.SetParent(transform);
-            var indicator = go.AddComponent<InputIndicator>();
-            indicator.Initialize(key);
-            _indicators.Add(indicator);
+            AddIndicator(key);
         }
     }
 
