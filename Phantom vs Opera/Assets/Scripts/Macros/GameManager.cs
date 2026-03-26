@@ -22,6 +22,10 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public static GameManager Instance;
 
+    // Variables for Game Length 
+    [SerializeField] private float _gameLength = 10f; // Stores overall game length 
+    private float _gameTimer = 0; // Stores time that passes
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -55,6 +59,16 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(EndSceneName);
         }
     }
+    void Update()
+    {
+        if (_currentGameState != GameState.Play)
+        {
+            _gameTimer = 0; // Restart timer when game state is in lose/win/menu
+            return;
+        }
+        
+        _gameTimer += Time.deltaTime;
+    }
 
     // Properties
     public GameState CurrentGameState
@@ -62,4 +76,13 @@ public class GameManager : MonoBehaviour
         get{ return _currentGameState;}
     }
 
+    public float GameLength
+    {
+        get {  return _gameLength;}
+    }
+
+    public float GameTimer
+    {
+        get { return _gameTimer; }
+    }
 }
