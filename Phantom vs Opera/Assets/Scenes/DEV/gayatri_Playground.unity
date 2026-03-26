@@ -1328,7 +1328,7 @@ MonoBehaviour:
   EndSceneName: Game Over
   MainMenuSceneName: Main Menu
   _currentGameState: 1
-  _gameLength: 1
+  _gameLength: 10
 --- !u!4 &1365729160
 Transform:
   m_ObjectHideFlags: 0
@@ -1761,8 +1761,8 @@ MonoBehaviour:
   _zFrontKeyCode: 273
   _zBackKeyCode: 274
   _jumpKeyCode: 32
-  _playerSpeed: 0.005
-  _playerForce: 200
+  _playerSpeed: 0.05
+  _playerForce: 300
 --- !u!1 &2103929581
 GameObject:
   m_ObjectHideFlags: 0
