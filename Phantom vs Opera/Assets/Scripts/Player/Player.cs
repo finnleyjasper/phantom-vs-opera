@@ -112,3 +112,13 @@ public class Player : MonoBehaviour
     }
 }
 
+/***
+Audience Support Plan : 
+- Create new script for AudienceSupport - let GameObserver watch it for 0/max stats, then calls GM's methods for win/lose
+- Delete Success + Health related methods here 
+- Delete success + health variables 
+- Keep IsAlive + HasWon
+- Implement properties to check if player is on platform or not - bool variable - needs to somehow know the amount of time player is not on a platform 
+- Change UI accordingly  
+
+***/
