@@ -4,49 +4,37 @@ public class MusicPlatform : MonoBehaviour
 {
     [Header("Music Properties")]
     [Range(1, 10)]
-    public int tone = 1;          // Pitch (1 = low, 10 = high)
-
+    public int tone = 1;          // Pitch
     [Min(0.1f)]
-    public float strength = 1f;   // Duration (affects platform length)
+    public float strength = 1f;   // Duration
 
     private void Start()
     {
-        ApplyToneHeight();
         ApplyStrengthScale();
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void Update()
     {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            PlayTone("Player");
-        }
-
-        // Falling attack also triggers tone
-        if (collision.gameObject.CompareTag("FallingAttack"))
-        {
-            PlayTone("Falling Attack");
-        }
-    }
-
-    void PlayTone( string source)
-    {
-        Debug.Log($"Platform {gameObject.name} played a {tone} tone triggered by {source}");
-    }
-
-    void ApplyToneHeight()
-    {
-        float y = ToneMapper.GetYPosition(tone);
-
-        Vector3 pos = transform.position;
-        pos.y = y;
-        transform.position = pos;
+        // Move platform left
+        float speed = PlatformManager.Instance.GetSpeed();
+        transform.Translate(Vector3.left * speed * Time.deltaTime);
     }
 
     void ApplyStrengthScale()
     {
         Vector3 scale = transform.localScale;
-        scale.x = strength; // change axis if needed
+        scale.x = strength;
         transform.localScale = scale;
+    }
+
+    private void OnEnable()
+    {
+        PlatformManager.Instance.RegisterPlatform(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (PlatformManager.Instance != null)
+            PlatformManager.Instance.UnregisterPlatform(this);
     }
 }
