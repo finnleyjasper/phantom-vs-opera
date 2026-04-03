@@ -7,6 +7,7 @@ public class Player : MonoBehaviour
         private bool _hasWon;
         private int _healthBar;
         private float _successBar;
+        private bool _isOnPlatform = false;
 
     // Reference to PlayerBarUI Script 
     [Header("Player Health Bar UI")]
@@ -51,6 +52,11 @@ public class Player : MonoBehaviour
     {
         get { return _hasWon; }
     }
+
+    public bool IsOnPlatform
+    {
+        get { return  IsOnPlatform; }
+    }     
 
     // Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
     public void ManagePlayerLose()
@@ -113,10 +119,13 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision platformCollision)
     {
-        if (platformCollision.gameObject.tag == "Platform")
+        if (platformCollision.gameObject.tag == "Platform") // Change so it's just on top, just touching sides 
         {
-            Debug.Log("Collision!");
+            Debug.Log("Collision!"); // Change this - Delete
+            _isOnPlatform = true;
         }
+
+
     }
 }
 
