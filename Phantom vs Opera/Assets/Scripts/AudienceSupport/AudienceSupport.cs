@@ -9,6 +9,11 @@ public class AudienceSupport : MonoBehaviour
         
     }
 
+    public void PlayerFall()
+    {
+        // Add code for Player falling to floor = 0 AS 
+    }
+
     void Start() //Idk if i need this - Delete
     {
         

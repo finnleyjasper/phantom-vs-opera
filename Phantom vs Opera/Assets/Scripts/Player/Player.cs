@@ -10,6 +10,7 @@ public class Player : MonoBehaviour
         private int _healthBar;
         private float _successBar;
         private bool _isOnPlatform = false;
+        private bool _fellOnFloor = false; // dont know if we need this ? Or if I should make this a property ? - Delete
 
     // Reference to PlayerBarUI Script
     [Header("Player Health Bar UI")]
@@ -60,8 +61,13 @@ public class Player : MonoBehaviour
 
     public bool IsOnPlatform
     {
-        get { return  IsOnPlatform; }
-    }     
+        get { return  _isOnPlatform; }
+    }
+
+    public bool FellOnFloor
+    {
+        get { return _fellOnFloor; }
+    }
 
     // Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
     public void ManagePlayerLose()
@@ -138,14 +144,24 @@ public class Player : MonoBehaviour
 
     void OnCollisionEnter(Collision platformCollision)
     {
-        if (platformCollision.gameObject.tag == "Platform") // Change so it's just on top, just touching sides 
+        if (platformCollision.gameObject.tag == "Platform") // Change so it's just on top, just touching sides - Delete
         {
             Debug.Log("Collision!"); // Change this - Delete
             _isOnPlatform = true;
         }
+        
+        // Player collision detection for floor 
+        else if (platformCollision.gameObject.tag == "Floor") // Dont know if 'else if' works here? - Delete
+        {
+            Debug.Log("Collision!"); // Change this - Delete
+            _fellOnFloor = true;
+            
+        }
 
 
     }
+    // LOOK THRU CODE AND DELETE ANYTHING UNECESSARY EHRE - Delete 
+    // Also maybe not put things in 'start' for no reason idk?? SHould i have put them there? Also anythig unecessary in update ? - Delete
 }
 
 /***
