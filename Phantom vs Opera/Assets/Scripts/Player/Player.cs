@@ -110,15 +110,37 @@ public class Player : MonoBehaviour
     {
         PlayerSuccessTimer();
     }
+
+    void OnCollisionEnter(Collision platformCollision)
+    {
+        if (platformCollision.gameObject.tag == "Platform")
+        {
+            Debug.Log("Collision!");
+        }
+    }
 }
 
 /***
 Audience Support Plan : 
-- Create new script for AudienceSupport - let GameObserver watch it for 0/max stats, then calls GM's methods for win/lose
+
+- See Research Current - 15 mins
+- Research how to do collision detection - 20 min
+
+**Collision Implementation ; 1 hour 
+- In player: Create collision detection for when player is ON TOP of platform - make bool, can use this for when player is/isnt on platform - needs to konw the # of time the player isn't on a platform somehow
+- In player: Create collision detection for when player touches ground floor - use this for flat decrease in AS
+- AS uses these 2 collision detects (turn them into properties) 
+
 - Delete Success + Health related methods here 
 - Delete success + health variables 
 - Keep IsAlive + HasWon
-- Implement properties to check if player is on platform or not - bool variable - needs to somehow know the amount of time player is not on a platform 
-- Change UI accordingly  
+
+- Create new script for AudienceSupport - let GameObserver watch it for 0/max stats, then calls GM's methods for win/lose
+- Observer then uses the audience support property to call GM for win/lose conditions
+
+- Change UI accordingly = 1 hour :
+    - Create AS bar in Unity 
+    - Copy UI format here to AS
+    - Fix + test 
 
 ***/
