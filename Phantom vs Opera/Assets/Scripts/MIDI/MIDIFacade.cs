@@ -1,3 +1,4 @@
+using System;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Unity.VisualScripting;
@@ -9,8 +10,10 @@ public class MIDIFacade : MonoBehaviour
     // show logs
     public bool debugMode = false;
 
+    // MIDI stuff
     [HideInInspector] public static MIDIFacade Instance;
     private MidiFile _midiFile;
+    private Note[] _noteArray; // all notes in the MIDI file
 
     // subsystems
     private MIDILoader _midiLoader; // loads in the MIDI file and extracts the relevant data for the parser to use
@@ -64,12 +67,30 @@ public class MIDIFacade : MonoBehaviour
             return;
         }
 
-        // parse the MIDI file
-        _midiParser.GetData();
     }
 
-    void Update()
+    public void StartLevel() // start music + platform spawning
     {
+        // parse the MIDI file & get note data
+       _noteArray = _midiParser.GetNoteArray(_midiFile);
 
+       foreach (var note in _noteArray)
+        {
+            Debug.Log(note.NoteName + " at " + note.Time);
+        }
+
+        // more stuff later
+        StartSong();
+    }
+
+    public double GetAudioSourceTime() // get the current time of the audio source in seconds
+    {
+        return (double)Instance.audioSource.timeSamples / Instance.audioSource.clip.frequency;
+    }
+
+    private void StartSong()
+    {
+        // fix this
+        audioSource.Play();
     }
 }

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public static class ToneMapper
+public static class PitchMapper
 {
     public static int minTone = 1;
     public static int maxTone = 10;
@@ -13,7 +13,7 @@ public static class ToneMapper
         // Normalize tone → 0 to 1
         float t = (float)(tone - minTone) / (maxTone - minTone);
 
-        // Map to lane index 
+        // Map to lane index
         int index = Mathf.RoundToInt(t * (laneZ.Length - 1));
 
         return laneZ[index];

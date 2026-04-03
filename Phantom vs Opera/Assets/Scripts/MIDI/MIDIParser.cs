@@ -9,9 +9,12 @@ public class MIDIParser : MonoBehaviour
         GetNoteArray(midiFile);
     }
 
-    public Note[] GetNoteArray(MidiFile midiFile)
+    public Note[] GetNoteArray(MidiFile midiFile) // converts MIDI notes to an array of Note objects
     {
         var notes = midiFile.GetNotes();
-        var array = new Note[notes.Count];
+        var notesArray = new Note[notes.Count];
+        notes.CopyTo(notesArray, 0);
+
+        return notesArray;
     }
 }

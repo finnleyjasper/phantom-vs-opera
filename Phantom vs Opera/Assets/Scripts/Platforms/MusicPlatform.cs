@@ -4,7 +4,7 @@ public class MusicPlatform : MonoBehaviour
 {
     [Header("Music Properties")]
     [Range(1, 10)]
-    public int tone = 1;          // Pitch
+    public int pitch = 1;          // Pitch
     [Min(0.1f)]
     public float strength = 1f;   // Duration
 

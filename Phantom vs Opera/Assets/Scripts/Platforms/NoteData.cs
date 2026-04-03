@@ -1,13 +1,16 @@
 [System.Serializable]
 public class NoteData
 {
-    public int tone;        // pitch (1–10)
+    public int pitch;        // pitch (1–10)
     public float time;      // when it happens (x position)
     public float duration;  // how long (platform length)
 
-    public NoteData(int tone, float time, float duration)
+    // things added from finn
+    public double timeInstantiaed;
+
+    public NoteData(int pitch, float time, float duration)
     {
-        this.tone = tone;
+        this.pitch = pitch;
         this.time = time;
         this.duration = duration;
     }

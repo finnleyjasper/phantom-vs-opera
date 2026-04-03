@@ -16,8 +16,8 @@ public class PlatformSpawner : MonoBehaviour
 
     [Header("Lane Management")]
     public List<Transform> laneTransforms = new List<Transform>();
-    public int minTone = 1;
-    public int maxTone = 10;
+    public int minpitch = 1;
+    public int maxpitch = 10;
 
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
 
@@ -57,8 +57,8 @@ public class PlatformSpawner : MonoBehaviour
             return;
         }
 
-        // Map tone to lane index
-        float t = (float)(note.tone - minTone) / (maxTone - minTone);
+        // Map pitch to lane index
+        float t = (float)(note.pitch - minpitch) / (maxpitch - minpitch);
         int index = Mathf.RoundToInt(t * (laneTransforms.Count - 1));
         index = Mathf.Clamp(index, 0, laneTransforms.Count - 1);
 
@@ -76,7 +76,7 @@ public class PlatformSpawner : MonoBehaviour
         MusicPlatform mp = platform.GetComponent<MusicPlatform>();
         if (mp != null)
         {
-            mp.tone = note.tone;
+            mp.pitch = note.pitch;
             mp.strength = note.duration;
         }
 
