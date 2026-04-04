@@ -1,14 +1,26 @@
 [System.Serializable]
 public class NoteData
 {
-    public int tone;        // pitch (1–10)
-    public float time;      // when it happens (x position)
+    public int pitch;        // pitch 0–127 (determines lane)
+    public float noteOn;      // start time (x position)
     public float duration;  // how long (platform length)
 
-    public NoteData(int tone, float time, float duration)
+    // unused data for now - but added from the MIDI parser in case we want to use it later
+    public float noteOff; // time + duration
+    public int strength; // how hard the note is played
+    public string noteName; // ie. C# etc.
+
+    public float spawnTime; // when the platform should spawn, calculated from noteOn and delay from PlatformSpawner
+
+    public NoteData(int pitch, float noteOn, float duration, float noteOff, int strength, string noteName, float spawnDelay)
     {
-        this.tone = tone;
-        this.time = time;
+        this.pitch = pitch;
+        this.noteOn = noteOn;
         this.duration = duration;
+        this.noteOff = noteOff;
+        this.strength = strength;
+        this.noteName = noteName;
+        this.spawnTime = this.noteOn + spawnDelay;
     }
 }
+
