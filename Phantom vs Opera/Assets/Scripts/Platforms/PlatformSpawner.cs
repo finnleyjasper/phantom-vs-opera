@@ -10,11 +10,9 @@ public class PlatformSpawner : MonoBehaviour
     [Header("Spawn Point")]
     public Transform spawnPoint;
 
-
     [Header("Lane Management")]
+    [Tooltip("Number of MIDI pitches at the low and high ends that will be clamped to the first and last lanes")] public int deadzone = 30;
     public List<Transform> laneTransforms = new List<Transform>();
-    public int minpitch = 0;
-    public int maxpitch = 127;
 
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
     private List<NoteData> notes = new List<NoteData>(); // retrieved from MIDIFacade
@@ -41,10 +39,9 @@ public class PlatformSpawner : MonoBehaviour
             // wait until the audio time reaches this note's spawn time
             while (MIDIFacade.Instance.GetAudioSourceTime() < note.spawnTime)
             {
-                yield return null; // Wait one frame
+                yield return null;
             }
 
-            Debug.Log($"Spawning note {note.noteName} at audio time {MIDIFacade.Instance.GetAudioSourceTime()} (noteOn: {note.noteOn})");
             SpawnNote(note);
         }
     }
@@ -57,16 +54,13 @@ public class PlatformSpawner : MonoBehaviour
             return;
         }
 
-        // Map pitch to lane index
-        float t = (float)(note.pitch - minpitch) / (maxpitch - minpitch);
-        int index = Mathf.RoundToInt(t * (laneTransforms.Count - 1));
-        index = Mathf.Clamp(index, 0, laneTransforms.Count - 1);
+        int laneIndex = Mathf.RoundToInt(GetLaneIndex(note.pitch));
 
-        // Determine spawn position
+        // Determine spawn position w/ GetLaneIndex() based on note pitch
         Vector3 spawnPos = new Vector3(
             spawnPoint.position.x,
             0f,
-            laneTransforms[index].position.z
+            laneTransforms[laneIndex].position.z
         );
 
         // Instantiate platform
@@ -83,6 +77,21 @@ public class PlatformSpawner : MonoBehaviour
         // Track active platform for despawning
         activePlatforms.Add(mp);
 
-        Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {index}");
+        Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {laneIndex+1}");
+    }
+
+    private float GetLaneIndex(int pitch)
+    {
+        int effectiveMin = MIDIFacade.Instance.MinPitch + deadzone;
+        int effectiveMax = MIDIFacade.Instance.MaxPitch - deadzone;
+
+        // clamp pitch to effective range
+        int clampedPitch = Mathf.Clamp(pitch, effectiveMin, effectiveMax);
+
+        // normalize and map to lane index
+        float t = (float)(clampedPitch - effectiveMin) / (effectiveMax - effectiveMin);
+        float laneIndex = t * (laneTransforms.Count - 1);
+
+        return laneIndex;
     }
 }

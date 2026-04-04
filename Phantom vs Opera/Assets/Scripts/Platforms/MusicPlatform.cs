@@ -3,7 +3,7 @@ using UnityEngine;
 public class MusicPlatform : MonoBehaviour
 {
     [Header("Music Properties")]
-    [Range(1, 10)]
+    [Range(0, 127)]
     public int pitch = 1;          // Pitch
     [Min(0.1f)]
     public float length = 1f;   // Duration

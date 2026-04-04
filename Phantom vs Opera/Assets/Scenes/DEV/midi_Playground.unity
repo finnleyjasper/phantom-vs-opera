@@ -558,8 +558,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MIDIFacade
   debugMode: 1
-  fileName: test.mid
-  _audioFile: {fileID: 8300000, guid: e07f4cb40a1524a9f858519fb9092274, type: 3}
+  fileName: test2.mid
+  _audioFile: {fileID: 8300000, guid: a53e524b8d2464e148817f7825fd9d40, type: 3}
   audioSource: {fileID: 0}
 --- !u!114 &410435426
 MonoBehaviour:
@@ -1736,7 +1736,7 @@ Transform:
   m_GameObject: {fileID: 1698801256}
   serializedVersion: 2
   m_LocalRotation: {x: 0.22902103, y: -0, z: -0, w: 0.9734215}
-  m_LocalPosition: {x: 0.8063799, y: 5.9827304, z: -29.29005}
+  m_LocalPosition: {x: 0.8063799, y: 10.81, z: -38.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2172,14 +2172,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlatformSpawner
   platformPrefab: {fileID: 6958657165010035221, guid: 59cb185868f8f5a4f852847b42dd5322, type: 3}
   spawnPoint: {fileID: 751348475}
+  deadzone: 35
   laneTransforms:
   - {fileID: 662658044}
   - {fileID: 474268689}
   - {fileID: 1017199590}
   - {fileID: 195158270}
   - {fileID: 2581760}
-  minpitch: 1
-  maxpitch: 10
 --- !u!1 &2116799948
 GameObject:
   m_ObjectHideFlags: 0

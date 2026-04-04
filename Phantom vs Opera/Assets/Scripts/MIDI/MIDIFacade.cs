@@ -15,6 +15,9 @@ public class MIDIFacade : MonoBehaviour
     [HideInInspector] public static MIDIFacade Instance;
     private MidiFile _midiFile;
 
+    private int _minPitch = 0;
+    private int _maxPitch = 127; // MIDI standard range of pitches, from C-1
+
     // subsystems
     private MIDILoader _midiLoader; // loads in the MIDI file and extracts the relevant data for the parser to use
     private MIDIParser _midiParser; // the parser prepares data for the facade to use - ie. converts MIDI tempo --> seconds, etc.
@@ -59,7 +62,6 @@ public class MIDIFacade : MonoBehaviour
             }
         }
 
-        // load the MIDI file
         _midiFile = _midiLoader.LoadMIDI(fileName);
         if (debugMode)
         {
@@ -85,7 +87,7 @@ public class MIDIFacade : MonoBehaviour
                 string notesInfo = "Following NoteData parsed successfully: ";
                 foreach (var note in _noteDataList)
                 {
-                    notesInfo += note.noteName + " at " + note.noteOn + ", ";
+                    notesInfo += note.noteName + " at pitch" + note.pitch + ", ";
                 }
                 Debug.Log(notesInfo.TrimEnd(',', ' '));
             }
@@ -110,9 +112,12 @@ public class MIDIFacade : MonoBehaviour
         }
     }
 
-    // unused for now but may be necessary later
-    public double GetAudioSourceTime() // get the current time of the audio source in seconds
+    public double GetAudioSourceTime() // get the current time of the audio source in seconds - checked against NoteData.spawnTime
     {
         return (double)Instance.audioSource.timeSamples / Instance.audioSource.clip.frequency;
     }
+
+    // Properties
+    public int MinPitch => _minPitch;
+    public int MaxPitch => _maxPitch;
 }

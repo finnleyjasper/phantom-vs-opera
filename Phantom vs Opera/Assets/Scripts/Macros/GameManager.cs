@@ -92,18 +92,9 @@ public class GameManager : MonoBehaviour
     }
 
     // Properties
-    public GameState CurrentGameState
-    {
-        get { return _currentGameState;}
-    }
+    public GameState CurrentGameState => _currentGameState;
 
-    public float GameLength
-    {
-        get {  return _gameLength;}
-    }
+    public float GameLength => _gameLength;
 
-    public float GameTimer
-    {
-        get { return _gameTimer; }
-    }
+    public float GameTimer => _gameTimer;
 }
