@@ -181,8 +181,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   EndSceneName: 
   MainMenuSceneName: 
-  numberOfLanes: 5
-  _levelStartDelay: 2
+  _levelStartDelay: 0
   _currentGameState: 1
   _gameLength: 10
 --- !u!4 &75624849
@@ -559,8 +558,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MIDIFacade
   debugMode: 1
-  audioSource: {fileID: 0}
   fileName: test.mid
+  _audioFile: {fileID: 8300000, guid: e07f4cb40a1524a9f858519fb9092274, type: 3}
+  audioSource: {fileID: 0}
 --- !u!114 &410435426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1214,7 +1214,7 @@ RectTransform:
   m_GameObject: {fileID: 1236748012}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.0872, y: 2.0872, z: 2.0872}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1678422243}
@@ -1222,7 +1222,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -880, y: -525}
+  m_AnchoredPosition: {x: -774.4, y: -492.5}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1236748014
@@ -1269,9 +1269,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 410435425}
-        m_TargetAssemblyTypeName: MIDIFacade, Assembly-CSharp
-        m_MethodName: StartLevel
+      - m_Target: {fileID: 75624848}
+        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1628,7 +1628,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Log notes
+  m_text: 'Start game '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1655,8 +1655,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 15
+  m_fontSizeBase: 15
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1875,8 +1875,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlatformManager
   platformSpeed: 5
+  platformLengthMultiplier: 2
+  spawnDelay: 0
   isPaused: 0
-  despawnPoint: {fileID: 0}
+  despawnPoint: {fileID: 378964093}
 --- !u!4 &1822127507
 Transform:
   m_ObjectHideFlags: 0
@@ -2168,10 +2170,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da9dbc92a9fd7544f8b577c3f858a78d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlatformSpawner
-  platformPrefab: {fileID: 0}
-  notes: []
-  spawnPoint: {fileID: 0}
-  laneTransforms: []
+  platformPrefab: {fileID: 6958657165010035221, guid: 59cb185868f8f5a4f852847b42dd5322, type: 3}
+  spawnPoint: {fileID: 751348475}
+  laneTransforms:
+  - {fileID: 662658044}
+  - {fileID: 474268689}
+  - {fileID: 1017199590}
+  - {fileID: 195158270}
+  - {fileID: 2581760}
   minpitch: 1
   maxpitch: 10
 --- !u!1 &2116799948
@@ -2212,9 +2218,9 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 410435424}
-  - {fileID: 2116799949}
   - {fileID: 1822127507}
   - {fileID: 75624849}
+  - {fileID: 2116799949}
   - {fileID: 560762581}
   - {fileID: 1890534460}
   - {fileID: 91765218}

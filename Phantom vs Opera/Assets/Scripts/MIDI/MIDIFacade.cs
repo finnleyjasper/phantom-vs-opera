@@ -3,6 +3,7 @@ using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using Unity.VisualScripting;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MIDIFacade : MonoBehaviour
 {
@@ -13,16 +14,15 @@ public class MIDIFacade : MonoBehaviour
     // MIDI stuff
     [HideInInspector] public static MIDIFacade Instance;
     private MidiFile _midiFile;
-    private Note[] _noteArray; // all notes in the MIDI file
 
     // subsystems
     private MIDILoader _midiLoader; // loads in the MIDI file and extracts the relevant data for the parser to use
     private MIDIParser _midiParser; // the parser prepares data for the facade to use - ie. converts MIDI tempo --> seconds, etc.
 
     [Header("Settings")]
-    public AudioSource audioSource; // the audio source that will play the MIDI file's audio
     [Tooltip("Name of the file within StreamingAssets")]public string fileName; // MidiFile.Read() requires a path (string), so we need the filename
-
+    [SerializeField] private AudioClip _audioFile; // unity can't play MIDI, so we need a .wav/ .mp3 file to play
+    public AudioSource audioSource;
      private void Awake()
     {
         // enforce singleton
@@ -61,36 +61,58 @@ public class MIDIFacade : MonoBehaviour
 
         // load the MIDI file
         _midiFile = _midiLoader.LoadMIDI(fileName);
-        if (_midiFile == null && debugMode)
+        if (debugMode)
         {
-            Debug.LogError("Failed to load MIDI file: " + fileName);
-            return;
+            if (_midiFile != null)
+            {
+                Debug.Log("MIDI file loaded successfully: " + fileName);
+            }
+            else
+            {
+                Debug.LogError("Failed to load MIDI file: " + fileName);
+            }
         }
-
     }
 
-    public void StartLevel() // start music + platform spawning
+    public List<NoteData> GetNoteData(float spawnDelay) // parse the MIDI file & get note data
     {
-        // parse the MIDI file & get note data
-       _noteArray = _midiParser.GetNoteArray(_midiFile);
+       List<NoteData> _noteDataList = _midiParser.ConvertToNoteData(_midiFile, spawnDelay);
 
-       foreach (var note in _noteArray)
+       if (debugMode)
         {
-            Debug.Log(note.NoteName + " at " + note.Time);
+            if (_noteDataList != null && _noteDataList.Count > 0)
+            {
+                string notesInfo = "Following NoteData parsed successfully: ";
+                foreach (var note in _noteDataList)
+                {
+                    notesInfo += note.noteName + " at " + note.noteOn + ", ";
+                }
+                Debug.Log(notesInfo.TrimEnd(',', ' '));
+            }
+            else
+            {
+                Debug.LogWarning("No notes parsed from MIDI file.");
+                return _noteDataList;
+            }
         }
 
-        // more stuff later
-        StartSong();
+        return _noteDataList;
     }
 
+    public void StartSong()
+    {
+        audioSource.clip = _audioFile;
+        audioSource.Play();
+
+        if (debugMode)
+        {
+            Debug.Log("Audio source started playing: " + audioSource.clip.name);
+        }
+    }
+
+    // unused for now but may be necessary later
     public double GetAudioSourceTime() // get the current time of the audio source in seconds
     {
         return (double)Instance.audioSource.timeSamples / Instance.audioSource.clip.frequency;
-    }
-
-    private void StartSong()
-    {
-        // fix this
-        audioSource.Play();
     }
 }

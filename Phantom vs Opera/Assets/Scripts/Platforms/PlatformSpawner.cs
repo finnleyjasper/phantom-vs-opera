@@ -7,22 +7,21 @@ public class PlatformSpawner : MonoBehaviour
     [Header("References")]
     public GameObject platformPrefab;
 
-    [Header("Note Data")]
-    public List<NoteData> notes = new List<NoteData>();
-
     [Header("Spawn Point")]
     public Transform spawnPoint;
 
 
     [Header("Lane Management")]
     public List<Transform> laneTransforms = new List<Transform>();
-    public int minpitch = 1;
-    public int maxpitch = 10;
+    public int minpitch = 0;
+    public int maxpitch = 127;
 
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
+    private List<NoteData> notes = new List<NoteData>(); // retrieved from MIDIFacade
 
-    private void Start()
+    public void StartSpawning()
     {
+        notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.spawnDelay);
         StartCoroutine(SpawnRoutine());
     }
 
@@ -37,15 +36,16 @@ public class PlatformSpawner : MonoBehaviour
 
     private IEnumerator SpawnRoutine()
     {
-        float previousTime = 0f;
-
         foreach (var note in notes)
         {
-            float waitTime = note.time - previousTime;
-            yield return new WaitForSeconds(waitTime);
+            // wait until the audio time reaches this note's spawn time
+            while (MIDIFacade.Instance.GetAudioSourceTime() < note.spawnTime)
+            {
+                yield return null; // Wait one frame
+            }
 
+            Debug.Log($"Spawning note {note.noteName} at audio time {MIDIFacade.Instance.GetAudioSourceTime()} (noteOn: {note.noteOn})");
             SpawnNote(note);
-            previousTime = note.time;
         }
     }
 
@@ -77,10 +77,12 @@ public class PlatformSpawner : MonoBehaviour
         if (mp != null)
         {
             mp.pitch = note.pitch;
-            mp.strength = note.duration;
+            mp.length = note.duration;
         }
 
         // Track active platform for despawning
         activePlatforms.Add(mp);
+
+        Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {index}");
     }
 }

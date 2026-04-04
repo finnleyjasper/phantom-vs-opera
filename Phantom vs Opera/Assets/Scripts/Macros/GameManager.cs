@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     public string EndSceneName;
     public string MainMenuSceneName;
-    [Tooltip("Number of 'lanes'")]public int numberOfLanes = 5;
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
 
     // Current state of the game - further functionality within GameManager will be based on this state
@@ -45,16 +44,20 @@ public class GameManager : MonoBehaviour
 
     public void StartGame() // should get called from menu buttons
     {
-        // should reset audience health
-        // reset player position
-        SetGameState(GameState.Play);
         StartCoroutine(StartLevelAfterDelay());
     }
 
     private IEnumerator StartLevelAfterDelay() // give some time between loading the scene and starting the level
     {
         yield return new WaitForSeconds(_levelStartDelay);
-        MIDIFacade.Instance.StartLevel();
+
+        SetGameState(GameState.Play);
+        // ######################################################
+        MIDIFacade.Instance.StartSong(); // AKLHFLKJHDKFJHSLDHFLKSJDFKLSJDF CHANGE TO AUDIO MANAGER LATER
+       // ######################################################
+        FindFirstObjectByType<PlatformSpawner>().StartSpawning();
+        // should reset audience support
+        // reset player position, etc.
     }
 
     public void SetGameState(GameState newState)
