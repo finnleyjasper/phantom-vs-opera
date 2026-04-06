@@ -4,7 +4,7 @@ public class DebugMenu : MonoBehaviour
 {
     // Add/remove rows in DrawWindow() to match DebugOptions.* you want exposed.
     [Header("Toggle")]
-    [SerializeField] private KeyCode _menuKey = KeyCode.F1;
+    [SerializeField] private KeyCode _menuKey = KeyCode.F3;
     [SerializeField] private bool _startOpen;
 
     [Header("Window")]

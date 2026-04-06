@@ -8,6 +8,9 @@ public class MusicPlatform : MonoBehaviour
     [Min(0.1f)]
     public float length = 1f;   // Duration
 
+    [HideInInspector] public int laneIndex = -1;
+    [HideInInspector] public string noteName;
+
     private void Start()
     {
         ApplyLengthScale();

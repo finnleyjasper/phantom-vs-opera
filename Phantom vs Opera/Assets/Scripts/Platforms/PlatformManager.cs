@@ -5,6 +5,9 @@ public class PlatformManager : MonoBehaviour
 {
     public static PlatformManager Instance;
 
+    /// <summary>Fired once per platform right before it is destroyed at the despawn line (still valid).</summary>
+    public static event System.Action<MusicPlatform> OnPlatformDespawning;
+
     [Header("Settings")]
     public float platformSpeed = 5f;
     public float platformLengthMultiplier = 2f; // makes length of platforms bigger - base from MIDI is a bit short
@@ -52,6 +55,7 @@ public class PlatformManager : MonoBehaviour
             MusicPlatform platform = activePlatforms[i];
             if (platform.transform.position.x <= despawnPoint.position.x)
             {
+                OnPlatformDespawning?.Invoke(platform);
                 Destroy(platform.gameObject);
                 activePlatforms.RemoveAt(i);
             }
