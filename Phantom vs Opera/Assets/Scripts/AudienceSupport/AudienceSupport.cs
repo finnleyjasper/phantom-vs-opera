@@ -5,7 +5,7 @@ public class AudienceSupport : MonoBehaviour
     // Private Variables 
         [Header("Audience Support Max)")]
         [SerializeField] private float _audienceSupportMax = 10; // this and audience suppor value are the same - dk if i can make this more efficient - Delete 
-        private float _audienceSupportValue = 10; //don't know if this should be the value - Delete
+        private float _audienceSupportValue; //don't know if this should be the value - Delete
 
         [Header("Rate Audience Support Decreases (seconds)")]
         [SerializeField] private float _rateBySecond = 1.0f;
@@ -19,14 +19,14 @@ public class AudienceSupport : MonoBehaviour
         if (player.IsOnPlatform == true)
         {
             _audienceSupportValue++;
-            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
+            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
             Debug.Log("Audience support (+) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
         }
 
         else if (player.IsOnPlatform == false) // is this right ?
         {
             _audienceSupportValue -= Time.deltaTime * _rateBySecond;
-            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
+            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
             Debug.Log("Audience support (-) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
         }
     }
@@ -53,7 +53,7 @@ public class AudienceSupport : MonoBehaviour
 
     void Start() //Idk if i need this - Delete
     {
-        
+        _audienceSupportValue = _audienceSupportMax;
     }
 
     void Update() //Idk if i need this - Delete
