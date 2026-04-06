@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class MIDIParser : MonoBehaviour
 {
-    public List<NoteData> ConvertToNoteData(MidiFile midiFile, float delay) // converts MIDI Notes to our NoteData
+    public List<NoteData> ConvertToNoteData(MidiFile midiFile, float lead) // converts MIDI Notes to our NoteData
     {
         var notes = midiFile.GetNotes();
         var tempoMap = midiFile.GetTempoMap(); // converts MIDI ticks to seconds, taking into account tempo changes etc.
@@ -21,7 +21,7 @@ public class MIDIParser : MonoBehaviour
                 noteOff: (float)note.EndTimeAs<MetricTimeSpan>(tempoMap).TotalSeconds,
                 strength: note.Velocity,
                 noteName: note.NoteName.ToString(),
-                spawnDelay: delay
+                spawnLead: lead
             );
 
             noteDataList.Add(data);

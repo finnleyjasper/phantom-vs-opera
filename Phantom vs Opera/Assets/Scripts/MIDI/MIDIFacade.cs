@@ -25,7 +25,7 @@ public class MIDIFacade : MonoBehaviour
     [Header("Settings")]
     [Tooltip("Name of the file within StreamingAssets")]public string fileName; // MidiFile.Read() requires a path (string), so we need the filename
     [SerializeField] private AudioClip _audioFile; // unity can't play MIDI, so we need a .wav/ .mp3 file to play
-    public AudioSource audioSource;
+    private AudioSource audioSource;
      private void Awake()
     {
         // enforce singleton

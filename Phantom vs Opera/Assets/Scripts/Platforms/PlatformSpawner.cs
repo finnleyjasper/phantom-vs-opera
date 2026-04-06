@@ -11,7 +11,7 @@ public class PlatformSpawner : MonoBehaviour
     public Transform spawnPoint;
 
     [Header("Lane Management")]
-    [Tooltip("Number of MIDI pitches at the low and high ends that will be clamped to the first and last lanes")] public int deadzone = 30;
+    [Tooltip("Number of MIDI pitches at the low and high ends that will be clamped to the first and last lanes")] public int deadZone = 30;
     public List<Transform> laneTransforms = new List<Transform>();
 
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
@@ -19,7 +19,7 @@ public class PlatformSpawner : MonoBehaviour
 
     public void StartSpawning()
     {
-        notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.spawnDelay);
+        notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.spawnLead);
         StartCoroutine(SpawnRoutine());
     }
 
@@ -82,8 +82,8 @@ public class PlatformSpawner : MonoBehaviour
 
     private float GetLaneIndex(int pitch)
     {
-        int effectiveMin = MIDIFacade.Instance.MinPitch + deadzone;
-        int effectiveMax = MIDIFacade.Instance.MaxPitch - deadzone;
+        int effectiveMin = MIDIFacade.Instance.MinPitch + deadZone;
+        int effectiveMax = MIDIFacade.Instance.MaxPitch - deadZone;
 
         // clamp pitch to effective range
         int clampedPitch = Mathf.Clamp(pitch, effectiveMin, effectiveMax);

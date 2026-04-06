@@ -8,7 +8,7 @@ public class PlatformManager : MonoBehaviour
     [Header("Settings")]
     public float platformSpeed = 5f;
     public float platformLengthMultiplier = 2f; // makes length of platforms bigger - base from MIDI is a bit short
-    [Tooltip("Time between when the platform is spawned and when its note is heard in the music")] public float spawnDelay;
+    [Tooltip("Time in seconds between when the platform is spawned and when its note is heard in the music")] public float spawnLead;
     // this allows us to spawn the platform off-screen and have it reach the FOV in time with the music
     public bool isPaused = false;
 
@@ -20,6 +20,14 @@ public class PlatformManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    void Start()
+    {
+        if (despawnPoint == null ) // if you forget to assign despawn point, find one (hopfully)
+        {
+            despawnPoint = GameObject.Find("PlatformDespawnPoint").transform;
+        }
     }
 
     private void Update()

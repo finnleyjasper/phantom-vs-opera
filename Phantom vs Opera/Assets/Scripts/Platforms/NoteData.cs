@@ -10,9 +10,9 @@ public class NoteData
     public int strength; // how hard the note is played
     public string noteName; // ie. C# etc.
 
-    public float spawnTime; // when the platform should spawn, calculated from noteOn and delay from PlatformSpawner
+    public float spawnTime; // when the platform should spawn, calculated from noteOn and lead from PlatformSpawner
 
-    public NoteData(int pitch, float noteOn, float duration, float noteOff, int strength, string noteName, float spawnDelay)
+    public NoteData(int pitch, float noteOn, float duration, float noteOff, int strength, string noteName, float spawnLead)
     {
         this.pitch = pitch;
         this.noteOn = noteOn;
@@ -20,7 +20,10 @@ public class NoteData
         this.noteOff = noteOff;
         this.strength = strength;
         this.noteName = noteName;
-        this.spawnTime = this.noteOn + spawnDelay;
+        if (this.noteOn - spawnLead > 0)
+            this.spawnTime = this.noteOn - spawnLead;
+        else
+            this.spawnTime = 0;
     }
 }
 
