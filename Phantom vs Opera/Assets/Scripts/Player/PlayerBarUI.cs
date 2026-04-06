@@ -6,7 +6,7 @@ public class PlayerBarUI : MonoBehaviour
 {
     // Private Variables 
         private int _maxHealth = 10;
-        private int _maxSuccess = 10; 
+        private int _maxSuccess = 10;
 
         [Header("Health Bar Filling")]
         [SerializeField] private Image _healthBarFilling;

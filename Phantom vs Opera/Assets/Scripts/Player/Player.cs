@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -9,8 +10,8 @@ public class Player : MonoBehaviour
         private bool _hasWon;
         private int _healthBar;
         private float _successBar;
-        private bool _isOnPlatform = false;
-        private bool _fellOnFloor = false; // dont know if we need this ? Or if I should make this a property ? - Delete
+        private bool _isOnPlatform;
+        private bool _fellOnFloor; // dont know if we need this ? Or if I should make this a property ? - Delete
 
     // Reference to PlayerBarUI Script
     [Header("Player Health Bar UI")]
@@ -19,6 +20,15 @@ public class Player : MonoBehaviour
     [Header("Player Success Bar UI")]
     [SerializeField] private PlayerBarUI playerSuccessBarUI;
 
+    // References to Player Ground 
+    [Header("Player Ground")]
+    [SerializeField] private Transform _playerGround; // Should this be Transform type ? - Delete
+    [SerializeField] private float _playerGroundRadius = 0.1f;
+
+    //Reference to Platform 
+    [Header("Platform")]
+    [SerializeField] private Transform _playerPlatform; // Delete if not using the platform collision parent logic 
+
     // Set up Initial health/success levels in Start
     void Start()
     {
@@ -26,6 +36,8 @@ public class Player : MonoBehaviour
         _successBar = 0;
         _isAlive = true;
         _hasWon = false;
+        _isOnPlatform = false;
+        _fellOnFloor = false;
 
         if (debugMode)
         {
@@ -140,31 +152,56 @@ public class Player : MonoBehaviour
     void Update()
     {
         PlayerSuccessTimer();
+        PlatformCollision(); // Does this go here ?
     }
 
-    void OnCollisionEnter(Collision platformCollision)
+    // Method for detecting if Player is on a platform
+    // Creates sphere below Player and detects for Platform tag
+    void PlatformCollision()
     {
-        if (platformCollision.gameObject.tag == "Platform") // Change so it's just on top, just touching sides - Delete
-        {
-            Debug.Log("Collision!"); // Change this - Delete
-            _isOnPlatform = true;
-        }
-        
-        // Player collision detection for floor 
-        else if (platformCollision.gameObject.tag == "Floor") // Dont know if 'else if' works here? - Delete
-        {
-            Debug.Log("Collision!"); // Change this - Delete
-            _fellOnFloor = true;
-            
-        }
+        _isOnPlatform = false;
 
+        Collider[] platformColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);  // Do I need to delete this ... ? or alter ? to ray cast ?
 
+        foreach (var platformCollider in platformColliders) // Not sure what else to call this besides 'platformCollider' - cause they're technically not P.Colliders ? - Delete
+        {
+            if (platformCollider.gameObject.tag == "Platform") // Is this too Nested ?? - Delete
+            {
+                _isOnPlatform = true;
+                Debug.Log("Collision! " + _isOnPlatform); // Change this after - Delete
+                break; // Dont know if i need this or why - Delete
+            }
+        }
     }
+
+    // Method for detecting when Player falls on floor 
+    void OnCollisionEnter(Collision collision) // Fix so that when game first plays, player doesnt trigger "fell"  
+    {   
+        // Player collision detection for floor 
+        if (collision.gameObject.tag == "Floor") // Dont know if 'else if' works here? - Delete
+        {
+            _fellOnFloor = true;
+            Debug.Log("Player fell! " + _fellOnFloor); // Change this - Delete
+        }
+
+        // Do we still want this to make player stay?  
+        /***
+        // Moves Player while platform is moving  
+        else if (collision.gameObject.tag == "Platform") // Dont know if 'else if' should be uesd, or else
+        {
+            Debug.Log("Player is moving w/ Platform !"); // Change this - Delete
+            collision.gameObject.transform.parent = _playerPlatform;
+        }
+        ***/
+    }
+
+
     // LOOK THRU CODE AND DELETE ANYTHING UNECESSARY EHRE - Delete 
     // Also maybe not put things in 'start' for no reason idk?? SHould i have put them there? Also anythig unecessary in update ? - Delete
 }
 
 /***
+ Delete
 Audience Support Plan : 
 
 - See Research Current - 15 mins
