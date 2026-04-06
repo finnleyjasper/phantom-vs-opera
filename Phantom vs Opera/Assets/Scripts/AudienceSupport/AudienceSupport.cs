@@ -14,25 +14,23 @@ public class AudienceSupport : MonoBehaviour
         [SerializeField] private Player player; // or should this be connect thru GameObserver ? - Delete
         [SerializeField] private PlayerBarUI playerBarUI; 
 
-    public void PlayerOnPlatform() // Does it need to be void? Delete
+    public void ManageAudienceSupport() // Does it need to be void? Delete
     {
         if (player.IsOnPlatform == true)
         {
             _audienceSupportValue++;
             _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
-            Debug.Log("Audience support (+) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
+            playerBarUI.UpdateAudienceSupportUI();
+            Debug.Log("Audience support (+) : " + _audienceSupportValue + player.IsOnPlatform + player.FellOnFloor); // Added debug - delete later ? - Delete
         }
 
-        else if (player.IsOnPlatform == false) // is this right ?
+        else
         {
-            _audienceSupportValue -= Time.deltaTime * _rateBySecond;
+            _audienceSupportValue -= Time.fixedDeltaTime * _rateBySecond;
             _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
-            Debug.Log("Audience support (-) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
+            Debug.Log("Audience support (-) : " + _audienceSupportValue + player.IsOnPlatform + player.FellOnFloor); // Added debug - delete later ? - Delete
         }
-    }
 
-    public void PlayerFall()  // Does it need to be void? Delete
-    {
         if (player.FellOnFloor == true)
         {
             _audienceSupportValue = 0;
@@ -58,8 +56,14 @@ public class AudienceSupport : MonoBehaviour
 
     void Update() //Idk if i need this - Delete
     {
-        PlayerOnPlatform(); // idk if should keep this here ... ? Delete
-        PlayerFall();
+        ManageAudienceSupport();
         playerBarUI.UpdateAudienceSupportUI();
+    }
+
+    private void FixedUpdate()
+    {
+      //  ManageAudienceSupport(); // idk if should keep this here ... ? Delete
+       // playerBarUI.UpdateAudienceSupportUI();
+
     }
 }
