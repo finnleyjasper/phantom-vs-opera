@@ -3,14 +3,14 @@ using UnityEngine;
 public class MusicPlatform : MonoBehaviour
 {
     [Header("Music Properties")]
-    [Range(1, 10)]
-    public int tone = 1;          // Pitch
+    [Range(0, 127)]
+    public int pitch = 1;          // Pitch
     [Min(0.1f)]
-    public float strength = 1f;   // Duration
+    public float length = 1f;   // Duration
 
     private void Start()
     {
-        ApplyStrengthScale();
+        ApplyLengthScale();
     }
 
     void Update()
@@ -20,10 +20,10 @@ public class MusicPlatform : MonoBehaviour
         transform.Translate(Vector3.left * speed * Time.deltaTime);
     }
 
-    void ApplyStrengthScale()
+    void ApplyLengthScale()
     {
         Vector3 scale = transform.localScale;
-        scale.x = strength;
+        scale.x = length * PlatformManager.Instance.platformLengthMultiplier; // base length from MIDI is a bit short, so multiply it
         transform.localScale = scale;
     }
 
