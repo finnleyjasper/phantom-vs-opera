@@ -4,37 +4,46 @@ public class AudienceSupport : MonoBehaviour
 {
     // Private Variables 
         [Header("Audience Support Max)")]
-        [SerializeField] private float _audienceSupportMax = 10; // this and audience suppor value are the same - dk if i can make this more efficient - Delete 
-        private float _audienceSupportValue; //don't know if this should be the value - Delete
+        [SerializeField] private float _audienceSupportMax = 10; // Stores Maximum Audience Support Value 
+        private float _audienceSupportValue; // Stores Audience Support value 
 
         [Header("Rate Audience Support Decreases (seconds)")]
         [SerializeField] private float _rateBySecond = 1.0f;
 
     // Reference to Objects 
-        [SerializeField] private Player player; // or should this be connect thru GameObserver ? - Delete
-        [SerializeField] private PlayerBarUI playerBarUI; 
+        [SerializeField] private Player player; 
+        [SerializeField] private PlayerBarUI playerBarUI;
 
-    public void ManageAudienceSupport() // Does it need to be void? Delete
+    // Initialize audience support value with max audience support value
+    void Start()
+    {
+        _audienceSupportValue = _audienceSupportMax;
+    }
+
+    void Update()
+    {
+        ManageAudienceSupport();
+        playerBarUI.UpdateAudienceSupportUI();
+    }
+
+    public void ManageAudienceSupport() 
     {
         if (player.IsOnPlatform == true)
         {
             _audienceSupportValue++;
             _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
             playerBarUI.UpdateAudienceSupportUI();
-            Debug.Log("Audience support (+) : " + _audienceSupportValue + player.IsOnPlatform + player.FellOnFloor); // Added debug - delete later ? - Delete
         }
 
         else
         {
             _audienceSupportValue -= Time.fixedDeltaTime * _rateBySecond;
             _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, _audienceSupportMax); // Clamp - audienceSupport bar cannot go below 0 or above 10
-            Debug.Log("Audience support (-) : " + _audienceSupportValue + player.IsOnPlatform + player.FellOnFloor); // Added debug - delete later ? - Delete
         }
 
         if (player.FellOnFloor == true)
         {
             _audienceSupportValue = 0;
-            Debug.Log("PlayerFall() active"); // Delete Debug log 
         }
     }
 
@@ -47,23 +56,5 @@ public class AudienceSupport : MonoBehaviour
     public float AudienceSupportMax
     {
         get { return _audienceSupportMax; }
-    }
-
-    void Start() //Idk if i need this - Delete
-    {
-        _audienceSupportValue = _audienceSupportMax;
-    }
-
-    void Update() //Idk if i need this - Delete
-    {
-        ManageAudienceSupport();
-        playerBarUI.UpdateAudienceSupportUI();
-    }
-
-    private void FixedUpdate()
-    {
-      //  ManageAudienceSupport(); // idk if should keep this here ... ? Delete
-       // playerBarUI.UpdateAudienceSupportUI();
-
     }
 }

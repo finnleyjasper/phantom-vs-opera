@@ -13,23 +13,23 @@ public class PlayerBarUI : MonoBehaviour
 
         [SerializeField] private AudienceSupport audiencesupport;
 
-    // Audience Bar Text
+    // Initialize Audience Bar Text
     private void Start()
     {
         UpdatePlayerBarText();
     }
 
-    // Method to Update Health/Success Text
+    // Method to Update Audience Bar Text
     private void UpdatePlayerBarText()
     {
         _audienceSupportBarText.text = "Audience Support: " + audiencesupport.AudienceSupportValue;
     }
 
-    // Method for Updating Player Health Bar UI 
+    // Method for Updating Audience Bar UI 
     public void UpdateAudienceSupportUI()
     {
         float audienceSupportFillingAmount = (float)audiencesupport.AudienceSupportValue / audiencesupport.AudienceSupportMax;
-        _audienceSupportFilling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current health 
+        _audienceSupportFilling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current audience support value 
         UpdatePlayerBarText();
     }
 }
