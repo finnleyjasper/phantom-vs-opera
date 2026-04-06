@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+        public bool debugMode = false; // show logs
+
     // Private Variables
         private bool _isAlive;
         private bool _hasWon;
         private int _healthBar;
         private float _successBar;
 
-    // Reference to PlayerBarUI Script 
+    // Reference to PlayerBarUI Script
     [Header("Player Health Bar UI")]
     [SerializeField] private PlayerBarUI playerHealthBarUI;
 
@@ -23,8 +25,11 @@ public class Player : MonoBehaviour
         _isAlive = true;
         _hasWon = false;
 
-        Debug.Log("Initial health: " + _healthBar);
-        Debug.Log("Initial success: " + _successBar);
+        if (debugMode)
+        {
+            Debug.Log("Initial health: " + _healthBar);
+            Debug.Log("Initial success: " + _successBar);
+        }
 
         playerHealthBarUI.UpdatePlayerHealthUI();
         playerSuccessBarUI.UpdatePlayerSuccessUI();
@@ -58,8 +63,13 @@ public class Player : MonoBehaviour
         if (_healthBar <= 0)
         {
             _isAlive = false;
-            Debug.Log("isAlive status: " + _isAlive);
-            Debug.Log("health bar: " + _healthBar + " Game over !");
+
+            if (debugMode)
+            {
+                Debug.Log("isAlive status: " + _isAlive);
+                Debug.Log("health bar: " + _healthBar + " Game over !");
+            }
+
             GameManager.Instance.GameOver(GameManager.GameState.Lose);
         }
     }
@@ -70,8 +80,13 @@ public class Player : MonoBehaviour
         if (_successBar >= 10)
         {
             _hasWon = true;
-            Debug.Log("hasWon status: " + _hasWon + " You won !");
-            Debug.Log("success bar: " + _successBar);
+
+            if (debugMode)
+            {
+                Debug.Log("hasWon status: " + _hasWon + " You won !");
+                Debug.Log("success bar: " + _successBar);
+            }
+
             GameManager.Instance.GameOver(GameManager.GameState.Win);
         }
     }
@@ -80,26 +95,30 @@ public class Player : MonoBehaviour
 
     public void IsHit(int damage)
     {
-        _healthBar -= damage; 
+        _healthBar -= damage;
         _healthBar = Mathf.Clamp(_healthBar, 0, 10); // Clamp - health bars cannot go below 0 or above 10
-        Debug.Log("health bar: " + _healthBar);
-     
-        if (_healthBar <= 0)
+
+        if (debugMode)
         {
-            ManagePlayerLose(); 
+            Debug.Log("health bar: " + _healthBar);
         }
 
-        playerHealthBarUI.UpdatePlayerHealthUI(); 
+        if (_healthBar <= 0)
+        {
+            ManagePlayerLose();
+        }
+
+        playerHealthBarUI.UpdatePlayerHealthUI();
     }
 
-    // Method for when Player wins if game time ends 
+    // Method for when Player wins if game time ends
     public void PlayerSuccessTimer()
     {
         _successBar = GameManager.Instance.GameTimer;
         _successBar = Mathf.Clamp(_successBar, 0, 10); // Clamps - succes + health bars cannot go below 0
         playerSuccessBarUI.UpdatePlayerSuccessUI();
 
-        // Calls win condition if game length is reached 
+        // Calls win condition if game length is reached
         if (_successBar >= GameManager.Instance.GameLength)
         {
             ManagePlayerWin();
