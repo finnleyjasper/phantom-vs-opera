@@ -127,3 +127,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicPlatform
   pitch: 1
   length: 1
+  laneIndex: -1
+  noteName: 
