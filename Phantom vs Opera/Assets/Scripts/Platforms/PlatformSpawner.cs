@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class PlatformSpawner : MonoBehaviour
 {
+    /// <summary>Fired after each music platform is instantiated and configured (lane, pitch, etc.).</summary>
+    public static event System.Action<MusicPlatform> OnPlatformSpawned;
+
     [Header("References")]
     public GameObject platformPrefab;
 
@@ -72,10 +75,15 @@ public class PlatformSpawner : MonoBehaviour
         {
             mp.pitch = note.pitch;
             mp.length = note.duration;
+            mp.laneIndex = laneIndex;
+            mp.noteName = note.noteName;
         }
 
         // Track active platform for despawning
         activePlatforms.Add(mp);
+
+        if (mp != null)
+            OnPlatformSpawned?.Invoke(mp);
 
         Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {laneIndex+1}");
     }
