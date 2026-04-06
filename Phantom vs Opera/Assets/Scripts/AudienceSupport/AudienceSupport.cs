@@ -3,43 +3,52 @@ using UnityEngine;
 public class AudienceSupport : MonoBehaviour
 {
     // Private Variables 
-        private float _audienceSupport = 10; //don't know if this should be the value - Delete
-        
-        [Header("Rate Audience Support Decreases (seconds)")]
-        [SerializeField] private float _rateBySecond = 1f;
+        [Header("Audience Support Max)")]
+        [SerializeField] private float _audienceSupportMax = 10; // this and audience suppor value are the same - dk if i can make this more efficient - Delete 
+        private float _audienceSupportValue = 10; //don't know if this should be the value - Delete
 
-    // Player Object 
-    public Player player; // or should this be connect thru GameObserver ? - Delete
+        [Header("Rate Audience Support Decreases (seconds)")]
+        [SerializeField] private float _rateBySecond = 1.0f;
+
+    // Reference to Objects 
+        [SerializeField] private Player player; // or should this be connect thru GameObserver ? - Delete
+        [SerializeField] private PlayerBarUI playerBarUI; 
 
     public void PlayerOnPlatform() // Does it need to be void? Delete
     {
         if (player.IsOnPlatform == true)
         {
-            _audienceSupport++;
-            _audienceSupport = Mathf.Clamp(_audienceSupport, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
-            Debug.Log("Audience support (+) : " + _audienceSupport); // Added debug - delete later ? - Delete
+            _audienceSupportValue++;
+            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
+            Debug.Log("Audience support (+) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
         }
 
         else if (player.IsOnPlatform == false) // is this right ?
         {
-            _audienceSupport -= Time.deltaTime * _rateBySecond;
-            _audienceSupport = Mathf.Clamp(_audienceSupport, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
-            Debug.Log("Audience support (-) : " + _audienceSupport); // Added debug - delete later ? - Delete
+            _audienceSupportValue -= Time.deltaTime * _rateBySecond;
+            _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, 10); // Clamp - audienceSupport bar cannot go below 0 or above 10
+            Debug.Log("Audience support (-) : " + _audienceSupportValue); // Added debug - delete later ? - Delete
         }
-
-        // Need to decrease audience support overtime, when player is not on a platform :
-        // - if IsOnPlatform = false
-        // - Audience support-- over time
-
     }
 
     public void PlayerFall()  // Does it need to be void? Delete
     {
         if (player.FellOnFloor == true)
         {
-            _audienceSupport = 0;
+            _audienceSupportValue = 0;
             Debug.Log("PlayerFall() active"); // Delete Debug log 
         }
+    }
+
+    // Properties 
+    public float AudienceSupportValue
+    {
+        get { return _audienceSupportValue; }
+    }
+
+    public float AudienceSupportMax
+    {
+        get { return _audienceSupportMax; }
     }
 
     void Start() //Idk if i need this - Delete
@@ -49,7 +58,8 @@ public class AudienceSupport : MonoBehaviour
 
     void Update() //Idk if i need this - Delete
     {
-        PlayerOnPlatform(); // idk if should keep this here ... ?
+        PlayerOnPlatform(); // idk if should keep this here ... ? Delete
         PlayerFall();
+        playerBarUI.UpdateAudienceSupportUI();
     }
 }
