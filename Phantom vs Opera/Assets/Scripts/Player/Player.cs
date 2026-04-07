@@ -1,52 +1,76 @@
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-        public bool debugMode = false; // show logs
-
     // Private Variables
         private bool _isAlive;
         private bool _hasWon;
-        private int _healthBar;
-        private float _successBar;
+        private bool _isOnPlatform; // Bool variable for if Player touches platform
+        private bool _fellOnFloor; // Bool variable for if Player touches ground
 
-    // Reference to PlayerBarUI Script
-    [Header("Player Health Bar UI")]
-    [SerializeField] private PlayerBarUI playerHealthBarUI;
+    // Reference to PlayerBarUI Script 
+        private PlayerBarUI playerBarUI;
 
-    [Header("Player Success Bar UI")]
-    [SerializeField] private PlayerBarUI playerSuccessBarUI;
+    // References to Player Ground 
+        [Header("Player Ground")]
+        [SerializeField] private Transform _playerGround; 
+        [SerializeField] private float _playerGroundRadius = 0.1f;
 
-    // Set up Initial health/success levels in Start
+    // Initialize values
     void Start()
     {
-        _healthBar = 10;
-        _successBar = 0;
         _isAlive = true;
         _hasWon = false;
+        _isOnPlatform = false;
+        _fellOnFloor = false;
 
-        if (debugMode)
+        playerBarUI.UpdateAudienceSupportUI();
+    }
+
+    private void FixedUpdate()
+    {
+        PlatformCollision();
+    }
+
+    // Method for detecting if Player is on a platform
+    // Creates sphere below Player and detects for Platform tag
+    void PlatformCollision()
+    {
+        _isOnPlatform = false;
+
+        Collider[] gameColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);  
+
+        foreach (var gameCollider in gameColliders) 
         {
-            Debug.Log("Initial health: " + _healthBar);
-            Debug.Log("Initial success: " + _successBar);
+            if (gameCollider.gameObject.tag == "Platform") 
+            {
+                _isOnPlatform = true;
+                Debug.Log("Collision! " + _isOnPlatform); 
+                break; 
+            }
         }
+    }
 
-        playerHealthBarUI.UpdatePlayerHealthUI();
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
+    // Method for detecting when Player falls on floor 
+    void OnCollisionEnter(Collision collision) 
+    {
+        if (collision.gameObject.tag == "Floor") 
+        {
+            _fellOnFloor = true;
+        }
+    }
+
+    // Method to detect if the Player is no longer on the floor 
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Floor")
+        {
+            _fellOnFloor = false;
+        }
     }
 
     // Properties
-
-    public int HealthBar
-    {
-        get { return _healthBar; }
-    }
-
-    public float SuccessBar
-    {
-        get { return _successBar; }
-    }
-
     public bool IsAlive
     {
         get { return _isAlive; }
@@ -57,77 +81,13 @@ public class Player : MonoBehaviour
         get { return _hasWon; }
     }
 
-    // Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
-    public void ManagePlayerLose()
+    public bool IsOnPlatform
     {
-        if (_healthBar <= 0)
-        {
-            _isAlive = false;
-
-            if (debugMode)
-            {
-                Debug.Log("isAlive status: " + _isAlive);
-                Debug.Log("health bar: " + _healthBar + " Game over !");
-            }
-
-            GameManager.Instance.GameOver(GameManager.GameState.Lose);
-        }
+        get { return _isOnPlatform; }
     }
 
-    // Method to Manage Success Bar - sets initial success bar level, sets results for reaching certain success level (i.e. winning game)
-    public void ManagePlayerWin()
+    public bool FellOnFloor
     {
-        if (_successBar >= 10)
-        {
-            _hasWon = true;
-
-            if (debugMode)
-            {
-                Debug.Log("hasWon status: " + _hasWon + " You won !");
-                Debug.Log("success bar: " + _successBar);
-            }
-
-            GameManager.Instance.GameOver(GameManager.GameState.Win);
-        }
-    }
-
-    // Method for when Falling Object hits Player = health decreases - method is called by falling objects
-
-    public void IsHit(int damage)
-    {
-        _healthBar -= damage;
-        _healthBar = Mathf.Clamp(_healthBar, 0, 10); // Clamp - health bars cannot go below 0 or above 10
-
-        if (debugMode)
-        {
-            Debug.Log("health bar: " + _healthBar);
-        }
-
-        if (_healthBar <= 0)
-        {
-            ManagePlayerLose();
-        }
-
-        playerHealthBarUI.UpdatePlayerHealthUI();
-    }
-
-    // Method for when Player wins if game time ends
-    public void PlayerSuccessTimer()
-    {
-        _successBar = GameManager.Instance.GameTimer;
-        _successBar = Mathf.Clamp(_successBar, 0, 10); // Clamps - succes + health bars cannot go below 0
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
-
-        // Calls win condition if game length is reached
-        if (_successBar >= GameManager.Instance.GameLength)
-        {
-            ManagePlayerWin();
-        }
-    }
-
-    void Update()
-    {
-        PlayerSuccessTimer();
+        get { return _fellOnFloor; }
     }
 }
-

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5491584150896548707}
   m_Layer: 0
   m_Name: platformPrefab
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -68,7 +68,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4c6aa9dfd065f44a796eb4464e683ac2, type: 2}
+  - {fileID: 2100000, guid: 06e17ab101ce87f4494c247c100d4e6f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -127,3 +127,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MusicPlatform
   pitch: 1
   length: 1
+  laneIndex: -1
+  noteName: 

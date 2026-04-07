@@ -6,6 +6,8 @@ TagManager:
   tags:
   - FallingAttack
   - DespawnZone
+  - Platform
+  - Floor
   layers:
   - Default
   - TransparentFX

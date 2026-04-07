@@ -5,49 +5,31 @@ using UnityEngine.UI;
 public class PlayerBarUI : MonoBehaviour
 {
     // Private Variables 
-        private int _maxHealth = 10;
-        private int _maxSuccess = 10; 
-
-        [Header("Health Bar Filling")]
-        [SerializeField] private Image _healthBarFilling;
-
-        [Header("Success Bar Filling")]
-        [SerializeField] private Image _successBarFilling;
+        [Header("Audience Support Bar Filling")]
+        [SerializeField] private Image _audienceSupportFilling;
         
-        [Header("Health Bar Text")]
-        [SerializeField] private TextMeshProUGUI _healthBarText;
+        [Header("Audience Support Text")]
+        [SerializeField] private TextMeshProUGUI _audienceSupportBarText;
 
-        [Header("Success Bar Text")]
-        [SerializeField] private TextMeshProUGUI _successBarText;
+        [SerializeField] private AudienceSupport audiencesupport;
 
-    public Player player;
-
-    // Initializing Health/Success Text 
-    void Start() 
+    // Initialize Audience Bar Text
+    private void Start()
     {
         UpdatePlayerBarText();
     }
 
-    // Method to Update Health/Success Text
+    // Method to Update Audience Bar Text
     private void UpdatePlayerBarText()
     {
-        _healthBarText.text = "Health: " + player.HealthBar;
-        _successBarText.text = "Success: " + player.SuccessBar;
+        _audienceSupportBarText.text = "Audience Support: " + audiencesupport.AudienceSupportValue;
     }
 
-    // Method for Updating Player Health Bar UI 
-    public void UpdatePlayerHealthUI()
+    // Method for Updating Audience Bar UI 
+    public void UpdateAudienceSupportUI()
     {
-        float healthFillingAmount = (float)player.HealthBar / _maxHealth;
-        _healthBarFilling.fillAmount = healthFillingAmount; // Setting fill amount value to current health 
-        UpdatePlayerBarText();
-    }
-
-    // Method for Updating Player Success Bar UI 
-    public void UpdatePlayerSuccessUI()
-    {
-        float successFillingAmount = (float)player.SuccessBar / _maxSuccess; 
-        _successBarFilling.fillAmount = successFillingAmount; // Setting fill amount value to current success 
+        float audienceSupportFillingAmount = (float)audiencesupport.AudienceSupportValue / audiencesupport.AudienceSupportMax;
+        _audienceSupportFilling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current audience support value 
         UpdatePlayerBarText();
     }
 }
