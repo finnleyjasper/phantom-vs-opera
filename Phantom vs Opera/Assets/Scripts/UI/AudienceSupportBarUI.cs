@@ -9,6 +9,8 @@ public class AudienceSupportBarUI : MonoBehaviour
 
         [SerializeField] private TextMeshProUGUI _text;
 
+        private AudienceSupport _audienceSupport;
+
 
     void Awake()
     {
@@ -28,6 +30,7 @@ public class AudienceSupportBarUI : MonoBehaviour
         }
 
         _text = GetComponentInChildren<TextMeshProUGUI>(true);
+        _audienceSupport = FindFirstObjectByType<AudienceSupport>();
     }
 
     private void Start()
@@ -37,7 +40,7 @@ public class AudienceSupportBarUI : MonoBehaviour
 
     void Update()
     {
-        float audienceSupportFillingAmount = (float)AudienceSupport.Instance.AudienceSupportValue / GameManager.Instance.MaxAudienceSupport;
+        float audienceSupportFillingAmount = (float)_audienceSupport.AudienceSupportValue / GameManager.Instance.MaxAudienceSupport;
         _filling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current audience support value
         UpdateText();
     }
@@ -45,7 +48,7 @@ public class AudienceSupportBarUI : MonoBehaviour
     // Method to Update Audience Bar Text
     private void UpdateText()
     {
-        _text.text = "Audience Support: " + AudienceSupport.Instance.AudienceSupportValue;
+        _text.text = "Audience Support: " + _audienceSupport.AudienceSupportValue;
     }
 
 }

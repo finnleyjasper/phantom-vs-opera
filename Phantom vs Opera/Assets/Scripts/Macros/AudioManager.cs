@@ -31,11 +31,12 @@ public class AudioManager : MonoBehaviour
             }
         }
 
+         _audioSource.clip = _song;
+
     }
 
     public void StartSong()
     {
-        _audioSource.clip = _song;
         _audioSource.Play();
     }
 

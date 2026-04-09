@@ -1,27 +1,29 @@
-using TMPro;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : PausableObject
 {
     // Private Variables
-        private bool _isAlive;
-        private bool _hasWon;
-        private bool _isOnPlatform; // Bool variable for if Player touches platform
-        private bool _fellOnFloor; // Bool variable for if Player touches ground
+        private bool _isOnPlatform;
+        private bool _fellOnFloor;
+        private Vector3 _startPosition;
+
+        private PlayerController _playerController;
 
     // References to Player Ground
         [Header("Player Ground")]
         [SerializeField] private Transform _playerGround;
         [SerializeField] private float _playerGroundRadius = 0.1f;
 
-    // Initialize values
+    protected override void Awake()
+    {
+        base.Awake();
+        _playerController = GetComponent<PlayerController>();
+    }
+
     void Start()
     {
-        _isAlive = true;
-        _hasWon = false;
-        _isOnPlatform = false;
-        _fellOnFloor = false;
-
+        _startPosition = transform.position;
+        Reset();
     }
 
     private void FixedUpdate()
@@ -29,7 +31,6 @@ public class Player : MonoBehaviour
         PlatformCollision();
     }
 
-    // Method for detecting if Player is on a platform
     // Creates sphere below Player and detects for Platform tag
     void PlatformCollision()
     {
@@ -48,7 +49,32 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Method for detecting when Player falls on floor
+    public void Reset()
+    {
+        _isOnPlatform = false;
+        _fellOnFloor = false;
+        Pause(false);
+
+        if (this.Rigidbody != null)
+        {
+            this.Rigidbody.linearVelocity = Vector3.zero;
+            this.Rigidbody.angularVelocity = Vector3.zero;
+        }
+
+        transform.SetPositionAndRotation(_startPosition, Quaternion.Euler(0f, 0f, 0f)); // reset player position and rotation
+    }
+
+    public override void Pause(bool shouldPause)
+    {
+        base.Pause(shouldPause);
+
+        if (_playerController != null)
+        {
+            _playerController.enabled = !shouldPause; // disable when paused, enable when unpaused
+        }
+    }
+
+    // Player falls on floor
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
@@ -57,7 +83,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Method to detect if the Player is no longer on the floor
+    // **********************
+    // Player is no longer on the floor -- This needs to be refactored me thinks
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
@@ -66,24 +93,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    // Properties
-    public bool IsAlive
-    {
-        get { return _isAlive; }
-    }
+    public bool IsOnPlatform => _isOnPlatform;
 
-    public bool HasWon
-    {
-        get { return _hasWon; }
-    }
+    public bool FellOnFloor => _fellOnFloor;
 
-    public bool IsOnPlatform
-    {
-        get { return _isOnPlatform; }
-    }
-
-    public bool FellOnFloor
-    {
-        get { return _fellOnFloor; }
-    }
 }

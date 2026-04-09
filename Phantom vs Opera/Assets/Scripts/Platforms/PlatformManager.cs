@@ -38,6 +38,14 @@ public class PlatformManager : MonoBehaviour
         HandlePlatformDespawn();
     }
 
+    public void Pause(bool shouldPause)
+    {
+        foreach (var platform in activePlatforms)
+        {
+            platform.Pause(shouldPause);
+        }
+    }
+
     public float GetSpeed()
     {
         return isPaused ? 0f : platformSpeed;
