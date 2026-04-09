@@ -40,7 +40,7 @@ public class PlatformSpawner : MonoBehaviour
         foreach (var note in notes)
         {
             // wait until the audio time reaches this note's spawn time
-            while (MIDIFacade.Instance.GetAudioSourceTime() < note.spawnTime)
+            while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime)
             {
                 yield return null;
             }

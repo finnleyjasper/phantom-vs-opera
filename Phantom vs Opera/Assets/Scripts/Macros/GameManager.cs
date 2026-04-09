@@ -16,11 +16,14 @@ public class GameManager : MonoBehaviour
     [Header("Game Settings")]
     public string EndSceneName;
     public string MainMenuSceneName;
+    [Space(10)]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
-
-    // Current state of the game - further functionality within GameManager will be based on this state
-    // Should be changed within this script via methods called by other objects
-    [SerializeField] private GameState _currentGameState = GameState.Play; // As we don't have a main menu yet, I temporarily changed starting state to Play
+    [SerializeField] private GameState _currentGameState = GameState.Play;
+    [Space(10)]
+    [Header("Audience Support Settings")]
+    public float MaxAudienceSupport = 10f; // win condition
+    public float IncreasePerSecond = 1.0f; // how much audience support increases per second when player is on platform
+    public float FallenPunishment = 5f; // how much audience support decreases when player falls on floor
 
     [HideInInspector] public static GameManager Instance;
 
@@ -48,9 +51,7 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(_levelStartDelay);
 
         SetGameState(GameState.Play);
-        // ######################################################
-        MIDIFacade.Instance.StartSong(); // AKLHFLKJHDKFJHSLDHFLKSJDFKLSJDF CHANGE TO AUDIO MANAGER LATER
-       // ######################################################
+        AudioManager.Instance.StartSong();
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
         // should reset audience support
         // reset player position, etc.
@@ -65,6 +66,7 @@ public class GameManager : MonoBehaviour
     // Switches scene based on result - called from player - CHANGE TO CALLED FROM
     public void GameOver(GameState result)
     {
+        AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
 
         if (string.IsNullOrEmpty(EndSceneName))

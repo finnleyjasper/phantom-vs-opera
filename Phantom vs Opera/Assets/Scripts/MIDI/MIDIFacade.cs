@@ -24,8 +24,7 @@ public class MIDIFacade : MonoBehaviour
 
     [Header("Settings")]
     [Tooltip("Name of the file within StreamingAssets")]public string fileName; // MidiFile.Read() requires a path (string), so we need the filename
-    [SerializeField] private AudioClip _audioFile; // unity can't play MIDI, so we need a .wav/ .mp3 file to play
-    private AudioSource audioSource;
+
      private void Awake()
     {
         // enforce singleton
@@ -47,21 +46,6 @@ public class MIDIFacade : MonoBehaviour
 
     void Start()
     {
-        // if there's no audio source assigned, try to find one in the scene
-        if (audioSource == null)
-        {
-            audioSource = FindFirstObjectByType<AudioSource>();
-            if (audioSource == null && debugMode)
-            {
-                Debug.LogError("AudioSource not assigned in MIDIFacade and none found in scene.");
-                return;
-            }
-            else
-            {
-                Debug.Log("AudioSource automatically assigned from scene.");
-            }
-        }
-
         _midiFile = _midiLoader.LoadMIDI(fileName);
         if (debugMode)
         {
@@ -101,21 +85,6 @@ public class MIDIFacade : MonoBehaviour
         return _noteDataList;
     }
 
-    public void StartSong()
-    {
-        audioSource.clip = _audioFile;
-        audioSource.Play();
-
-        if (debugMode)
-        {
-            Debug.Log("Audio source started playing: " + audioSource.clip.name);
-        }
-    }
-
-    public double GetAudioSourceTime() // get the current time of the audio source in seconds - checked against NoteData.spawnTime
-    {
-        return (double)Instance.audioSource.timeSamples / Instance.audioSource.clip.frequency;
-    }
 
     // Properties
     public int MinPitch => _minPitch;

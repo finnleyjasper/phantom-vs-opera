@@ -9,12 +9,9 @@ public class Player : MonoBehaviour
         private bool _isOnPlatform; // Bool variable for if Player touches platform
         private bool _fellOnFloor; // Bool variable for if Player touches ground
 
-    // Reference to PlayerBarUI Script 
-        private PlayerBarUI playerBarUI;
-
-    // References to Player Ground 
+    // References to Player Ground
         [Header("Player Ground")]
-        [SerializeField] private Transform _playerGround; 
+        [SerializeField] private Transform _playerGround;
         [SerializeField] private float _playerGroundRadius = 0.1f;
 
     // Initialize values
@@ -25,7 +22,6 @@ public class Player : MonoBehaviour
         _isOnPlatform = false;
         _fellOnFloor = false;
 
-        playerBarUI.UpdateAudienceSupportUI();
     }
 
     private void FixedUpdate()
@@ -39,29 +35,29 @@ public class Player : MonoBehaviour
     {
         _isOnPlatform = false;
 
-        Collider[] gameColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);  
+        Collider[] gameColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);
 
-        foreach (var gameCollider in gameColliders) 
+        foreach (var gameCollider in gameColliders)
         {
-            if (gameCollider.gameObject.tag == "Platform") 
+            if (gameCollider.gameObject.tag == "Platform")
             {
                 _isOnPlatform = true;
-                Debug.Log("Collision! " + _isOnPlatform); 
-                break; 
+                Debug.Log("Collision! " + _isOnPlatform);
+                break;
             }
         }
     }
 
-    // Method for detecting when Player falls on floor 
-    void OnCollisionEnter(Collision collision) 
+    // Method for detecting when Player falls on floor
+    void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Floor") 
+        if (collision.gameObject.tag == "Floor")
         {
             _fellOnFloor = true;
         }
     }
 
-    // Method to detect if the Player is no longer on the floor 
+    // Method to detect if the Player is no longer on the floor
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
