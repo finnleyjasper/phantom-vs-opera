@@ -44,6 +44,8 @@ public class PlatformManager : MonoBehaviour
         {
             platform.Pause(shouldPause);
         }
+
+        isPaused = shouldPause;
     }
 
     public float GetSpeed()
