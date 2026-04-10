@@ -9,22 +9,27 @@ public class GameManager : MonoBehaviour
     {
         Menu,
         Play,
+        Pause,
         Win,
         Lose
     }
 
     [Header("Game Settings")]
-    public string EndSceneName;
     public string MainMenuSceneName;
+    public string PlaySceneName;
+    public string EndSceneName;
     [Space(10)]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
-    [SerializeField] private GameState _currentGameState = GameState.Play;
+    [SerializeField] private GameState _currentGameState = GameState.Pause;
     [Space(10)]
     [Header("Audience Support Settings")]
+    public float StartingAudienceSupport = 5f; // starting value for audience support
     public float MaxAudienceSupport = 10f; // win condition
     public float IncreasePerSecond = 1.0f; // how much audience support increases per second when player is on platform
     public float FallenPunishment = 5f; // how much audience support decreases when player falls on floor
 
+    private Player _player;
+    private AudienceSupport _audienceSupport;
     [HideInInspector] public static GameManager Instance;
 
     private void Awake()
@@ -38,8 +43,8 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
-
     }
+
 
     public void StartGame() // should get called from menu buttons
     {
@@ -50,22 +55,39 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_levelStartDelay);
 
+        _player = FindFirstObjectByType<Player>();
+        _audienceSupport = FindFirstObjectByType<AudienceSupport>();
+
         SetGameState(GameState.Play);
+
+        _player.Reset();
+        _audienceSupport.ManageAudienceSupport(StartingAudienceSupport); // reset audience support value
+
         AudioManager.Instance.StartSong();
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
-        // should reset audience support
-        // reset player position, etc.
     }
 
-    public void SetGameState(GameState newState)
+    public void Pause()
     {
-        _currentGameState = newState;
-        Debug.Log("Game State changed to: " + _currentGameState);
+        SetGameState(GameState.Pause);
+        _player.Pause(true);
+        FindFirstObjectByType<PlatformManager>().Pause(true);
+        AudioManager.Instance.AudioSource.Pause();
     }
 
-    // Switches scene based on result - called from player - CHANGE TO CALLED FROM
+    public void Play()
+    {
+        SetGameState(GameState.Play);
+        _player.Pause(false);
+        FindFirstObjectByType<PlatformManager>().Pause(false);
+       AudioManager.Instance.AudioSource.Play();
+
+    }
+
     public void GameOver(GameState result)
     {
+        // should pause the game momentarity so player can realise what happened
+
         AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
 
@@ -79,7 +101,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void SetGameState(GameState newState)
+    {
+        _currentGameState = newState;
+        Debug.Log("Game State changed to: " + _currentGameState);
+    }
+
     // Properties
     public GameState CurrentGameState => _currentGameState;
+    public Player Player => _player;
+    public AudienceSupport AudienceSupport => _audienceSupport;
 
 }

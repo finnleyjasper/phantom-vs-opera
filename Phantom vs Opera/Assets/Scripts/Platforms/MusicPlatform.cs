@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class MusicPlatform : MonoBehaviour
+public class MusicPlatform : PausableObject
 {
     [Header("Music Properties")]
     [Range(0, 127)]
@@ -18,9 +18,11 @@ public class MusicPlatform : MonoBehaviour
 
     void Update()
     {
-        // Move platform left
-        float speed = PlatformManager.Instance.GetSpeed();
-        transform.Translate(Vector3.left * speed * Time.deltaTime);
+        if (!IsPaused) // move platform left
+        {
+            float speed = PlatformManager.Instance.GetSpeed();
+            transform.Translate(Vector3.left * speed * Time.deltaTime);
+        }
     }
 
     void ApplyLengthScale()
