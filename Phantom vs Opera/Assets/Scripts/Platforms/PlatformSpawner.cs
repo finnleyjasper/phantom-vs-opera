@@ -20,6 +20,25 @@ public class PlatformSpawner : MonoBehaviour
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
     private List<NoteData> notes = new List<NoteData>(); // retrieved from MIDIFacade
 
+    void Awake()
+    {
+        // find lanes
+        GameObject laneContainer = GameObject.Find("Lanes");
+        if (laneContainer == null)
+        {
+            Debug.LogError("Lane container not found! Please create a GameObject named 'Lanes'");
+        }
+        else
+        {
+            Transform[] lanes = laneContainer.GetComponentsInChildren<Transform>();
+
+            foreach (Transform lane in lanes)
+            {
+                if (lane.gameObject.name != "Lanes") // skip the parent container
+                laneTransforms.Add(lane.transform);
+            }
+        }
+    }
     public void StartSpawning()
     {
         notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.spawnLead);
