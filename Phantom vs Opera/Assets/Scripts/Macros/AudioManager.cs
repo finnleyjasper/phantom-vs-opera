@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioClip _song; // unity can't play MIDI, so we need a .wav/ .mp3 file to play - should match the MIDI
 
+    [SerializeField] private AudioClip[] _songTracks; // all the different isolated tracks
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,6 +38,23 @@ public class AudioManager : MonoBehaviour
 
     public void StartSong()
     {
+        _audioSource.Play();
+    }
+
+    public void SwitchTrack(float track)
+    {
+        double currrentTime = GetAudioSourceTime();
+        _audioSource.Stop();
+
+        _audioSource.clip = _songTracks[(int)track-1]; // account for 0 index thing
+
+        if (_audioSource.clip == null)
+        {
+            Debug.LogError("AudioManager could not find audio clip when changing tracks!");
+            return;
+        }
+
+        _audioSource.time = (float)currrentTime; // same position in the song when switching tracks
         _audioSource.Play();
     }
 
