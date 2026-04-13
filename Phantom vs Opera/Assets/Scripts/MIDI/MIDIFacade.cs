@@ -4,6 +4,7 @@ using Melanchall.DryWetMidi.Interaction;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MIDIFacade : MonoBehaviour
 {
@@ -85,6 +86,12 @@ public class MIDIFacade : MonoBehaviour
         return _noteDataList;
     }
 
+    // Unused for now - possibly useful depending on how the design team wants to contol tracks
+
+    /* public float GetAvailibleTracks()
+    {
+        return _midiFile.GetTrackChunks().Count();
+    } */
 
     // Properties
     public int MinPitch => _minPitch;

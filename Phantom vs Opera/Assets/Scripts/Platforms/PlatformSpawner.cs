@@ -58,13 +58,16 @@ public class PlatformSpawner : MonoBehaviour
     {
         foreach (var note in notes)
         {
-            // wait until the audio time reaches this note's spawn time
-            while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime)
+            if (note.instrument == GameManager.Instance.CurrentTrack) // only spawn notes for the current track/instrument
             {
-                yield return null;
-            }
+                // wait until the audio time reaches this note's spawn time
+                while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime)
+                {
+                    yield return null;
+                }
 
-            SpawnNote(note);
+                SpawnNote(note);
+            }
         }
     }
 

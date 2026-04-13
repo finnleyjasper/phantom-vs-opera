@@ -14,15 +14,19 @@ public class GameManager : MonoBehaviour
         Lose
     }
 
-    [Header("Game Settings")]
+    [Header("Scenes")]
     public string MainMenuSceneName;
     public string PlaySceneName;
     public string EndSceneName;
+
     [Space(10)]
+    [Header("Game Settings")]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
 
     private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
+    [SerializeField] private float _currentTrack = 1; // refers to the currnet instrument track
+
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
@@ -173,6 +177,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SwitchTrack(float track)
+    {
+        _currentTrack = track;
+        AudioManager.Instance.SwitchTrack(track);
+    }
+
     private void SetGameState(GameState newState)
     {
         _currentGameState = newState;
@@ -183,5 +193,6 @@ public class GameManager : MonoBehaviour
     public GameState CurrentGameState => _currentGameState;
     public Player Player => _player;
     public AudienceSupport AudienceSupport => _audienceSupport;
+    public float CurrentTrack => _currentTrack;
 
 }

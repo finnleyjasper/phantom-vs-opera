@@ -2,6 +2,7 @@ using UnityEngine;
 using Melanchall.DryWetMidi.Core;
 using Melanchall.DryWetMidi.Interaction;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class MIDIParser : MonoBehaviour
 {
@@ -14,8 +15,10 @@ public class MIDIParser : MonoBehaviour
 
         foreach (var note in notes)
         {
+
             NoteData data = new NoteData(
                 pitch: note.NoteNumber, // 0-127 MIDI pitch
+                instrument: note.Channel,
                 noteOn: (float)note.TimeAs<MetricTimeSpan>(tempoMap).TotalSeconds,
                 duration: (float)note.LengthAs<MetricTimeSpan>(tempoMap).TotalSeconds,
                 noteOff: (float)note.EndTimeAs<MetricTimeSpan>(tempoMap).TotalSeconds,
