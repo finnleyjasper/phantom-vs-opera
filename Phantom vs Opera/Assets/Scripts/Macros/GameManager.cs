@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
 
     private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
-    [SerializeField] private float _currentTrack = 1; // refers to the currnet instrument track
+    [SerializeField] private float _currentTrack = 0; // refers to the current track - 0 is all
 
     [Space(10)]
     [Header("Audience Support Settings")]

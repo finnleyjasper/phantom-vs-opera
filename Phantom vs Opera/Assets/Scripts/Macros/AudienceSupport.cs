@@ -4,6 +4,8 @@ public class AudienceSupport : MonoBehaviour
 {
     private float _audienceSupportValue;
 
+    [SerializeField] private bool _debugMode = false;
+
     void Start()
     {
         _audienceSupportValue = GameManager.Instance.StartingAudienceSupport;
@@ -14,7 +16,7 @@ public class AudienceSupport : MonoBehaviour
     {
         _audienceSupportValue += supportChange;
         ClampAudienceSupport();
-        Debug.Log($"[Audience Support] New value: {_audienceSupportValue}");
+        if (_debugMode) { Debug.Log($"[Audience Support] New value: {_audienceSupportValue}"); }
     }
 
     private void ClampAudienceSupport()

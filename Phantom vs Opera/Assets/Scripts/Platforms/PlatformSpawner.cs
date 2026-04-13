@@ -7,6 +7,8 @@ public class PlatformSpawner : MonoBehaviour
     /// <summary>Fired after each music platform is instantiated and configured (lane, pitch, etc.).</summary>
     public static event System.Action<MusicPlatform> OnPlatformSpawned;
 
+    public bool _debugMode = false;
+
     [Header("References")]
     public GameObject platformPrefab;
 
@@ -58,14 +60,14 @@ public class PlatformSpawner : MonoBehaviour
     {
         foreach (var note in notes)
         {
-            if (note.instrument == GameManager.Instance.CurrentTrack) // only spawn notes for the current track/instrument
+            while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime) // wait for note to play
             {
-                // wait until the audio time reaches this note's spawn time
-                while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime)
-                {
-                    yield return null;
-                }
+                yield return null;
+            }
 
+            // spwawn only for active track OR if track == 0, spawn all
+            if (note.track == GameManager.Instance.CurrentTrack || GameManager.Instance.CurrentTrack == 0) // spwawn only for active track
+            {
                 SpawnNote(note);
             }
         }
@@ -107,7 +109,7 @@ public class PlatformSpawner : MonoBehaviour
         if (mp != null)
             OnPlatformSpawned?.Invoke(mp);
 
-        Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {laneIndex+1}");
+        if (_debugMode){ Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {laneIndex+1}"); }
     }
 
     private float GetLaneIndex(int pitch)
