@@ -66,8 +66,14 @@ public class Player : MonoBehaviour
 
             if (debugMode)
             {
+<<<<<<< Updated upstream
                 Debug.Log("isAlive status: " + _isAlive);
                 Debug.Log("health bar: " + _healthBar + " Game over !");
+=======
+                _isOnPlatform = true;
+//                Debug.Log("Collision! " + _isOnPlatform);
+                break;
+>>>>>>> Stashed changes
             }
 
             GameManager.Instance.GameOver(GameManager.GameState.Lose);

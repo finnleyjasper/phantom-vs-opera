@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
 
     // Player's speed + force
     [Header("Speed")]
-    [SerializeField] private float _playerSpeed = 0.05f;
+    [SerializeField] private float _playerSpeed = 5f;
 
     [Header("Speed")]
     [SerializeField] private float _playerForce = 300f;
@@ -29,6 +29,14 @@ public class PlayerController : MonoBehaviour
         private Rigidbody _player_RigidBody;
 
     public void PlayerMove()
+    {
+        Vector3 playerMove = new Vector3(_xMovement, 0.0f, _zMovement).normalized;
+
+        //transform.Translate(playerMove * _playerSpeed); replced it with rb.MovePosition to avoid physics problems
+        _player_RigidBody.MovePosition(_player_RigidBody.position + playerMove * _playerSpeed * Time.fixedDeltaTime);
+    }
+
+    private void PlayerInput()
     {
         _xMovement = 0;
         _zMovement = 0;
@@ -52,12 +60,7 @@ public class PlayerController : MonoBehaviour
         {
             _zMovement--;
         }
-
-        Vector3 playerMove = new Vector3(_xMovement, 0.0f, _zMovement);
-
-        transform.Translate(playerMove * _playerSpeed);
     }
-
     public void PlayerJump()
     {
         if (Input.GetKeyDown(_jumpKeyCode))
@@ -73,7 +76,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        PlayerMove();
+        PlayerInput();
         PlayerJump();
+    }
+
+    void FixedUpdate()
+    {
+        PlayerMove();
     }
 }
