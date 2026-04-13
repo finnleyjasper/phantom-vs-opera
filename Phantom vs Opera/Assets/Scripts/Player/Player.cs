@@ -43,7 +43,7 @@ public class Player : PausableObject
             if (gameCollider.gameObject.tag == "Platform")
             {
                 _isOnPlatform = true;
-                Debug.Log("Collision! " + _isOnPlatform);
+//                Debug.Log("Collision! " + _isOnPlatform);
                 break;
             }
         }
