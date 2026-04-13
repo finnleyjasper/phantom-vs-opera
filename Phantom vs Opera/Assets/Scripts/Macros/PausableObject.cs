@@ -31,8 +31,6 @@ public class PausableObject : MonoBehaviour
             _storedUseGravity = _rigidbody.useGravity;
             _storedConstraints = _rigidbody.constraints;
 
-            _rigidbody.linearVelocity = Vector3.zero;
-            _rigidbody.angularVelocity = Vector3.zero;
             _rigidbody.useGravity = false;
             _rigidbody.constraints = RigidbodyConstraints.FreezeAll;
             return;

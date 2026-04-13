@@ -14,6 +14,7 @@ public class AudienceSupport : MonoBehaviour
     {
         _audienceSupportValue += supportChange;
         ClampAudienceSupport();
+        Debug.Log($"[Audience Support] New value: {_audienceSupportValue}");
     }
 
     private void ClampAudienceSupport()

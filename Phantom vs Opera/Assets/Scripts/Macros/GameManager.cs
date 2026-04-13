@@ -20,6 +20,8 @@ public class GameManager : MonoBehaviour
     public string EndSceneName;
     [Space(10)]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
+
+    private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
     [Space(10)]
     [Header("Audience Support Settings")]
@@ -65,6 +67,76 @@ public class GameManager : MonoBehaviour
 
         AudioManager.Instance.StartSong();
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
+    }
+
+    private IEnumerator TeleportRoutine()
+    {
+        _isTeleporting = true;
+
+        // Pause game systems
+        SetGameState(GameState.Pause);
+
+        _player.Pause(true);
+        FindFirstObjectByType<PlatformManager>().Pause(true);
+        AudioManager.Instance.AudioSource.Pause();
+
+        // Apply fall punishment
+        _audienceSupport.ManageAudienceSupport(-FallenPunishment);
+        Debug.Log($"[Audience Support] Player fell! -" + $"{FallenPunishment}. New value: {_audienceSupport.AudienceSupportValue}");
+
+        // Find safe platform
+        MusicPlatform safePlatform = FindSafePlatform();
+
+        if (safePlatform != null)
+        {
+            Vector3 safePos = safePlatform.transform.position;
+            safePos.y += 2.5f; // height above platform
+            _player.transform.position = safePos;
+        }
+        else
+        {
+            Debug.LogWarning("No safe platform found!");
+        }
+
+        // Wait so player can react
+        yield return new WaitForSeconds(1.5f);
+
+        // Resume game
+        _player.Pause(false);
+        FindFirstObjectByType<PlatformManager>().Pause(false);
+        AudioManager.Instance.AudioSource.Play();
+
+        SetGameState(GameState.Play);
+
+        _isTeleporting = false;
+    }
+
+    private MusicPlatform FindSafePlatform()
+    {
+        MusicPlatform[] platforms = FindObjectsByType<MusicPlatform>(FindObjectsSortMode.None);
+
+        MusicPlatform best = null;
+        float bestDistance = float.MaxValue;
+
+        foreach (var p in platforms)
+        {
+            float dist = Mathf.Abs(p.transform.position.x - _player.transform.position.x);
+
+            if (dist < bestDistance)
+            {
+                bestDistance = dist;
+                best = p;
+            }
+        }
+
+        return best;
+    }
+
+    public void HandlePlayerFall()
+    {
+        if (_isTeleporting) return;
+
+        StartCoroutine(TeleportRoutine());
     }
 
     public void Pause()

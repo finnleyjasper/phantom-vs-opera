@@ -63,12 +63,9 @@ public class GameObserver : MonoBehaviour
     // PLAYER -----------------------------
     private void CheckFallenPlayer()
     {
-        if (GameManager.Instance.Player.FellOnFloor == true) // apply punishment, pause game, teleport player
+        if (GameManager.Instance.Player.FellOnFloor)
         {
-            GameManager.Instance.AudienceSupport.ManageAudienceSupport(-GameManager.Instance.FallenPunishment); // decrease audience support value
-
-            // pause game -- maybe call Pause in gamemanager?
-            // call teleport player method
+            GameManager.Instance.HandlePlayerFall();
         }
     }
 
