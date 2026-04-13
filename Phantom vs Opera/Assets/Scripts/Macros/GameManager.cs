@@ -18,16 +18,9 @@ public class GameManager : MonoBehaviour
     public string MainMenuSceneName;
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
 
-<<<<<<< Updated upstream
-    // Current state of the game - further functionality within GameManager will be based on this state
-    // Should be changed within this script via methods called by other objects
-    [SerializeField] private GameState _currentGameState = GameState.Play; // As we don't have a main menu yet, I temporarily changed starting state to Play
-
-=======
     private bool _isTeleporting;
     private Player _player;
     private AudienceSupport _audienceSupport;
->>>>>>> Stashed changes
     [HideInInspector] public static GameManager Instance;
 
     // Variables for Game Length
@@ -66,9 +59,6 @@ public class GameManager : MonoBehaviour
         // reset player position, etc.
     }
 
-<<<<<<< Updated upstream
-    public void SetGameState(GameState newState)
-=======
     private IEnumerator TeleportRoutine()
     {
         _isTeleporting = true;
@@ -140,7 +130,6 @@ public class GameManager : MonoBehaviour
     }
 
     public void Pause()
->>>>>>> Stashed changes
     {
         _currentGameState = newState;
         Debug.Log("Game State changed to: " + _currentGameState);
@@ -160,13 +149,9 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(EndSceneName);
         }
     }
-<<<<<<< Updated upstream
-    void Update()
-=======
 
 
     private void SetGameState(GameState newState)
->>>>>>> Stashed changes
     {
         if (_currentGameState != GameState.Play)
         {
