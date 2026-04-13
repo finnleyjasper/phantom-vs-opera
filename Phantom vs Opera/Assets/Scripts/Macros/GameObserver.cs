@@ -77,7 +77,7 @@ public class GameObserver : MonoBehaviour
         }
         else // decrease audience support
         {
-            GameManager.Instance.AudienceSupport.ManageAudienceSupport(-(GameManager.Instance.IncreasePerSecond * Time.fixedDeltaTime));
+            GameManager.Instance.AudienceSupport.ManageAudienceSupport(-(GameManager.Instance.DecreasePerSecond * Time.fixedDeltaTime));
         }
     }
 

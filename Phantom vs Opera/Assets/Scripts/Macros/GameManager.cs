@@ -26,9 +26,10 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
-    public float MaxAudienceSupport = 10f; // win condition
-    public float IncreasePerSecond = 1.0f; // how much audience support increases per second when player is on platform
-    public float FallenPunishment = 5f; // how much audience support decreases when player falls on floor
+    public float MaxAudienceSupport = 100f; // win condition
+    public float IncreasePerSecond = 5.0f; // how much audience support increases per second when player is on platform
+    public float DecreasePerSecond = 0.5f; // how much audience support decreases per second when player is not on platform
+    public float FallenPunishment = 10f; // how much audience support decreases when player falls on floor
 
     private Player _player;
     private AudienceSupport _audienceSupport;
@@ -82,7 +83,6 @@ public class GameManager : MonoBehaviour
 
         // Apply fall punishment
         _audienceSupport.ManageAudienceSupport(-FallenPunishment);
-        Debug.Log($"[Audience Support] Player fell! -" + $"{FallenPunishment}. New value: {_audienceSupport.AudienceSupportValue}");
 
         // Find safe platform
         MusicPlatform safePlatform = FindSafePlatform();

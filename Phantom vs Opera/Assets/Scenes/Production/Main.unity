@@ -1797,8 +1797,20 @@ PrefabInstance:
       value: Macros
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
+      propertyPath: FallenPunishment
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _levelStartDelay
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
+      propertyPath: DecreasePerSecond
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
+      propertyPath: IncreasePerSecond
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _currentGameState
