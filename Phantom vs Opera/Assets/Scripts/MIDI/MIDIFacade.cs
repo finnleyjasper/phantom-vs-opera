@@ -72,7 +72,7 @@ public class MIDIFacade : MonoBehaviour
                 string notesInfo = "Following NoteData parsed successfully: ";
                 foreach (var note in _noteDataList)
                 {
-                    notesInfo += note.noteName + " at pitch" + note.pitch + ", ";
+                    notesInfo += note.noteName + " on track " + note.track + ", ";
                 }
                 Debug.Log(notesInfo.TrimEnd(',', ' '));
             }
