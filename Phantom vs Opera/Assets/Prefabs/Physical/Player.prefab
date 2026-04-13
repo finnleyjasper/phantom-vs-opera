@@ -58,6 +58,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c820219204ed6d4d8c9a7333caaac69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  _startPosition: {fileID: 0}
   _playerGround: {fileID: 3763522767947402904}
   _playerGroundRadius: 0.1
 --- !u!114 &7382356796154325634

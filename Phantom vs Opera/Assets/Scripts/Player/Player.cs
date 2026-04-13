@@ -1,134 +1,100 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : PausableObject
 {
-        public bool debugMode = false; // show logs
-
     // Private Variables
-        private bool _isAlive;
-        private bool _hasWon;
-        private int _healthBar;
-        private float _successBar;
+        private bool _isOnPlatform;
+        private bool _fellOnFloor;
+        private Vector3 _startPosition;
 
-    // Reference to PlayerBarUI Script
-    [Header("Player Health Bar UI")]
-    [SerializeField] private PlayerBarUI playerHealthBarUI;
+        private PlayerController _playerController;
 
-    [Header("Player Success Bar UI")]
-    [SerializeField] private PlayerBarUI playerSuccessBarUI;
+    // References to Player Ground
+        [Header("Player Ground")]
+        [SerializeField] private Transform _playerGround;
+        [SerializeField] private float _playerGroundRadius = 0.1f;
 
-    // Set up Initial health/success levels in Start
+    protected override void Awake()
+    {
+        base.Awake();
+        _playerController = GetComponent<PlayerController>();
+    }
+
     void Start()
     {
-        _healthBar = 10;
-        _successBar = 0;
-        _isAlive = true;
-        _hasWon = false;
+        _startPosition = transform.position;
+        Reset();
+    }
 
-        if (debugMode)
+    private void FixedUpdate()
+    {
+        PlatformCollision();
+    }
+
+    // Creates sphere below Player and detects for Platform tag
+    void PlatformCollision()
+    {
+        _isOnPlatform = false;
+
+        Collider[] gameColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);
+
+        foreach (var gameCollider in gameColliders)
         {
-            Debug.Log("Initial health: " + _healthBar);
-            Debug.Log("Initial success: " + _successBar);
-        }
-
-        playerHealthBarUI.UpdatePlayerHealthUI();
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
-    }
-
-    // Properties
-
-    public int HealthBar
-    {
-        get { return _healthBar; }
-    }
-
-    public float SuccessBar
-    {
-        get { return _successBar; }
-    }
-
-    public bool IsAlive
-    {
-        get { return _isAlive; }
-    }
-
-    public bool HasWon
-    {
-        get { return _hasWon; }
-    }
-
-    // Method to Manage Health Bar - sets initial health bar level, sets results for losing all health (i.e. losing game)
-    public void ManagePlayerLose()
-    {
-        if (_healthBar <= 0)
-        {
-            _isAlive = false;
-
-            if (debugMode)
+            if (gameCollider.gameObject.tag == "Platform")
             {
                 _isOnPlatform = true;
 //                Debug.Log("Collision! " + _isOnPlatform);
                 break;
             }
-
-            GameManager.Instance.GameOver(GameManager.GameState.Lose);
         }
     }
 
-    // Method to Manage Success Bar - sets initial success bar level, sets results for reaching certain success level (i.e. winning game)
-    public void ManagePlayerWin()
+    public void Reset()
     {
-        if (_successBar >= 10)
+        _isOnPlatform = false;
+        _fellOnFloor = false;
+        Pause(false);
+
+        if (this.Rigidbody != null)
         {
-            _hasWon = true;
-
-            if (debugMode)
-            {
-                Debug.Log("hasWon status: " + _hasWon + " You won !");
-                Debug.Log("success bar: " + _successBar);
-            }
-
-            GameManager.Instance.GameOver(GameManager.GameState.Win);
+            this.Rigidbody.linearVelocity = Vector3.zero;
+            this.Rigidbody.angularVelocity = Vector3.zero;
         }
+
+        transform.SetPositionAndRotation(_startPosition, Quaternion.Euler(0f, 0f, 0f)); // reset player position and rotation
     }
 
-    // Method for when Falling Object hits Player = health decreases - method is called by falling objects
-
-    public void IsHit(int damage)
+    public override void Pause(bool shouldPause)
     {
-        _healthBar -= damage;
-        _healthBar = Mathf.Clamp(_healthBar, 0, 10); // Clamp - health bars cannot go below 0 or above 10
+        base.Pause(shouldPause);
 
-        if (debugMode)
+        if (_playerController != null)
         {
-            Debug.Log("health bar: " + _healthBar);
+            _playerController.enabled = !shouldPause; // disable when paused, enable when unpaused
         }
-
-        if (_healthBar <= 0)
-        {
-            ManagePlayerLose();
-        }
-
-        playerHealthBarUI.UpdatePlayerHealthUI();
     }
 
-    // Method for when Player wins if game time ends
-    public void PlayerSuccessTimer()
+    // Player falls on floor
+    void OnCollisionEnter(Collision collision)
     {
-        _successBar = GameManager.Instance.GameTimer;
-        _successBar = Mathf.Clamp(_successBar, 0, 10); // Clamps - succes + health bars cannot go below 0
-        playerSuccessBarUI.UpdatePlayerSuccessUI();
-
-        // Calls win condition if game length is reached
-        if (_successBar >= GameManager.Instance.GameLength)
+        if (collision.gameObject.tag == "Floor")
         {
-            ManagePlayerWin();
+            _fellOnFloor = true;
         }
     }
 
-    void Update()
+    // **********************
+    // Player is no longer on the floor -- This needs to be refactored me thinks
+    private void OnCollisionExit(Collision collision)
     {
-        PlayerSuccessTimer();
+        if (collision.gameObject.tag == "Floor")
+        {
+            _fellOnFloor = false;
+        }
     }
+
+    public bool IsOnPlatform => _isOnPlatform;
+
+    public bool FellOnFloor => _fellOnFloor;
+
 }
-

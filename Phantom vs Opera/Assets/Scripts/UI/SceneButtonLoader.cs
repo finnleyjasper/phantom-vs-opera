@@ -10,11 +10,6 @@ public class SceneButtonLoader : MonoBehaviour
 
     public void LoadScene()
     {
-        // Update GameManager state if instance exists
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.SetGameState(setGameState);
-        }
         if (!string.IsNullOrEmpty(sceneToLoad))
         {
             SceneManager.LoadScene(sceneToLoad);
