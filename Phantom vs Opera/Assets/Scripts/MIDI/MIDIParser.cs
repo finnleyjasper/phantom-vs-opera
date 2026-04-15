@@ -31,8 +31,6 @@ public class MIDIParser : MonoBehaviour
                     spawnLead: lead
                 );
 
-                Debug.Log($"Track {trackIndex}, Channel {note.Channel}, Time {note.Time}");
-
                 noteDataList.Add(data);
             }
 

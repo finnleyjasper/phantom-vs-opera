@@ -49,7 +49,7 @@ public class GameObserver : MonoBehaviour
             GameManager.Instance.GameOver(GameManager.GameState.Win);
         }
         // song finishes = win ??
-        else if (AudioManager.Instance.AudioSource.isPlaying && AudioManager.Instance.GetAudioSourceTime() >= AudioManager.Instance.AudioSource.clip.length)
+        else if (AudioManager.Instance.AudioSource.isPlaying && AudioManager.Instance.AudioSource.time >= AudioManager.Instance.AudioSource.clip.length)
         {
             GameManager.Instance.GameOver(GameManager.GameState.Lose);
         }

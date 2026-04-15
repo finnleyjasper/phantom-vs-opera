@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Game Settings")]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
+    [SerializeField] [Tooltip("Padding between note reaching player. Lower number = note heard earlier.")] private float _noteTimingPadding = -0.3f;
 
     private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
@@ -39,6 +40,8 @@ public class GameManager : MonoBehaviour
     private AudienceSupport _audienceSupport;
     [HideInInspector] public static GameManager Instance;
 
+    private float _gameTime; // when StartGame() was called - used to time platform spawning
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -52,6 +55,15 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Update()
+    {
+        if (_currentGameState == GameState.Play)
+        {
+            // used to time platform spawning - in GameManager so Pause() and Play() still work
+            _gameTime += Time.deltaTime;
+        }
+    }
+
 
     public void StartGame() // should get called from menu buttons
     {
@@ -62,6 +74,10 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(_levelStartDelay);
 
+        _gameTime = Time.deltaTime - PlatformManager.Instance.TravelTime + _noteTimingPadding;
+
+        Debug.Log("Game Time: " + _gameTime);
+
         _player = FindFirstObjectByType<Player>();
         _audienceSupport = FindFirstObjectByType<AudienceSupport>();
 
@@ -70,8 +86,14 @@ public class GameManager : MonoBehaviour
         _player.Reset();
         _audienceSupport.ManageAudienceSupport(StartingAudienceSupport); // reset audience support value
 
-        AudioManager.Instance.StartSong();
+        StartCoroutine(StartMusic());
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
+    }
+
+    private IEnumerator StartMusic() // start music when first platform reaches the player
+    {
+        yield return new WaitForSeconds(PlatformManager.Instance.TravelTime);
+        AudioManager.Instance.StartSong();
     }
 
     private IEnumerator TeleportRoutine()
@@ -194,5 +216,6 @@ public class GameManager : MonoBehaviour
     public Player Player => _player;
     public AudienceSupport AudienceSupport => _audienceSupport;
     public float CurrentTrack => _currentTrack;
+    public float GameTime => _gameTime;
 
 }
