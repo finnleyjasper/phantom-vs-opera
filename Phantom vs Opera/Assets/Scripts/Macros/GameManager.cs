@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public string EndSceneName;
     public string MainMenuSceneName;
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
+    [SerializeField] private KeyCode _pauseKey = KeyCode.Escape;
 
     // Current state of the game - further functionality within GameManager will be based on this state
     // Should be changed within this script via methods called by other objects
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
     // Variables for Game Length
     [SerializeField] private float _gameLength = 10f; // Stores overall game length
     private float _gameTimer = 0f; // Stores time that passes
+    private bool _isPaused;
 
     private void Awake()
     {
@@ -39,6 +41,7 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+        Time.timeScale = 1f;
 
     }
 
@@ -62,6 +65,11 @@ public class GameManager : MonoBehaviour
 
     public void SetGameState(GameState newState)
     {
+        if (_isPaused && newState != GameState.Play)
+        {
+            ResumeGame();
+        }
+
         _currentGameState = newState;
         Debug.Log("Game State changed to: " + _currentGameState);
     }
@@ -82,13 +90,59 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        if (_currentGameState == GameState.Play && !LaneDespawnDebugUI.IsFullMenuOpen && Input.GetKeyDown(_pauseKey))
+        {
+            TogglePause();
+        }
+
         if (_currentGameState != GameState.Play)
         {
             _gameTimer = 0; // Restart timer when game state is in lose/win/menu
             return;
         }
 
+        if (_isPaused) return;
+
         _gameTimer += Time.deltaTime;
+    }
+
+    public void TogglePause()
+    {
+        if (_isPaused)
+        {
+            ResumeGame();
+            return;
+        }
+
+        PauseGame();
+    }
+
+    public void PauseGame()
+    {
+        if (_isPaused || _currentGameState != GameState.Play) return;
+
+        _isPaused = true;
+        Time.timeScale = 0f;
+
+        if (MIDIFacade.Instance != null && MIDIFacade.Instance.audioSource != null && MIDIFacade.Instance.audioSource.isPlaying)
+            MIDIFacade.Instance.audioSource.Pause();
+
+        if (PlatformManager.Instance != null)
+            PlatformManager.Instance.isPaused = true;
+    }
+
+    public void ResumeGame()
+    {
+        if (!_isPaused) return;
+
+        _isPaused = false;
+        Time.timeScale = 1f;
+
+        if (MIDIFacade.Instance != null && MIDIFacade.Instance.audioSource != null)
+            MIDIFacade.Instance.audioSource.UnPause();
+
+        if (PlatformManager.Instance != null)
+            PlatformManager.Instance.isPaused = false;
     }
 
     // Properties
@@ -97,4 +151,6 @@ public class GameManager : MonoBehaviour
     public float GameLength => _gameLength;
 
     public float GameTimer => _gameTimer;
+
+    public bool IsPaused => _isPaused;
 }

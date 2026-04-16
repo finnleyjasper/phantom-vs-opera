@@ -4,10 +4,6 @@ using UnityEngine.UI;
 
 public class PlayerBarUI : MonoBehaviour
 {
-    // Private Variables 
-        private int _maxHealth = 10;
-        private int _maxSuccess = 10; 
-
         [Header("Health Bar Filling")]
         [SerializeField] private Image _healthBarFilling;
 
@@ -38,7 +34,7 @@ public class PlayerBarUI : MonoBehaviour
     // Method for Updating Player Health Bar UI 
     public void UpdatePlayerHealthUI()
     {
-        float healthFillingAmount = (float)player.HealthBar / _maxHealth;
+        float healthFillingAmount = player.MaxHealth > 0 ? (float)player.HealthBar / player.MaxHealth : 0f;
         _healthBarFilling.fillAmount = healthFillingAmount; // Setting fill amount value to current health 
         UpdatePlayerBarText();
     }
@@ -46,7 +42,7 @@ public class PlayerBarUI : MonoBehaviour
     // Method for Updating Player Success Bar UI 
     public void UpdatePlayerSuccessUI()
     {
-        float successFillingAmount = (float)player.SuccessBar / _maxSuccess; 
+        float successFillingAmount = player.MaxSuccessMeter > 0f ? player.SuccessBar / player.MaxSuccessMeter : 0f; 
         _successBarFilling.fillAmount = successFillingAmount; // Setting fill amount value to current success 
         UpdatePlayerBarText();
     }

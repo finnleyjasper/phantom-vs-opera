@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class FallingAttackSpawner : MonoBehaviour
 {
+    public static FallingAttackSpawner Instance;
+
     [Header("Prefabs")]
     public GameObject normalAttackPrefab;
     public GameObject strongAttackPrefab;
@@ -10,6 +12,7 @@ public class FallingAttackSpawner : MonoBehaviour
     public float spawnRate = 1f;        // attacks per second
     public float spawnWidth = 10f;      // horizontal range
     public float spawnHeight = 10f;     // how high above
+    [SerializeField] private float _attackFallSpeed = 10f;
 
     [Header("Attack Chances")]
     [Range(0f, 1f)]
@@ -20,6 +23,13 @@ public class FallingAttackSpawner : MonoBehaviour
     private int currentAttacks = 0;
 
     private float timer;
+
+    public float AttackFallSpeed => _attackFallSpeed;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Update()
     {
@@ -53,12 +63,29 @@ public class FallingAttackSpawner : MonoBehaviour
 
         // Get the script from the spawned object
         FallingAttack fa = attack.GetComponent<FallingAttack>();
-        
-        fa.spawner = this; // Set reference to spawner for tracking
+
+        if (fa != null)
+        {
+            fa.spawner = this; // Set reference to spawner for tracking
+            fa.fallSpeed = _attackFallSpeed;
+        }
+
         currentAttacks++;
     }
     public void NotifyAttackDestroyed()
     {
         currentAttacks--;
+    }
+
+    public void SetAttackFallSpeed(float newSpeed)
+    {
+        _attackFallSpeed = Mathf.Max(0.01f, newSpeed);
+
+        FallingAttack[] activeAttacks = FindObjectsByType<FallingAttack>(FindObjectsSortMode.None);
+        foreach (FallingAttack attack in activeAttacks)
+        {
+            if (attack != null)
+                attack.fallSpeed = _attackFallSpeed;
+        }
     }
 }

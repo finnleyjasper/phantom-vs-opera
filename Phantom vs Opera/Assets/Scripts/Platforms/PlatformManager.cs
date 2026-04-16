@@ -35,6 +35,11 @@ public class PlatformManager : MonoBehaviour
         return isPaused ? 0f : platformSpeed;
     }
 
+    public void SetPlatformSpeed(float newSpeed)
+    {
+        platformSpeed = Mathf.Max(0.01f, newSpeed);
+    }
+
     public void RegisterPlatform(MusicPlatform platform)
     {
         activePlatforms.Add(platform);

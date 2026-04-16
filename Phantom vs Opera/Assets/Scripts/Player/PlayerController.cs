@@ -28,6 +28,13 @@ public class PlayerController : MonoBehaviour
     // Varibale to get Player's RigidBody Component
         private Rigidbody _player_RigidBody;
 
+    public float PlayerSpeed => _playerSpeed;
+
+    public void SetPlayerSpeed(float newSpeed)
+    {
+        _playerSpeed = Mathf.Max(0.01f, newSpeed);
+    }
+
     public void PlayerMove()
     {
         _xMovement = 0;
