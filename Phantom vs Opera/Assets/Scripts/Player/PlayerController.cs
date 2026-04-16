@@ -4,24 +4,34 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     // Variables for Player Right + Left Movement 
-        private float _xMovement = 0;
-        private float _zMovement = 0;
+    //    private float _xMovement = 0; // dont know if still need these two - Delete 
+    //    private float _zMovement = 0; // dont know if still need these two - Delete 
+
+    [Header("Lanes")] // is this necessary? - delete 
+    private int currentLane;
+    private int minLaneIndex;
+    private int maxLaneIndex;
+    private int[] lanePositions; //try to find better names for all these private variables - delete
+     
 
     // Variables for Editable KeyCodes 
-    [Header("Left & Right Movement")]
-    [SerializeField] private KeyCode _xLeftKeyCode = KeyCode.LeftArrow;
-    [SerializeField] private KeyCode _xRightKeyCode = KeyCode.RightArrow;
+    [Space(10)]
+    [Header("Z Axis Movements")]
+    // [SerializeField] private KeyCode _xLeftKeyCode = KeyCode.LeftArrow; // dont know if still need this - Delete 
+    // [SerializeField] private KeyCode _xRightKeyCode = KeyCode.RightArrow; // dont know if still need this - Delete 
     [SerializeField] private KeyCode _zFrontKeyCode = KeyCode.UpArrow;
     [SerializeField] private KeyCode _zBackKeyCode = KeyCode.DownArrow;
 
+    [Space(10)]
     [Header("Jump Keycode")]
-    [SerializeField] private KeyCode _jumpKeyCode = KeyCode.Space; 
-
+    [SerializeField] private KeyCode _jumpKeyCode = KeyCode.Space;
 
     // Player's speed + force
+    [Space(10)]
     [Header("Speed")]
     [SerializeField] private float _playerSpeed = 5f;
 
+    [Space(10)]
     [Header("Speed")]
     [SerializeField] private float _playerForce = 300f;
 
@@ -36,11 +46,22 @@ public class PlayerController : MonoBehaviour
         _player_RigidBody.MovePosition(_player_RigidBody.position + playerMove * _playerSpeed * Time.fixedDeltaTime);
     }
 
+    public void Lane() // find better name - delete
+    {
+        
+    }
+    
+    public void LaneChange()
+    {
+        // lane change logic 
+    }
+
     private void PlayerInput()
     {
-        _xMovement = 0;
-        _zMovement = 0;
+       // _xMovement = 0; - delete ?
+       // _zMovement = 0; - delete ?
 
+        /*** - delete ?
         if (Input.GetKey(_xLeftKeyCode))
         {
             _xMovement--;
@@ -51,14 +72,16 @@ public class PlayerController : MonoBehaviour
             _xMovement++;
         }
 
-        if (Input.GetKey(_zFrontKeyCode))
+        ***/
+
+        if (Input.GetKeyDown(_zFrontKeyCode)) // double check this is for when key = pressed NOT held down - delete
         {
-            _zMovement++;
+            // lane change++;  // dont know what to put here - delete
         }
 
-        if (Input.GetKey(_zBackKeyCode))
+        if (Input.GetKeyDown(_zBackKeyCode))
         {
-            _zMovement--;
+            // lane change--; // dont know what to put here - delete
         }
     }
     public void PlayerJump()
