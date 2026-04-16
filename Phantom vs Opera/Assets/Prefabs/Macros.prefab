@@ -98,9 +98,11 @@ MonoBehaviour:
   EndSceneName: Game Over
   _levelStartDelay: 1
   _currentGameState: 1
+  _currentTrack: 0
   StartingAudienceSupport: 5
   MaxAudienceSupport: 100
   IncreasePerSecond: 2
+  DecreasePerSecond: 0.5
   FallenPunishment: 5
 --- !u!1 &982838531752121332
 GameObject:
@@ -230,6 +232,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudioManager
   _audioSource: {fileID: 0}
   _song: {fileID: 8300000, guid: a53e524b8d2464e148817f7825fd9d40, type: 3}
+  _songTracks: []
 --- !u!82 &5683869219787908381
 AudioSource:
   m_ObjectHideFlags: 0
@@ -371,6 +374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a64cc1d68f0dbb24eba8c5b5fb6ba161, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudienceSupport
+  _debugMode: 0
 --- !u!1001 &3173306103902276847
 PrefabInstance:
   m_ObjectHideFlags: 0
