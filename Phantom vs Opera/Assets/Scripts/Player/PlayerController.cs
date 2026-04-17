@@ -8,11 +8,14 @@ public class PlayerController : MonoBehaviour
     //    private float _zMovement = 0; // dont know if still need these two - Delete 
 
     [Header("Lanes")] // is this necessary? - delete 
-    private int currentLane;
-    private int minLaneIndex;
-    private int maxLaneIndex;
-    private int[] lanePositions; //try to find better names for all these private variables - delete
-     
+    [SerializeField] private int currentLaneIndex = 3; // change so it automatically finds the lane index - delete
+        private Vector3[] lanePositions; // is this correct - also do i add .normalized to the end ? - also can i just add this to the list above instead of having two separate lists? - delete 
+        private Vector3 targetLanePosition; // is this correct - delete
+        private int minLaneIndex;
+        private int maxLaneIndex;  //try to find better names for all these private variables - delete     
+
+        private float lerpTimer = 0;
+        private float lerpSpeed = 15f;
 
     // Variables for Editable KeyCodes 
     [Space(10)]
@@ -37,53 +40,81 @@ public class PlayerController : MonoBehaviour
 
     // Varibale to get Player's RigidBody Component
         private Rigidbody _player_RigidBody;
-
-    public void PlayerMove()
+    
+    /*** Delete eventually
+    public void PlayerMove() // do I delete this ??  wbt the _player_RigidBody part ? - delete
     {
         Vector3 playerMove = new Vector3(_xMovement, 0.0f, _zMovement).normalized;
 
         //transform.Translate(playerMove * _playerSpeed); replced it with rb.MovePosition to avoid physics problems
         _player_RigidBody.MovePosition(_player_RigidBody.position + playerMove * _playerSpeed * Time.fixedDeltaTime);
     }
+    ***/
 
-    public void Lane() // find better name - delete
+    // Method to get Lane Positions 
+    public void FindLanePositions() // find better name - delete
     {
-        
+        // finds + stores all GameObjects with tag "lane"
+        GameObject[] lanes = GameObject.FindGameObjectsWithTag("Lane");
+
+        List<Vector3> lanePositionList = new List<Vector3>(); // temporary list to store lane positions in
+
+        // adds lane positions to Vector3 list 
+        foreach (GameObject lane in lanes)
+        {
+            if (lane != null) // necessary ? - delete 
+            {
+                lanePositionList.Add(lane.transform.position); // wanna check that it's ading the ones closest to left to right ?? double check it's in that progressive order - make sure it's sorted correctly - delete
+                Debug.Log(lane.transform.position); // debug - delete 
+            }
+        }
+
+            // Sort list along Z axis
+            lanePositionList.Sort((a, b) => a.z.CompareTo(b.z)); // double check if any other way to do this - delete 
+
+            // Convert temporary list to Array 
+            lanePositions = lanePositionList.ToArray();
+            
+            // Assign min/max lane index 
+            minLaneIndex = 0;
+            maxLaneIndex = lanePositions.Length - 1;
     }
     
-    public void LaneChange()
+    private void LaneIndexClamp()
     {
-        // lane change logic 
+        currentLaneIndex = Mathf.Clamp(currentLaneIndex, minLaneIndex, maxLaneIndex);
     }
 
     private void PlayerInput()
     {
-       // _xMovement = 0; - delete ?
-       // _zMovement = 0; - delete ?
-
-        /*** - delete ?
-        if (Input.GetKey(_xLeftKeyCode))
-        {
-            _xMovement--;
-        }
-
-        if (Input.GetKey(_xRightKeyCode))
-        {
-            _xMovement++;
-        }
-
-        ***/
-
         if (Input.GetKeyDown(_zFrontKeyCode)) // double check this is for when key = pressed NOT held down - delete
         {
-            // lane change++;  // dont know what to put here - delete
+            currentLaneIndex++; // dont know if this is right - delete 
+            LaneIndexClamp();
+            targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
+            Debug.Log("Lane index: " + currentLaneIndex); // delete
         }
 
         if (Input.GetKeyDown(_zBackKeyCode))
         {
-            // lane change--; // dont know what to put here - delete
+            currentLaneIndex--; // dont know what to put here - delete
+            LaneIndexClamp();
+            targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
+            Debug.Log("Lane index: " + currentLaneIndex); // delete
         }
     }
+
+    public void LerpLaneMovement()
+    {
+        Vector3 currentPlayerPosition = _player_RigidBody.position; //player's current position 
+
+        // Check if another way to do this, while loop - delete 
+
+            Vector3 lerpedPosition = Vector3.Lerp(currentPlayerPosition, targetLanePosition, lerpSpeed * Time.fixedDeltaTime); 
+
+        _player_RigidBody.MovePosition(lerpedPosition); // is this ok - delete
+    }
+
     public void PlayerJump()
     {
         if (Input.GetKeyDown(_jumpKeyCode))
@@ -95,6 +126,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
+        FindLanePositions();
+        targetLanePosition = lanePositions[currentLaneIndex]; // Get Player's current lane position
+
+
     }
 
     void Update()
@@ -105,6 +140,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        PlayerMove();
+        LerpLaneMovement();
+        // PlayerMove(); // Remove eventually - delete
     }
 }

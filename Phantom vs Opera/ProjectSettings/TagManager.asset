@@ -8,6 +8,7 @@ TagManager:
   - DespawnZone
   - Platform
   - Floor
+  - Lane
   layers:
   - Default
   - TransparentFX
