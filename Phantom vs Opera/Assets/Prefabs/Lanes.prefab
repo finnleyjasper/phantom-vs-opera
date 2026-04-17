@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4280746206519942203}
   m_Layer: 0
   m_Name: Lane 4
-  m_TagString: Untagged
+  m_TagString: Lane
   m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 7179661458948826236}
   m_Layer: 0
   m_Name: Lane 2
-  m_TagString: Untagged
+  m_TagString: Lane
   m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 5362579685574238625}
   m_Layer: 0
   m_Name: Lanes
-  m_TagString: Untagged
+  m_TagString: Lane
   m_Icon: {fileID: 7250588514170254948, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -117,7 +117,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7625545751943895151}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -140,7 +140,7 @@ GameObject:
   - component: {fileID: 6001009731274802782}
   m_Layer: 0
   m_Name: Lane 3
-  m_TagString: Untagged
+  m_TagString: Lane
   m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 7541749890282651067}
   m_Layer: 0
   m_Name: Lane 5
-  m_TagString: Untagged
+  m_TagString: Lane
   m_Icon: {fileID: 7866945982896999795, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
