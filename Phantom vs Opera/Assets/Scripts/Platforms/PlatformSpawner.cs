@@ -43,7 +43,7 @@ public class PlatformSpawner : MonoBehaviour
     }
     public void StartSpawning()
     {
-        notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.spawnLead);
+        notes = MIDIFacade.Instance.GetNoteData(PlatformManager.Instance.TravelTime); // with travel time between spawn & player to account for spawn lead
         StartCoroutine(SpawnRoutine());
     }
 
@@ -60,7 +60,7 @@ public class PlatformSpawner : MonoBehaviour
     {
         foreach (var note in notes)
         {
-            while (AudioManager.Instance.GetAudioSourceTime() < note.spawnTime) // wait for note to play
+            while (GameManager.Instance.GameTime < note.spawnTime) // wait for note to play
             {
                 yield return null;
             }

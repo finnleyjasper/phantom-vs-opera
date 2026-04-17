@@ -83,8 +83,6 @@ public class Player : PausableObject
         }
     }
 
-    // **********************
-    // Player is no longer on the floor -- This needs to be refactored me thinks
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
@@ -97,4 +95,5 @@ public class Player : PausableObject
 
     public bool FellOnFloor => _fellOnFloor;
 
+    public Vector3 StartPosition => _startPosition;
 }

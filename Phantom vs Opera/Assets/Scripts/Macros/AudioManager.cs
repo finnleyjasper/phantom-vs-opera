@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioClip[] _songTracks; // all the different isolated tracks
 
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -66,12 +67,6 @@ public class AudioManager : MonoBehaviour
         _audioSource.Play();
 
     }
-
-    public double GetAudioSourceTime() // get the current time of the audio source in seconds - checked against NoteData.spawnTime
-    {
-        return (double)Instance._audioSource.timeSamples / Instance._audioSource.clip.frequency;
-    }
-
 
     public AudioSource AudioSource => _audioSource;
 

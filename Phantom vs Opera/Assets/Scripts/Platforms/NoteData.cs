@@ -22,9 +22,6 @@ public class NoteData
         this.noteOff = noteOff;
         this.strength = strength;
         this.noteName = noteName;
-        if (this.noteOn - spawnLead > 0)
-            this.spawnTime = this.noteOn - spawnLead;
-        else
-            this.spawnTime = 0;
+        this.spawnTime = this.noteOn - spawnLead;
     }
 }
