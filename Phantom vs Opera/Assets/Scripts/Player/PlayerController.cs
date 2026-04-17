@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
         private Vector3[] lanePositions; // is this correct - also do i add .normalized to the end ? - also can i just add this to the list above instead of having two separate lists? - delete 
         private Vector3 targetLanePosition; // is this correct - delete
         private int minLaneIndex;
-        private int maxLaneIndex;  //try to find better names for all these private variables - delete     
+        private int maxLaneIndex;  //try to think of better names for all these private variables - delete     
 
         private float lerpTimer = 0;
         private float lerpSpeed = 15f;
@@ -20,8 +20,6 @@ public class PlayerController : MonoBehaviour
     // Variables for Editable KeyCodes 
     [Space(10)]
     [Header("Z Axis Movements")]
-    // [SerializeField] private KeyCode _xLeftKeyCode = KeyCode.LeftArrow; // dont know if still need this - Delete 
-    // [SerializeField] private KeyCode _xRightKeyCode = KeyCode.RightArrow; // dont know if still need this - Delete 
     [SerializeField] private KeyCode _zFrontKeyCode = KeyCode.UpArrow;
     [SerializeField] private KeyCode _zBackKeyCode = KeyCode.DownArrow;
 
@@ -32,7 +30,7 @@ public class PlayerController : MonoBehaviour
     // Player's speed + force
     [Space(10)]
     [Header("Speed")]
-    [SerializeField] private float _playerSpeed = 5f;
+    [SerializeField] private float _playerSpeed = 5f; // can we delete ? - delete
 
     [Space(10)]
     [Header("Speed")]
@@ -70,7 +68,7 @@ public class PlayerController : MonoBehaviour
         }
 
             // Sort list along Z axis
-            lanePositionList.Sort((a, b) => a.z.CompareTo(b.z)); // double check if any other way to do this - delete 
+            lanePositionList.Sort((a, b) => a.z.CompareTo(b.z)); // double check if any better way to do this - delete 
 
             // Convert temporary list to Array 
             lanePositions = lanePositionList.ToArray();
@@ -89,7 +87,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(_zFrontKeyCode)) // double check this is for when key = pressed NOT held down - delete
         {
-            currentLaneIndex++; // dont know if this is right - delete 
+            currentLaneIndex++; // double check if this worked - delete 
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
             Debug.Log("Lane index: " + currentLaneIndex); // delete
