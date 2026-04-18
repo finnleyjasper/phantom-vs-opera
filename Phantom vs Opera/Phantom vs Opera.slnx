@@ -1,4 +1,5 @@
 ﻿<Solution>
+<<<<<<< Updated upstream
   <Project Path="Unity.Timeline.csproj" />
   <Project Path="Unity.RenderPipelines.GPUDriven.Runtime.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.csproj" />
@@ -20,6 +21,7 @@
   <Project Path="Unity.VisualStudio.Editor.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="PPv2URPConverters.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="Unity.Searcher.Editor.csproj" />
   <Project Path="UnityEditor.TestRunner.csproj" />
   <Project Path="Unity.VisualScripting.Core.csproj" />
@@ -36,7 +38,6 @@
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="Unity.VisualScripting.State.csproj" />
   <Project Path="Unity.AI.Navigation.Updater.csproj" />
-  <Project Path="Assembly-CSharp.csproj" />
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="Unity.RenderPipelines.Universal.2D.Editor.Overrides.csproj" />
   <Project Path="Unity.AI.Navigation.Editor.csproj" />
@@ -47,22 +48,8 @@
   <Project Path="Unity.Mathematics.Editor.csproj" />
   <Project Path="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
   <Project Path="UnityEditor.UI.Analytics.csproj" />
+=======
+  <Project Path="Assembly-CSharp.csproj" />
+>>>>>>> Stashed changes
   <Project Path="Assembly-CSharp-Editor.csproj" />
-  <Project Path="Unity.InputSystem.TestFramework.csproj" />
-  <Project Path="Unity.ShaderGraph.Utilities.csproj" />
-  <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
-  <Project Path="Unity.CollabProxy.Editor.csproj" />
-  <Project Path="Unity.RenderPipeline.Universal.ShaderLibrary.csproj" />
-  <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
-  <Project Path="Unity.RenderPipelines.Universal.Shaders.csproj" />
-  <Project Path="Unity.RenderPipelines.Core.Runtime.Shared.csproj" />
-  <Project Path="Unity.InternalAPIEngineBridge.004.csproj" />
-  <Project Path="Unity.RenderPipelines.Core.Editor.Shared.csproj" />
-  <Project Path="Unity.VisualScripting.DocCodeExamples.csproj" />
-  <Project Path="Unity.PlasticSCM.Editor.Entities.csproj" />
-  <Project Path="Unity.Rendering.LightTransport.Editor.csproj" />
-  <Project Path="Unity.Collections.Editor.csproj" />
-  <Project Path="Unity.RenderPipelines.Universal.Config.Runtime.csproj" />
-  <Project Path="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.csproj" />
-  <Project Path="Unity.RenderPipelines.Core.ShaderLibrary.csproj" />
 </Solution>

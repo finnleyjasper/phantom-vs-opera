@@ -5,20 +5,20 @@ public class PlatformManager : MonoBehaviour
 {
     public static PlatformManager Instance;
 
+    private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
+
     /// <summary>Fired once per platform right before it is destroyed at the despawn line (still valid).</summary>
     public static event System.Action<MusicPlatform> OnPlatformDespawning;
 
     [Header("Settings")]
     public float platformSpeed = 5f;
     public float platformLengthMultiplier = 2f; // makes length of platforms bigger - base from MIDI is a bit short
-    [Tooltip("Time in seconds between when the platform is spawned and when its note is heard in the music")] public float spawnLead;
-    // this allows us to spawn the platform off-screen and have it reach the FOV in time with the music
     public bool isPaused = false;
 
     [Header("Despawn")]
     public Transform despawnPoint; // platforms get destroyed when X <= this
 
-    private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
+    private float _travelTime; // time between spawn and when the platform reaches the player
 
     private void Awake()
     {
@@ -31,11 +31,35 @@ public class PlatformManager : MonoBehaviour
         {
             despawnPoint = GameObject.Find("PlatformDespawnPoint").transform;
         }
+
+        // find distance between spawner and player's x position
+        float spawnerX = GameObject.Find("PlatformSpawnPoint").transform.position.x;
+        float playerX = GameObject.Find("Player").transform.position.x;
+        if (spawnerX == null || playerX == null)
+        {
+            Debug.LogError("Player or PlatformSpawner's X position not found. PlatformManager can not calculate distance.");
+        }
+
+        float distance = spawnerX - playerX;
+        _travelTime = distance / platformSpeed;
+
+        Debug.Log("It will take " + _travelTime + " seconds to reach the player.");
+
     }
 
     private void Update()
     {
         HandlePlatformDespawn();
+    }
+
+    public void Pause(bool shouldPause)
+    {
+        foreach (var platform in activePlatforms)
+        {
+            platform.Pause(shouldPause);
+        }
+
+        isPaused = shouldPause;
     }
 
     public float GetSpeed()
@@ -69,4 +93,6 @@ public class PlatformManager : MonoBehaviour
             }
         }
     }
+
+    public float TravelTime => _travelTime;
 }

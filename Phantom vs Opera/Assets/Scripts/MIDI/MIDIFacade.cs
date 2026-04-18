@@ -4,6 +4,7 @@ using Melanchall.DryWetMidi.Interaction;
 using Unity.VisualScripting;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MIDIFacade : MonoBehaviour
 {
@@ -24,8 +25,7 @@ public class MIDIFacade : MonoBehaviour
 
     [Header("Settings")]
     [Tooltip("Name of the file within StreamingAssets")]public string fileName; // MidiFile.Read() requires a path (string), so we need the filename
-    [SerializeField] private AudioClip _audioFile; // unity can't play MIDI, so we need a .wav/ .mp3 file to play
-    private AudioSource audioSource;
+
      private void Awake()
     {
         // enforce singleton
@@ -47,21 +47,6 @@ public class MIDIFacade : MonoBehaviour
 
     void Start()
     {
-        // if there's no audio source assigned, try to find one in the scene
-        if (audioSource == null)
-        {
-            audioSource = FindFirstObjectByType<AudioSource>();
-            if (audioSource == null && debugMode)
-            {
-                Debug.LogError("AudioSource not assigned in MIDIFacade and none found in scene.");
-                return;
-            }
-            else
-            {
-                Debug.Log("AudioSource automatically assigned from scene.");
-            }
-        }
-
         _midiFile = _midiLoader.LoadMIDI(fileName);
         if (debugMode)
         {
@@ -87,7 +72,7 @@ public class MIDIFacade : MonoBehaviour
                 string notesInfo = "Following NoteData parsed successfully: ";
                 foreach (var note in _noteDataList)
                 {
-                    notesInfo += note.noteName + " at pitch" + note.pitch + ", ";
+                    notesInfo += note.noteName + " on track " + note.track + ", ";
                 }
                 Debug.Log(notesInfo.TrimEnd(',', ' '));
             }
@@ -101,21 +86,12 @@ public class MIDIFacade : MonoBehaviour
         return _noteDataList;
     }
 
-    public void StartSong()
-    {
-        audioSource.clip = _audioFile;
-        audioSource.Play();
+    // Unused for now - possibly useful depending on how the design team wants to contol tracks
 
-        if (debugMode)
-        {
-            Debug.Log("Audio source started playing: " + audioSource.clip.name);
-        }
-    }
-
-    public double GetAudioSourceTime() // get the current time of the audio source in seconds - checked against NoteData.spawnTime
+    /* public float GetAvailibleTracks()
     {
-        return (double)Instance.audioSource.timeSamples / Instance.audioSource.clip.frequency;
-    }
+        return _midiFile.GetTrackChunks().Count();
+    } */
 
     // Properties
     public int MinPitch => _minPitch;
