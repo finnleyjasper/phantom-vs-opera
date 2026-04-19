@@ -2181,8 +2181,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
-      propertyPath: FallenPunishment
-      value: 10
+      propertyPath: LandingBonus
+      value: 6.6666665
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _levelStartDelay

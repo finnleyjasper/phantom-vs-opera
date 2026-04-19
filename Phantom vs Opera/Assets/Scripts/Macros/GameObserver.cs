@@ -5,6 +5,10 @@ public class GameObserver : MonoBehaviour
 {
     [HideInInspector] public static GameObserver Instance;
 
+    private bool _wasOnPlatform;
+    private float _leftPlatformAt = -1f;
+    private bool _fallOffPenaltyApplied;
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -34,9 +38,66 @@ public class GameObserver : MonoBehaviour
         {
             CheckForGameOver();
 
+            ProcessAudienceSupport();
             CheckFallenPlayer();
-            CheckPlayerOnPlatform();
         }
+    }
+
+    /// <summary>Call when a level starts so landing/fall tracking matches the reset player.</summary>
+    public void ResetAudiencePlatformState()
+    {
+        _wasOnPlatform = false;
+        _leftPlatformAt = -1f;
+        _fallOffPenaltyApplied = false;
+    }
+
+    /// <summary>Floor teleport: applies LandingBonus × 1.5 once if fall-off was not already applied this air segment.</summary>
+    public void ApplyFloorFallPenalty()
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null || gm.AudienceSupport == null) return;
+        if (_fallOffPenaltyApplied) return;
+        gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
+        _fallOffPenaltyApplied = true;
+        _leftPlatformAt = -1f;
+    }
+
+    private void ProcessAudienceSupport()
+    {
+        GameManager gm = GameManager.Instance;
+        Player player = gm.Player;
+        if (player == null) return;
+
+        bool on = player.IsOnPlatform;
+
+        if (on && !_wasOnPlatform)
+        {
+            gm.AudienceSupport.ManageAudienceSupport(gm.LandingBonus);
+            _leftPlatformAt = -1f;
+            _fallOffPenaltyApplied = false;
+        }
+
+        if (!on && _wasOnPlatform)
+        {
+            _leftPlatformAt = Time.time;
+            _fallOffPenaltyApplied = false;
+        }
+
+        if (!on && _leftPlatformAt >= 0f && !_fallOffPenaltyApplied)
+        {
+            if (Time.time - _leftPlatformAt >= gm.PlatformLeaveGraceSeconds)
+            {
+                gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
+                _fallOffPenaltyApplied = true;
+            }
+        }
+
+        if (on)
+            gm.AudienceSupport.ManageAudienceSupport(gm.IncreasePerSecond * Time.deltaTime);
+        else
+            gm.AudienceSupport.ManageAudienceSupport(-(gm.DecreasePerSecond * Time.deltaTime));
+
+        _wasOnPlatform = on;
     }
 
 
@@ -66,18 +127,6 @@ public class GameObserver : MonoBehaviour
         if (GameManager.Instance.Player.FellOnFloor)
         {
             GameManager.Instance.HandlePlayerFall();
-        }
-    }
-
-    private void CheckPlayerOnPlatform()
-    {
-        if (GameManager.Instance.Player.IsOnPlatform == true) // increase audience support
-        {
-            GameManager.Instance.AudienceSupport.ManageAudienceSupport(GameManager.Instance.IncreasePerSecond * Time.fixedDeltaTime);
-        }
-        else // decrease audience support
-        {
-            GameManager.Instance.AudienceSupport.ManageAudienceSupport(-(GameManager.Instance.DecreasePerSecond * Time.fixedDeltaTime));
         }
     }
 
