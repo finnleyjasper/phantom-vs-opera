@@ -68,7 +68,6 @@ public class PlatformSpawner : MonoBehaviour
             // spwawn only for active track OR if track == 0, spawn all
             if (note.track == GameManager.Instance.CurrentTrack || GameManager.Instance.CurrentTrack == 0) // spwawn only for active track
             {
-                Debug.Log("Note spawned at: " + note.spawnTime + " and GameTime: " + GameManager.Instance.GameTime);
                 SpawnNote(note);
             }
         }

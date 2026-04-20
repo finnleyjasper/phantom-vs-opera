@@ -208,8 +208,8 @@ public class GameManager : MonoBehaviour
 
     public void SwitchTempo(float multiplier)
     {
-        _currentTempoMultiplier = _currentTempoMultiplier = Mathf.Max(0.01f, multiplier); // cant be less than 0 and stop the music/game
-        AudioManager.Instance.SwitchTempo(multiplier);
+        _currentTempoMultiplier = Mathf.Max(0.01f, multiplier); // cant be less than 0 and stop the music/game
+        AudioManager.Instance.SwitchTempo(_currentTempoMultiplier);
         PlatformManager.Instance.ApplyTempoChange(); // speed?
     }
 

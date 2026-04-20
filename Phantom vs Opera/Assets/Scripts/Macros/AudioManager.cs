@@ -1,4 +1,6 @@
+
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
@@ -10,6 +12,8 @@ public class AudioManager : MonoBehaviour
 
     [SerializeField] private AudioClip[] _songTracks; // all the different isolated tracks
 
+    [SerializeField] private AudioMixer _pitchShifter; // an audio mixer that normalises the pitch after a tempo change
+    [SerializeField] private string _pitchShifterParameter = "AudioPitch";
 
     private void Awake()
     {
@@ -33,9 +37,12 @@ public class AudioManager : MonoBehaviour
                 return;
             }
         }
-
+        if (_pitchShifter == null)
+        {
+            Debug.LogWarning("No pitch shifter assigned!");
+            return;
+        }
          _audioSource.clip = _song;
-
     }
 
     public void StartSong()
@@ -70,7 +77,19 @@ public class AudioManager : MonoBehaviour
 
     public void SwitchTempo(float multiplier)
     {
-        _audioSource.pitch = multiplier; // CHANGE LATER TO FIX AUDIO
+        multiplier = Mathf.Max(0.01f, multiplier);
+
+        float compensatedPitch = 1f / multiplier;
+        compensatedPitch = Mathf.Clamp(compensatedPitch, 0.5f, 2f);
+
+        bool pitchWasSet = _pitchShifter.SetFloat(_pitchShifterParameter, compensatedPitch);
+        if (!pitchWasSet)
+        {
+            Debug.LogWarning($"AudioManager could not set mixer parameter '{_pitchShifterParameter}'. Make sure the Pitch Shifter Pitch value is exposed with this exact name.");
+        }
+
+        _audioSource.pitch = multiplier;
+        Debug.Log("Audio changed tempo");
     }
 
     public AudioSource AudioSource => _audioSource;
