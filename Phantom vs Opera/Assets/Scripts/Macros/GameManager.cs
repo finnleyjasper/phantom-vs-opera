@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
     [SerializeField] private float _currentTrack = 0; // refers to the current track - 0 is all
+    [SerializeField] private float _currentTempoMultiplier = 1f; // pos or neg number to slow or speed up the song/game
 
     [Space(10)]
     [Header("Audience Support Settings")]
@@ -60,7 +61,7 @@ public class GameManager : MonoBehaviour
         if (_currentGameState == GameState.Play)
         {
             // used to time platform spawning - in GameManager so Pause() and Play() still work
-            _gameTime += Time.deltaTime;
+            _gameTime += Time.deltaTime * _currentTempoMultiplier;
         }
     }
 
@@ -205,6 +206,13 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTrack(track);
     }
 
+    public void SwitchTempo(float multiplier)
+    {
+        _currentTempoMultiplier = _currentTempoMultiplier = Mathf.Max(0.01f, multiplier); // cant be less than 0 and stop the music/game
+        AudioManager.Instance.SwitchTempo(multiplier);
+        PlatformManager.Instance.ApplyTempoChange(); // speed?
+    }
+
     private void SetGameState(GameState newState)
     {
         _currentGameState = newState;
@@ -217,5 +225,6 @@ public class GameManager : MonoBehaviour
     public AudienceSupport AudienceSupport => _audienceSupport;
     public float CurrentTrack => _currentTrack;
     public float GameTime => _gameTime;
+    public float CurrentTempoMultiplier => _currentTempoMultiplier;
 
 }

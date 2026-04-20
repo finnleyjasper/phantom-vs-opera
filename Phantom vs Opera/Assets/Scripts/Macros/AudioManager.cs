@@ -68,6 +68,11 @@ public class AudioManager : MonoBehaviour
 
     }
 
+    public void SwitchTempo(float multiplier)
+    {
+        _audioSource.pitch = multiplier; // CHANGE LATER TO FIX AUDIO
+    }
+
     public AudioSource AudioSource => _audioSource;
 
 }

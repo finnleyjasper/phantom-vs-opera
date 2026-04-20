@@ -11,7 +11,8 @@ public class PlatformManager : MonoBehaviour
     public static event System.Action<MusicPlatform> OnPlatformDespawning;
 
     [Header("Settings")]
-    public float platformSpeed = 5f;
+    [SerializeField]private float defaultPlatformSpeed = 5f;
+    private float currentPlatformSpeed;
     public float platformLengthMultiplier = 2f; // makes length of platforms bigger - base from MIDI is a bit short
     public bool isPaused = false;
 
@@ -40,10 +41,9 @@ public class PlatformManager : MonoBehaviour
             Debug.LogError("Player or PlatformSpawner's X position not found. PlatformManager can not calculate distance.");
         }
 
+        currentPlatformSpeed = defaultPlatformSpeed;
         float distance = spawnerX - playerX;
-        _travelTime = distance / platformSpeed;
-
-        Debug.Log("It will take " + _travelTime + " seconds to reach the player.");
+        _travelTime = distance / currentPlatformSpeed;
 
     }
 
@@ -64,7 +64,7 @@ public class PlatformManager : MonoBehaviour
 
     public float GetSpeed()
     {
-        return isPaused ? 0f : platformSpeed;
+        return isPaused ? 0f : currentPlatformSpeed;
     }
 
     public void RegisterPlatform(MusicPlatform platform)
@@ -92,6 +92,11 @@ public class PlatformManager : MonoBehaviour
                 activePlatforms.RemoveAt(i);
             }
         }
+    }
+
+    public void ApplyTempoChange()
+    {
+        currentPlatformSpeed = defaultPlatformSpeed * GameManager.Instance.CurrentTempoMultiplier;
     }
 
     public float TravelTime => _travelTime;
