@@ -2409,7 +2409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _noteTimingPadding
-      value: -0.1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5683869219787908381, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: Loop

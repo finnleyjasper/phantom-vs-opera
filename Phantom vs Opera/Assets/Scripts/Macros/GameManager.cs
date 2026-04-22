@@ -4,7 +4,6 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    // Over engineered atm but will be useful later...?
     public enum GameState
     {
         Menu,
@@ -13,6 +12,8 @@ public class GameManager : MonoBehaviour
         Win,
         Lose
     }
+
+    private int _act = 1; // which "Act" the game is in
 
     [Header("Scenes")]
     public string MainMenuSceneName;
@@ -172,6 +173,13 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTrack(track);
     }
 
+    public void SwitchAct(int act)
+    {
+        _act = act;
+        SceneManager.LoadScene("Act " + act);
+        _currentGameState = GameState.Play;
+    }
+
     private void SetGameState(GameState newState)
     {
         _currentGameState = newState;
@@ -184,5 +192,6 @@ public class GameManager : MonoBehaviour
     public AudienceSupport AudienceSupport => _audienceSupport;
     public float CurrentTrack => _currentTrack;
     public float GameTime => _gameTime;
+    public int CurrentAct => _act;
 
 }
