@@ -4,7 +4,6 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    // Over engineered atm but will be useful later...?
     public enum GameState
     {
         Menu,
@@ -13,6 +12,8 @@ public class GameManager : MonoBehaviour
         Win,
         Lose
     }
+
+    private int _act = 1; // which "Act" the game is in
 
     [Header("Scenes")]
     public string MainMenuSceneName;
@@ -111,19 +112,7 @@ public class GameManager : MonoBehaviour
         // Apply fall punishment
         _audienceSupport.ManageAudienceSupport(-FallenPunishment);
 
-        // Find safe platform
-        MusicPlatform safePlatform = FindSafePlatform();
-
-        if (safePlatform != null)
-        {
-            Vector3 safePos = safePlatform.transform.position;
-            safePos.y += 2.5f; // height above platform
-            _player.transform.position = safePos;
-        }
-        else
-        {
-            Debug.LogWarning("No safe platform found!");
-        }
+        _player.Reset();
 
         // Wait so player can react
         yield return new WaitForSeconds(1.5f);
@@ -136,27 +125,6 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.Play);
 
         _isTeleporting = false;
-    }
-
-    private MusicPlatform FindSafePlatform()
-    {
-        MusicPlatform[] platforms = FindObjectsByType<MusicPlatform>(FindObjectsSortMode.None);
-
-        MusicPlatform best = null;
-        float bestDistance = float.MaxValue;
-
-        foreach (var p in platforms)
-        {
-            float dist = Mathf.Abs(p.transform.position.x - _player.transform.position.x);
-
-            if (dist < bestDistance)
-            {
-                bestDistance = dist;
-                best = p;
-            }
-        }
-
-        return best;
     }
 
     public void HandlePlayerFall()
@@ -212,6 +180,13 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTempo(_currentTempoMultiplier);
         PlatformManager.Instance.ApplyTempoChange(); // speed?
     }
+    
+    public void SwitchAct(int act)
+    {
+        _act = act;
+        SceneManager.LoadScene("Act " + act);
+        _currentGameState = GameState.Play;
+    }
 
     private void SetGameState(GameState newState)
     {
@@ -226,5 +201,6 @@ public class GameManager : MonoBehaviour
     public float CurrentTrack => _currentTrack;
     public float GameTime => _gameTime;
     public float CurrentTempoMultiplier => _currentTempoMultiplier;
+    public int CurrentAct => _act;
 
 }

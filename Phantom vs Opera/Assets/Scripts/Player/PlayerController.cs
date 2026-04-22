@@ -11,11 +11,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int currentLaneIndex = 3; // change so it automatically finds the lane index - delete
         private Vector3[] lanePositions; // is this correct - also do i add .normalized to the end ? - also can i just add this to the list above instead of having two separate lists? - delete 
         private Vector3 targetLanePosition; // is this correct - delete
+        private Player _player;
         private int minLaneIndex;
         private int maxLaneIndex;  //try to think of better names for all these private variables - delete     
 
         private float lerpTimer = 0;
         private float lerpSpeed = 15f;
+        private bool _isSlamming;
+        private bool _isRidingPlatform;
+        private Transform _currentPlatform;
+
 
     // Variables for Editable KeyCodes 
     [Space(10)]
@@ -24,17 +29,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private KeyCode _zBackKeyCode = KeyCode.DownArrow;
 
     [Space(10)]
-    [Header("Jump Keycode")]
-    [SerializeField] private KeyCode _jumpKeyCode = KeyCode.Space;
+    [Header("Slamming")]
+    [SerializeField] private float _slamSpeed = 25f;
+    [SerializeField] private float _returnSpeed = 15f;
 
     // Player's speed + force
     [Space(10)]
     [Header("Speed")]
     [SerializeField] private float _playerSpeed = 5f; // can we delete ? - delete
 
-    [Space(10)]
-    [Header("Speed")]
-    [SerializeField] private float _playerForce = 300f;
 
     // Varibale to get Player's RigidBody Component
         private Rigidbody _player_RigidBody;
@@ -49,6 +52,10 @@ public class PlayerController : MonoBehaviour
     }
     ***/
 
+    public void StopSlam()
+    {
+        _isSlamming = false;
+    }
     // Method to get Lane Positions 
     public void FindLanePositions() // find better name - delete
     {
@@ -84,7 +91,12 @@ public class PlayerController : MonoBehaviour
     }
 
     private void PlayerInput()
-    {
+    {        
+        if (GameManager.Instance.CurrentGameState != GameManager.GameState.Play)
+        {
+            return;
+        }
+
         if (Input.GetKeyDown(_zFrontKeyCode)) // double check this is for when key = pressed NOT held down - delete
         {
             currentLaneIndex++; // double check if this worked - delete 
@@ -100,6 +112,16 @@ public class PlayerController : MonoBehaviour
             targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
             Debug.Log("Lane index: " + currentLaneIndex); // delete
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            _isSlamming = true;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            _isSlamming = false;
+        }
     }
 
     public void LerpLaneMovement()
@@ -113,17 +135,67 @@ public class PlayerController : MonoBehaviour
         _player_RigidBody.MovePosition(lerpedPosition); // is this ok - delete
     }
 
-    public void PlayerJump()
+    private void HandleVerticalMovement()
     {
-        if (Input.GetKeyDown(_jumpKeyCode))
+        Vector3 pos = _player_RigidBody.position;
+
+        // start riding
+        if (_isSlamming && !_isRidingPlatform && _player.IsOnPlatform)
         {
-            _player_RigidBody.AddForce(Vector3.up  * _playerForce);
+            _isRidingPlatform = true;
+            _currentPlatform = _player.CurrentPlatform;
         }
+
+        //  riding platform
+        if (_isRidingPlatform)
+        {
+            // If no longer actually on a platform fall
+            if (!_player.IsOnPlatform)
+            {
+                _isRidingPlatform = false;
+                _currentPlatform = null;
+            }
+            else
+            {
+                // Stick to platform
+                Vector3 platformPos = _currentPlatform.position;
+
+                pos.y = platformPos.y + 2.6f;
+                pos.x = _player_RigidBody.position.x; // keep X fixed
+                pos.z = platformPos.z;
+
+                // Let go → stop riding
+                if (!_isSlamming)
+                {
+                    _isRidingPlatform = false;
+                    _currentPlatform = null;
+                }
+
+                _player_RigidBody.MovePosition(pos);
+                return;
+            }
+        }
+
+        // slamming down
+        if (_isSlamming)
+        {
+            pos.y -= _slamSpeed * Time.fixedDeltaTime;
+        }
+        else
+        {
+            // return to start height when not slamming
+            float targetY = _player.StartPosition.y;
+            pos.y = Mathf.Lerp(pos.y, targetY, _returnSpeed * Time.fixedDeltaTime);
+        }
+
+        _player_RigidBody.MovePosition(pos);
     }
+
 
     void Start()
     {
         _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
+        _player = GetComponent<Player>();
         FindLanePositions();
         targetLanePosition = lanePositions[currentLaneIndex]; // Get Player's current lane position
 
@@ -133,12 +205,11 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         PlayerInput();
-        PlayerJump();
     }
 
     void FixedUpdate()
     {
         LerpLaneMovement();
-        // PlayerMove(); // Remove eventually - delete
+        HandleVerticalMovement();
     }
 }
