@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
     {
         _isSlamming = false;
     }
+    
     // Method to get Lane Positions 
     public void FindLanePositions() // find better name - delete
     {
@@ -70,7 +71,7 @@ public class PlayerController : MonoBehaviour
             if (lane != null) // necessary ? - delete 
             {
                 lanePositionList.Add(lane.transform.position); // wanna check that it's ading the ones closest to left to right ?? double check it's in that progressive order - make sure it's sorted correctly - delete
-                Debug.Log(lane.transform.position); // debug - delete 
+                Debug.Log($"Adding lane at: {lane.transform.position}"); // debug - delete 
             }
         }
 
@@ -102,7 +103,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex++; // double check if this worked - delete 
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
-            Debug.Log("Lane index: " + currentLaneIndex); // delete
+            Debug.Log($"Current Lane: {currentLaneIndex}, {lanePositions[currentLaneIndex]}, Target Position: {targetLanePosition}"); // delete
         }
 
         if (Input.GetKeyDown(_zBackKeyCode))
@@ -110,7 +111,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex--; // dont know what to put here - delete
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex]; // ist his right? - delete
-            Debug.Log("Lane index: " + currentLaneIndex); // delete
+            Debug.Log($"Current Lane: {currentLaneIndex}, {lanePositions[currentLaneIndex]}, Target Position: {targetLanePosition}"); // delete
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -204,7 +205,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        PlayerInput();
+        PlayerInput(); // should I move to FixedUP - delete
     }
 
     void FixedUpdate()

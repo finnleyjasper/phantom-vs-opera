@@ -491,6 +491,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 219094826}
     m_Modifications:
+    - target: {fileID: 2615160718385125271, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
+      propertyPath: m_TagString
+      value: Lane
+      objectReference: {fileID: 0}
     - target: {fileID: 5362579685574238625, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -534,6 +538,10 @@ PrefabInstance:
     - target: {fileID: 7625545751943895151, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
       propertyPath: m_Name
       value: Lanes
+      objectReference: {fileID: 0}
+    - target: {fileID: 7625545751943895151, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
+      propertyPath: m_TagString
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3438,8 +3446,8 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 732715710}
   - {fileID: 1924624261}
+  - {fileID: 732715710}
   - {fileID: 219094826}
   - {fileID: 1198683056}
   - {fileID: 1592796516}
