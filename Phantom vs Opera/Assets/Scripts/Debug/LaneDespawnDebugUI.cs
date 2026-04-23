@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// F1 toggles left/right debug panels. Left: last despawn per lane. Right: latest spawn per lane + audience tuning under that log.
+/// F1 toggles left/right debug panels. Left: last despawn per lane, audio track + current track. Right: latest spawn per lane, audience tuning, and last fixed-step audience Δ.
 /// </summary>
 public class LaneDespawnDebugUI : MonoBehaviour
 {
@@ -12,11 +12,15 @@ public class LaneDespawnDebugUI : MonoBehaviour
     [SerializeField] private float _panelWidth = 340f;
     [SerializeField] private int _canvasSortOrder = 125;
 
+    private const float TrackSwitchUiScale = 1.25f;
+
     private Canvas _rootCanvas;
     private TextMeshProUGUI[] _laneTexts;
     private TextMeshProUGUI[] _spawnLaneTexts;
     private TextMeshProUGUI _landingBonusLine;
     private TextMeshProUGUI _ridingGainPerSecondLine;
+    private TextMeshProUGUI _lastAudienceDeltaLine;
+    private TextMeshProUGUI _currentTrackLine;
     private int _laneCount;
     private bool _visible;
 
@@ -61,8 +65,13 @@ public class LaneDespawnDebugUI : MonoBehaviour
             SetPanelsVisible(_visible);
         }
 
-        if (_visible && _landingBonusLine != null)
-            RefreshAudienceSupportParams();
+        if (_visible)
+        {
+            if (_landingBonusLine != null)
+                RefreshAudienceSupportParams();
+            if (_currentTrackLine != null)
+                RefreshCurrentTrackLine();
+        }
     }
 
     private void SetPanelsVisible(bool visible)
@@ -148,6 +157,27 @@ public class LaneDespawnDebugUI : MonoBehaviour
             _laneTexts[i] = row;
         }
 
+        var trackSectionTitle = CreateTmpText(leftPanel, "TrackSectionTitle", "Audio track", 22, FontStyles.Bold);
+        var trackSectionTitleLe = trackSectionTitle.gameObject.AddComponent<LayoutElement>();
+        trackSectionTitleLe.preferredHeight = 36f;
+
+        Color trackMetaMuted = new Color(0.85f, 0.9f, 1f);
+        const float trackMetaFont = 17f;
+        _currentTrackLine = CreateTmpText(leftPanel, "CurrentTrackLine", "Current track: —", trackMetaFont, FontStyles.Normal);
+        _currentTrackLine.color = trackMetaMuted;
+        _currentTrackLine.enableWordWrapping = true;
+        var currentTrackLe = _currentTrackLine.gameObject.AddComponent<LayoutElement>();
+        currentTrackLe.minHeight = 22f;
+        currentTrackLe.preferredHeight = 26f;
+
+        BuildTrackSwitchRow(leftPanel);
+
+        var leftBottomSpacer = new GameObject("LeftPanelBottomSpacer");
+        leftBottomSpacer.transform.SetParent(leftPanel, false);
+        var leftBottomSpacerLe = leftBottomSpacer.AddComponent<LayoutElement>();
+        leftBottomSpacerLe.flexibleHeight = 1f;
+        leftBottomSpacerLe.minHeight = 0f;
+
         var rightPanelVlg = rightPanel.gameObject.AddComponent<VerticalLayoutGroup>();
         ApplyPanelContentVerticalLayout(rightPanelVlg);
 
@@ -185,6 +215,114 @@ public class LaneDespawnDebugUI : MonoBehaviour
         var ridingLe = _ridingGainPerSecondLine.gameObject.AddComponent<LayoutElement>();
         ridingLe.minHeight = 24f;
         ridingLe.preferredHeight = 28f;
+
+        _lastAudienceDeltaLine = CreateTmpText(rightPanel, "LastAudienceDeltaLine",
+            "Last fixed-step audience Δ: —", audienceFont, FontStyles.Normal);
+        _lastAudienceDeltaLine.color = audienceMuted;
+        _lastAudienceDeltaLine.enableWordWrapping = true;
+        var lastDeltaLe = _lastAudienceDeltaLine.gameObject.AddComponent<LayoutElement>();
+        lastDeltaLe.minHeight = 24f;
+        lastDeltaLe.preferredHeight = 40f;
+    }
+
+    /// <summary>Matches <see cref="AudioManager.SwitchTrack"/>: 0 = full mix, 1–4 = isolated stems.</summary>
+    private void BuildTrackSwitchRow(RectTransform leftPanel)
+    {
+        var root = new GameObject("TrackSwitchRow");
+        root.transform.SetParent(leftPanel, false);
+
+        var vlg = root.AddComponent<VerticalLayoutGroup>();
+        vlg.childAlignment = TextAnchor.UpperCenter;
+        vlg.spacing = 6f * TrackSwitchUiScale;
+        vlg.padding = new RectOffset(0, 0, 0, 0);
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = true;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+
+        var rootLe = root.AddComponent<LayoutElement>();
+        rootLe.minHeight = 104f * TrackSwitchUiScale;
+        rootLe.preferredHeight = 112f * TrackSwitchUiScale;
+
+        Transform row12 = CreateTrackSwitchHRow(root.transform, "TrackRow12");
+        CreateTrackSwitchButton(row12, "TrackSwitch_1", "1", 1f);
+        CreateTrackSwitchButton(row12, "TrackSwitch_2", "2", 2f);
+
+        Transform row34 = CreateTrackSwitchHRow(root.transform, "TrackRow34");
+        CreateTrackSwitchButton(row34, "TrackSwitch_3", "3", 3f);
+        CreateTrackSwitchButton(row34, "TrackSwitch_4", "4", 4f);
+
+        Transform rowAll = CreateTrackSwitchHRow(root.transform, "TrackRowAll");
+        CreateTrackSwitchButton(rowAll, "TrackSwitch_0", "All", 0f);
+    }
+
+    private static Transform CreateTrackSwitchHRow(Transform parent, string name)
+    {
+        var rowGo = new GameObject(name);
+        rowGo.transform.SetParent(parent, false);
+
+        var hlg = rowGo.AddComponent<HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.spacing = 4f * TrackSwitchUiScale;
+        hlg.childControlWidth = true;
+        hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = true;
+        hlg.childForceExpandHeight = false;
+
+        var rowLe = rowGo.AddComponent<LayoutElement>();
+        rowLe.minHeight = 30f * TrackSwitchUiScale;
+        rowLe.preferredHeight = 32f * TrackSwitchUiScale;
+
+        return rowGo.transform;
+    }
+
+    private void CreateTrackSwitchButton(Transform parent, string name, string label, float trackIndex)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+
+        var img = go.AddComponent<Image>();
+        img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+        img.type = Image.Type.Sliced;
+        img.color = new Color(0.22f, 0.24f, 0.32f, 0.95f);
+
+        var btn = go.AddComponent<Button>();
+        btn.targetGraphic = img;
+        ColorBlock colors = btn.colors;
+        colors.highlightedColor = new Color(0.38f, 0.42f, 0.52f, 1f);
+        colors.pressedColor = new Color(0.14f, 0.16f, 0.22f, 1f);
+        btn.colors = colors;
+
+        float captured = trackIndex;
+        btn.onClick.AddListener(() => OnTrackSwitchClicked(captured));
+
+        var le = go.AddComponent<LayoutElement>();
+        le.flexibleWidth = 1f;
+        le.minHeight = 28f * TrackSwitchUiScale;
+        le.preferredHeight = 32f * TrackSwitchUiScale;
+
+        var textGo = new GameObject("Label");
+        textGo.transform.SetParent(go.transform, false);
+        var textRt = textGo.AddComponent<RectTransform>();
+        textRt.anchorMin = Vector2.zero;
+        textRt.anchorMax = Vector2.one;
+        textRt.offsetMin = Vector2.zero;
+        textRt.offsetMax = Vector2.zero;
+
+        var tmp = textGo.AddComponent<TextMeshProUGUI>();
+        tmp.text = label;
+        tmp.fontSize = 14f * TrackSwitchUiScale;
+        tmp.fontStyle = FontStyles.Bold;
+        tmp.alignment = TextAlignmentOptions.Center;
+        tmp.color = Color.white;
+        tmp.raycastTarget = false;
+    }
+
+    private static void OnTrackSwitchClicked(float track)
+    {
+        if (GameManager.Instance == null)
+            return;
+        GameManager.Instance.SwitchTrack(track);
     }
 
     private static void ApplyPanelContentVerticalLayout(VerticalLayoutGroup vlg)
@@ -207,12 +345,43 @@ public class LaneDespawnDebugUI : MonoBehaviour
         {
             _landingBonusLine.text = "Landing bonus (on touch): —";
             _ridingGainPerSecondLine.text = "Riding gain per second: —";
+            if (_lastAudienceDeltaLine != null)
+                _lastAudienceDeltaLine.text = "Last fixed-step audience Δ: —";
             return;
         }
 
         GameManager gm = GameManager.Instance;
         _landingBonusLine.text = $"Landing bonus (on touch): {gm.LandingBonus:F2}";
         _ridingGainPerSecondLine.text = $"Riding gain per second: {gm.IncreasePerSecond:F2}";
+
+        if (_lastAudienceDeltaLine == null)
+            return;
+
+        if (gm.CurrentGameState != GameManager.GameState.Play || GameObserver.Instance == null)
+        {
+            _lastAudienceDeltaLine.text = "Last fixed-step audience Δ: —";
+            return;
+        }
+
+        float d = GameObserver.Instance.LastFixedStepAudienceDelta;
+        float fdt = Time.fixedDeltaTime;
+        float perSec = fdt > 1e-5f ? d / fdt : 0f;
+        _lastAudienceDeltaLine.text = $"Last fixed-step audience Δ: {d:+#0.000;-#0.000;0.000} " +
+            $"(~{perSec:+#0.0;-#0.0;0.0} /s if sustained)";
+    }
+
+    private void RefreshCurrentTrackLine()
+    {
+        if (_currentTrackLine == null)
+            return;
+
+        if (GameManager.Instance == null)
+        {
+            _currentTrackLine.text = "Current track: —";
+            return;
+        }
+
+        _currentTrackLine.text = "Current track: " + GameManager.Instance.CurrentTrack;
     }
 
     private RectTransform CreateSidePanel(Transform parent, string name, bool left)

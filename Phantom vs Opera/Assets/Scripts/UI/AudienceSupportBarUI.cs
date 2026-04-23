@@ -48,7 +48,8 @@ public class AudienceSupportBarUI : MonoBehaviour
     // Method to Update Audience Bar Text
     private void UpdateText()
     {
-        _text.text = "Audience Support: " + _audienceSupport.AudienceSupportValue;
+        int total = Mathf.RoundToInt(_audienceSupport.AudienceSupportValue);
+        _text.text = "Audience Support: " + total;
     }
 
 }
