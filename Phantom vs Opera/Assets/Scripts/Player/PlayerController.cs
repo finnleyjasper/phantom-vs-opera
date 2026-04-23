@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     //    private float _zMovement = 0; // dont know if still need these two - Delete 
 
     [Header("Lanes")] // is this necessary? - delete 
-    [SerializeField] private int currentLaneIndex = 3; // change so it automatically finds the lane index - delete
+    [SerializeField] private int currentLaneIndex = 3; // change so it automatically finds the lane index - Can just get the position of player from start? - delete 
         private Vector3[] lanePositions; // is this correct - also do i add .normalized to the end ? - also can i just add this to the list above instead of having two separate lists? - delete 
         private Vector3 targetLanePosition; // is this correct - delete
         private Player _player;
