@@ -84,14 +84,15 @@ public class GameObserver : MonoBehaviour
             _fallOffPenaltyApplied = false;
         }
 
-        if (!on && _leftPlatformAt >= 0f && !_fallOffPenaltyApplied)
+        // This results in the player being penalised when they leave a platform...??? Delete I think (Finn)
+        /*if (!on && _leftPlatformAt >= 0f && !_fallOffPenaltyApplied)
         {
             if (Time.time - _leftPlatformAt >= gm.PlatformLeaveGraceSeconds)
             {
                 gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
                 _fallOffPenaltyApplied = true;
             }
-        }
+        }*/
 
         if (on)
             gm.AudienceSupport.ManageAudienceSupport(gm.IncreasePerSecond * Time.deltaTime);
