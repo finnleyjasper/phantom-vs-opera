@@ -34,9 +34,13 @@ public class GameManager : MonoBehaviour
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
     public float MaxAudienceSupport = 100f; // win condition
-    public float IncreasePerSecond = 5.0f; // how much audience support increases per second when player is on platform
+    [Tooltip("Audience support gained once each time the player lands on a platform (air → platform).")]
+    public float LandingBonus = 3f;
+    [Tooltip("Audience support gained per second while the player stays on a platform.")]
+    public float IncreasePerSecond = 5.0f;
     public float DecreasePerSecond = 0.5f; // how much audience support decreases per second when player is not on platform
-    public float FallenPunishment = 10f; // how much audience support decreases when player falls on floor
+    [Tooltip("Seconds in the air after leaving a platform before 'fall off' applies. Shorter hops ignore the fall-off penalty.")]
+    public float PlatformLeaveGraceSeconds = 0.25f;
 
     private Player _player;
     private AudienceSupport _audienceSupport;
@@ -87,6 +91,8 @@ public class GameManager : MonoBehaviour
 
         _player.Reset();
         _audienceSupport.ManageAudienceSupport(StartingAudienceSupport); // reset audience support value
+        if (GameObserver.Instance != null)
+            GameObserver.Instance.ResetAudiencePlatformState();
 
         StartCoroutine(StartMusic());
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
@@ -109,8 +115,10 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
 
-        // Apply fall punishment
-        _audienceSupport.ManageAudienceSupport(-FallenPunishment);
+        if (GameObserver.Instance != null)
+            GameObserver.Instance.ApplyFloorFallPenalty();
+        else
+            _audienceSupport.ManageAudienceSupport(-(LandingBonus * 1.5f));
 
         _player.Reset();
 

@@ -102,9 +102,10 @@ MonoBehaviour:
   _currentTempoMultiplier: 1
   StartingAudienceSupport: 5
   MaxAudienceSupport: 100
+  LandingBonus: 3
   IncreasePerSecond: 2
   DecreasePerSecond: 0.5
-  FallenPunishment: 5
+  PlatformLeaveGraceSeconds: 0.25
 --- !u!1 &982838531752121332
 GameObject:
   m_ObjectHideFlags: 0
