@@ -7,8 +7,11 @@ public class Player : PausableObject
         private bool _isOnPlatform;
         private bool _fellOnFloor;
         private Vector3 _startPosition;
+        private Transform _currentPlatform;
+
 
         private PlayerController _playerController;
+        public Transform CurrentPlatform => _currentPlatform;
 
     // References to Player Ground
         [Header("Player Ground")]
@@ -27,6 +30,15 @@ public class Player : PausableObject
         Reset();
     }
 
+    void Update()
+    {
+        if (_fellOnFloor)
+        {
+            GameManager.Instance.HandlePlayerFall();
+            _fellOnFloor = false; // prevent spam
+        }
+    }
+
     private void FixedUpdate()
     {
         PlatformCollision();
@@ -36,6 +48,7 @@ public class Player : PausableObject
     void PlatformCollision()
     {
         _isOnPlatform = false;
+        _currentPlatform = null;
 
         Collider[] gameColliders = Physics.OverlapSphere(_playerGround.position, _playerGroundRadius);
 
@@ -44,6 +57,7 @@ public class Player : PausableObject
             if (gameCollider.gameObject.tag == "Platform")
             {
                 _isOnPlatform = true;
+                _currentPlatform = gameCollider.transform;
 //                Debug.Log("Collision! " + _isOnPlatform); // Debug
                 break;
             }
@@ -72,6 +86,11 @@ public class Player : PausableObject
         if (_playerController != null)
         {
             _playerController.enabled = !shouldPause; // disable when paused, enable when unpaused
+            
+            if (shouldPause)
+            {
+                _playerController.StopSlam();
+            }
         }
     }
 
@@ -80,6 +99,7 @@ public class Player : PausableObject
     {
         if (collision.gameObject.tag == "Floor")
         {
+            Debug.Log("HIT FLOOR");
             _fellOnFloor = true;
             if (GameObserver.Instance != null)
                 GameObserver.Instance.OnPlayerTouchedFloorForAudience();

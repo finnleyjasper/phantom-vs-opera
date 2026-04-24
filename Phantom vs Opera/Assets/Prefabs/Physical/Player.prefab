@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 6031600482604774339}
   - component: {fileID: 7428538300387634824}
   - component: {fileID: 8878905601651467660}
-  - component: {fileID: 7382356796154325634}
   - component: {fileID: 1574887152641463190}
   - component: {fileID: 3643193088380094840}
   - component: {fileID: 8423929137549949442}
+  - component: {fileID: 3074602841403882175}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -58,28 +58,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c820219204ed6d4d8c9a7333caaac69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _startPosition: {fileID: 0}
   _playerGround: {fileID: 3763522767947402904}
   _playerGroundRadius: 0.1
---- !u!114 &7382356796154325634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4219798743958160742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3221f2dfaeefbc74599927f2b2d94cad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  _xLeftKeyCode: 276
-  _xRightKeyCode: 275
-  _zFrontKeyCode: 273
-  _zBackKeyCode: 274
-  _jumpKeyCode: 32
-  _playerSpeed: 10
-  _playerForce: 300
 --- !u!23 &1574887152641463190
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -174,11 +154,29 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 1
   m_Constraints: 80
   m_CollisionDetection: 1
+--- !u!114 &3074602841403882175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4219798743958160742}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3221f2dfaeefbc74599927f2b2d94cad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  currentLaneIndex: 3
+  _zFrontKeyCode: 273
+  _zBackKeyCode: 274
+  _slamSpeed: 25
+  _returnSpeed: 15
+  _playerSpeed: 5
 --- !u!1 &4222275554978371537
 GameObject:
   m_ObjectHideFlags: 0

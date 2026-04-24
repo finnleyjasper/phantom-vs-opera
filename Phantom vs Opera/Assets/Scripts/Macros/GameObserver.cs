@@ -47,6 +47,9 @@ public class GameObserver : MonoBehaviour
         if (GameManager.Instance.CurrentGameState == GameManager.GameState.Play)
         {
             CheckForGameOver();
+            CheckForSwitchAct();
+
+            ProcessAudienceSupport();
             CheckFallenPlayer();
         }
     }
@@ -104,9 +107,13 @@ public class GameObserver : MonoBehaviour
             _consecutivePhysicsNotOn = 0;
         }
         else if (_lastTimeSeenOnPlatform >= 0f)
+
+        // This results in the player being penalised when they leave a platform...??? Delete I think (Finn)
+        
+        /*if (!on && _leftPlatformAt >= 0f && !_fallOffPenaltyApplied)
         {
             _consecutivePhysicsNotOn++;
-        }
+        }*/
 
         bool shouldApplyRidingPerSecond = on
             || (_lastTimeSeenOnPlatform >= 0f && _consecutivePhysicsNotOn < _fixedStepsOffBeforeStopRidingRate);
@@ -131,15 +138,17 @@ public class GameObserver : MonoBehaviour
         {
             GameManager.Instance.GameOver(GameManager.GameState.Win);
         }
-        // song finishes = win ??
-        else if (AudioManager.Instance.AudioSource.isPlaying && AudioManager.Instance.AudioSource.time >= AudioManager.Instance.AudioSource.clip.length)
-        {
-            GameManager.Instance.GameOver(GameManager.GameState.Lose);
-        }
-        //lose
         else if (GameManager.Instance.AudienceSupport.AudienceSupportValue <= 0)
         {
             GameManager.Instance.GameOver(GameManager.GameState.Lose);
+        }
+    }
+
+    private void CheckForSwitchAct()
+    {
+        if (AudioManager.Instance.AudioSource.clip.length == AudioManager.Instance.AudioSource.time)
+        {
+            GameManager.Instance.SwitchAct(GameManager.Instance.CurrentAct + 1);
         }
     }
 
