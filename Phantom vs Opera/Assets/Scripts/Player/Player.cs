@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-20)]
 public class Player : PausableObject
 {
     // Private Variables
@@ -100,6 +101,8 @@ public class Player : PausableObject
         {
             Debug.Log("HIT FLOOR");
             _fellOnFloor = true;
+            if (GameObserver.Instance != null)
+                GameObserver.Instance.OnPlayerTouchedFloorForAudience();
         }
     }
 

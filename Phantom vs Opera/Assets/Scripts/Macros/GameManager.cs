@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,8 +39,9 @@ public class GameManager : MonoBehaviour
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
     public float IncreasePerSecond = 5.0f;
-    public float DecreasePerSecond = 0.5f; // how much audience support decreases per second when player is not on platform
-    [Tooltip("Seconds in the air after leaving a platform before 'fall off' applies. Shorter hops ignore the fall-off penalty.")]
+    [Tooltip("Legacy: no longer used. Audience is reduced by LandingBonus × 1.5 on each floor touch, not per second in the air.")]
+    public float DecreasePerSecond = 0.5f;
+    [Tooltip("Legacy: no longer used (leave-platform instant penalty removed). Kept for existing scenes / prefab data.")]
     public float PlatformLeaveGraceSeconds = 0.25f;
 
     private Player _player;
@@ -63,11 +65,27 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        TryTogglePauseWithEscape();
+
         if (_currentGameState == GameState.Play)
         {
             // used to time platform spawning - in GameManager so Pause() and Play() still work
             _gameTime += Time.deltaTime * _currentTempoMultiplier;
         }
+    }
+
+    private void TryTogglePauseWithEscape()
+    {
+        if (_isTeleporting || _player == null) return;
+        if (_currentGameState != GameState.Play && _currentGameState != GameState.Pause) return;
+
+        Keyboard kb = Keyboard.current;
+        if (kb == null || !kb.escapeKey.wasPressedThisFrame) return;
+
+        if (_currentGameState == GameState.Play)
+            Pause();
+        else
+            Play();
     }
 
 
@@ -115,10 +133,7 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
 
-        if (GameObserver.Instance != null)
-            GameObserver.Instance.ApplyFloorFallPenalty();
-        else
-            _audienceSupport.ManageAudienceSupport(-(LandingBonus * 1.5f));
+        // Floor audience penalty: applied on <see cref="Player"/> floor collision, not here.
 
         _player.Reset();
 
