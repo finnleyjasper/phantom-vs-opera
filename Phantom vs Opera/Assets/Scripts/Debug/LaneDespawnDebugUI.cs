@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
-/// F1 toggles left/right debug panels. Left: last despawn per lane. Right: latest spawn per lane.
+/// F1 toggles left/right debug panels. Left: last despawn per lane. Right: latest spawn per lane + audience tuning under that log.
 /// </summary>
 public class LaneDespawnDebugUI : MonoBehaviour
 {
@@ -15,6 +15,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
     private Canvas _rootCanvas;
     private TextMeshProUGUI[] _laneTexts;
     private TextMeshProUGUI[] _spawnLaneTexts;
+    private TextMeshProUGUI _landingBonusLine;
+    private TextMeshProUGUI _ridingGainPerSecondLine;
     private int _laneCount;
     private bool _visible;
 
@@ -58,6 +60,9 @@ public class LaneDespawnDebugUI : MonoBehaviour
             _visible = !_visible;
             SetPanelsVisible(_visible);
         }
+
+        if (_visible && _landingBonusLine != null)
+            RefreshAudienceSupportParams();
     }
 
     private void SetPanelsVisible(bool visible)
@@ -124,14 +129,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
         var leftPanel = CreateSidePanel(canvasGo.transform, "LeftPanel", true);
         var rightPanel = CreateSidePanel(canvasGo.transform, "RightPanel", false);
 
-        var leftVlg = leftPanel.gameObject.AddComponent<VerticalLayoutGroup>();
-        leftVlg.padding = new RectOffset(14, 14, 14, 14);
-        leftVlg.spacing = 10f;
-        leftVlg.childAlignment = TextAnchor.UpperLeft;
-        leftVlg.childControlWidth = true;
-        leftVlg.childControlHeight = false;
-        leftVlg.childForceExpandWidth = true;
-        leftVlg.childForceExpandHeight = false;
+        var leftPanelVlg = leftPanel.gameObject.AddComponent<VerticalLayoutGroup>();
+        ApplyPanelContentVerticalLayout(leftPanelVlg);
 
         var title = CreateTmpText(leftPanel, "Title", "Last despawn per lane", 22, FontStyles.Bold);
         var le = title.gameObject.AddComponent<LayoutElement>();
@@ -149,14 +148,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
             _laneTexts[i] = row;
         }
 
-        var rightVlg = rightPanel.gameObject.AddComponent<VerticalLayoutGroup>();
-        rightVlg.padding = new RectOffset(14, 14, 14, 14);
-        rightVlg.spacing = 10f;
-        rightVlg.childAlignment = TextAnchor.UpperLeft;
-        rightVlg.childControlWidth = true;
-        rightVlg.childControlHeight = false;
-        rightVlg.childForceExpandWidth = true;
-        rightVlg.childForceExpandHeight = false;
+        var rightPanelVlg = rightPanel.gameObject.AddComponent<VerticalLayoutGroup>();
+        ApplyPanelContentVerticalLayout(rightPanelVlg);
 
         var rightTitle = CreateTmpText(rightPanel, "RightTitle", "Latest spawn per lane", 22, FontStyles.Bold);
         var rightTitleLe = rightTitle.gameObject.AddComponent<LayoutElement>();
@@ -173,6 +166,53 @@ public class LaneDespawnDebugUI : MonoBehaviour
             rowLe.preferredHeight = 36f;
             _spawnLaneTexts[i] = row;
         }
+
+        Color audienceMuted = new Color(0.85f, 0.9f, 1f);
+        const float audienceFont = 17f;
+
+        _landingBonusLine = CreateTmpText(rightPanel, "LandingBonusLine",
+            "Landing bonus (on touch): —", audienceFont, FontStyles.Normal);
+        _landingBonusLine.color = audienceMuted;
+        _landingBonusLine.enableWordWrapping = true;
+        var landingLe = _landingBonusLine.gameObject.AddComponent<LayoutElement>();
+        landingLe.minHeight = 24f;
+        landingLe.preferredHeight = 28f;
+
+        _ridingGainPerSecondLine = CreateTmpText(rightPanel, "RidingGainPerSecondLine",
+            "Riding gain per second: —", audienceFont, FontStyles.Normal);
+        _ridingGainPerSecondLine.color = audienceMuted;
+        _ridingGainPerSecondLine.enableWordWrapping = true;
+        var ridingLe = _ridingGainPerSecondLine.gameObject.AddComponent<LayoutElement>();
+        ridingLe.minHeight = 24f;
+        ridingLe.preferredHeight = 28f;
+    }
+
+    private static void ApplyPanelContentVerticalLayout(VerticalLayoutGroup vlg)
+    {
+        vlg.padding = new RectOffset(14, 14, 14, 14);
+        vlg.spacing = 10f;
+        vlg.childAlignment = TextAnchor.UpperLeft;
+        vlg.childControlWidth = true;
+        vlg.childControlHeight = false;
+        vlg.childForceExpandWidth = true;
+        vlg.childForceExpandHeight = false;
+    }
+
+    private void RefreshAudienceSupportParams()
+    {
+        if (_landingBonusLine == null || _ridingGainPerSecondLine == null)
+            return;
+
+        if (GameManager.Instance == null)
+        {
+            _landingBonusLine.text = "Landing bonus (on touch): —";
+            _ridingGainPerSecondLine.text = "Riding gain per second: —";
+            return;
+        }
+
+        GameManager gm = GameManager.Instance;
+        _landingBonusLine.text = $"Landing bonus (on touch): {gm.LandingBonus:F2}";
+        _ridingGainPerSecondLine.text = $"Riding gain per second: {gm.IncreasePerSecond:F2}";
     }
 
     private RectTransform CreateSidePanel(Transform parent, string name, bool left)

@@ -44,9 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ae1d40fae2dab74b86ffdeac241612d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlatformManager
-  platformSpeed: 5
+  defaultPlatformSpeed: 5
   platformLengthMultiplier: 2
-  spawnLead: 0
   isPaused: 0
   despawnPoint: {fileID: 0}
 --- !u!1 &575768891573880757
@@ -97,13 +96,16 @@ MonoBehaviour:
   PlaySceneName: Main
   EndSceneName: Game Over
   _levelStartDelay: 1
+  _noteTimingPadding: -0.3
   _currentGameState: 1
   _currentTrack: 0
+  _currentTempoMultiplier: 1
   StartingAudienceSupport: 5
   MaxAudienceSupport: 100
+  LandingBonus: 3
   IncreasePerSecond: 2
   DecreasePerSecond: 0.5
-  FallenPunishment: 5
+  PlatformLeaveGraceSeconds: 0.25
 --- !u!1 &982838531752121332
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,8 +135,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8473490073609411289}
   - {fileID: 3058225673316292999}
+  - {fileID: 8473490073609411289}
   - {fileID: 6132094292944579471}
   - {fileID: 3264690361594240805}
   - {fileID: 4656320240367848661}
@@ -233,6 +235,7 @@ MonoBehaviour:
   _audioSource: {fileID: 0}
   _song: {fileID: 8300000, guid: a53e524b8d2464e148817f7825fd9d40, type: 3}
   _songTracks: []
+  _pitchShifter: {fileID: 24100000, guid: c151fa38d17c5486b9b3bf1d6a83a76d, type: 2}
 --- !u!82 &5683869219787908381
 AudioSource:
   m_ObjectHideFlags: 0
@@ -242,7 +245,7 @@ AudioSource:
   m_GameObject: {fileID: 7646803781779325847}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: c151fa38d17c5486b9b3bf1d6a83a76d, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1

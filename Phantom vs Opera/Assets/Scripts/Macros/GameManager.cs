@@ -4,7 +4,6 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
-    // Over engineered atm but will be useful later...?
     public enum GameState
     {
         Menu,
@@ -13,6 +12,8 @@ public class GameManager : MonoBehaviour
         Win,
         Lose
     }
+
+    private int _act = 1; // which "Act" the game is in
 
     [Header("Scenes")]
     public string MainMenuSceneName;
@@ -27,14 +28,19 @@ public class GameManager : MonoBehaviour
     private bool _isTeleporting;
     [SerializeField] private GameState _currentGameState = GameState.Pause;
     [SerializeField] private float _currentTrack = 0; // refers to the current track - 0 is all
+    [SerializeField] private float _currentTempoMultiplier = 1f; // pos or neg number to slow or speed up the song/game
 
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
     public float MaxAudienceSupport = 100f; // win condition
-    public float IncreasePerSecond = 5.0f; // how much audience support increases per second when player is on platform
+    [Tooltip("Audience support gained once each time the player lands on a platform (air → platform).")]
+    public float LandingBonus = 3f;
+    [Tooltip("Audience support gained per second while the player stays on a platform.")]
+    public float IncreasePerSecond = 5.0f;
     public float DecreasePerSecond = 0.5f; // how much audience support decreases per second when player is not on platform
-    public float FallenPunishment = 10f; // how much audience support decreases when player falls on floor
+    [Tooltip("Seconds in the air after leaving a platform before 'fall off' applies. Shorter hops ignore the fall-off penalty.")]
+    public float PlatformLeaveGraceSeconds = 0.25f;
 
     private Player _player;
     private AudienceSupport _audienceSupport;
@@ -60,7 +66,7 @@ public class GameManager : MonoBehaviour
         if (_currentGameState == GameState.Play)
         {
             // used to time platform spawning - in GameManager so Pause() and Play() still work
-            _gameTime += Time.deltaTime;
+            _gameTime += Time.deltaTime * _currentTempoMultiplier;
         }
     }
 
@@ -85,6 +91,8 @@ public class GameManager : MonoBehaviour
 
         _player.Reset();
         _audienceSupport.ManageAudienceSupport(StartingAudienceSupport); // reset audience support value
+        if (GameObserver.Instance != null)
+            GameObserver.Instance.ResetAudiencePlatformState();
 
         StartCoroutine(StartMusic());
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
@@ -107,22 +115,12 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
 
-        // Apply fall punishment
-        _audienceSupport.ManageAudienceSupport(-FallenPunishment);
-
-        // Find safe platform
-        MusicPlatform safePlatform = FindSafePlatform();
-
-        if (safePlatform != null)
-        {
-            Vector3 safePos = safePlatform.transform.position;
-            safePos.y += 2.5f; // height above platform
-            _player.transform.position = safePos;
-        }
+        if (GameObserver.Instance != null)
+            GameObserver.Instance.ApplyFloorFallPenalty();
         else
-        {
-            Debug.LogWarning("No safe platform found!");
-        }
+            _audienceSupport.ManageAudienceSupport(-(LandingBonus * 1.5f));
+
+        _player.Reset();
 
         // Wait so player can react
         yield return new WaitForSeconds(1.5f);
@@ -135,27 +133,6 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.Play);
 
         _isTeleporting = false;
-    }
-
-    private MusicPlatform FindSafePlatform()
-    {
-        MusicPlatform[] platforms = FindObjectsByType<MusicPlatform>(FindObjectsSortMode.None);
-
-        MusicPlatform best = null;
-        float bestDistance = float.MaxValue;
-
-        foreach (var p in platforms)
-        {
-            float dist = Mathf.Abs(p.transform.position.x - _player.transform.position.x);
-
-            if (dist < bestDistance)
-            {
-                bestDistance = dist;
-                best = p;
-            }
-        }
-
-        return best;
     }
 
     public void HandlePlayerFall()
@@ -205,6 +182,20 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTrack(track);
     }
 
+    public void SwitchTempo(float multiplier)
+    {
+        _currentTempoMultiplier = Mathf.Max(0.01f, multiplier); // cant be less than 0 and stop the music/game
+        AudioManager.Instance.SwitchTempo(_currentTempoMultiplier);
+        PlatformManager.Instance.ApplyTempoChange(); // speed?
+    }
+    
+    public void SwitchAct(int act)
+    {
+        _act = act;
+        SceneManager.LoadScene("Act " + act);
+        _currentGameState = GameState.Play;
+    }
+
     private void SetGameState(GameState newState)
     {
         _currentGameState = newState;
@@ -217,5 +208,7 @@ public class GameManager : MonoBehaviour
     public AudienceSupport AudienceSupport => _audienceSupport;
     public float CurrentTrack => _currentTrack;
     public float GameTime => _gameTime;
+    public float CurrentTempoMultiplier => _currentTempoMultiplier;
+    public int CurrentAct => _act;
 
 }
