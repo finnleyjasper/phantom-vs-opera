@@ -871,6 +871,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 211273659}
     m_Modifications:
+    - target: {fileID: 3922140471344816312, guid: b972769c91c8848a989b7acef563adc6, type: 3}
+      propertyPath: _platformYPosition
+      value: -1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3958664344095369933, guid: b972769c91c8848a989b7acef563adc6, type: 3}
       propertyPath: m_Name
       value: PlatformSpawner
@@ -879,13 +883,17 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -18.68
       objectReference: {fileID: 0}
+    - target: {fileID: 7569074231234349136, guid: b972769c91c8848a989b7acef563adc6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -2.27
+      objectReference: {fileID: 0}
     - target: {fileID: 7804558420591846456, guid: b972769c91c8848a989b7acef563adc6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.93
       objectReference: {fileID: 0}
     - target: {fileID: 7804558420591846456, guid: b972769c91c8848a989b7acef563adc6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.83
+      value: -5.15
       objectReference: {fileID: 0}
     - target: {fileID: 7804558420591846456, guid: b972769c91c8848a989b7acef563adc6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -2973,7 +2981,7 @@ Transform:
   m_GameObject: {fileID: 2061455400}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
-  m_LocalPosition: {x: 0.5649799, y: -3.83884, z: 0.87}
+  m_LocalPosition: {x: 0.5649799, y: -3.83884, z: 1.22}
   m_LocalScale: {x: 5.02804, y: 3.0010998, z: 2.03667}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3078,7 +3086,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6031600482604774339, guid: 90562b722c4624200ac133ebdfaa8110, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.92
+      value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 6031600482604774339, guid: 90562b722c4624200ac133ebdfaa8110, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3207,7 +3215,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _noteTimingPadding
-      value: -0.1
+      value: -0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5683869219787908381, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: Loop
@@ -3471,6 +3479,10 @@ PrefabInstance:
     - target: {fileID: 2615160718385125271, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
       propertyPath: m_TagString
       value: Lane
+      objectReference: {fileID: 0}
+    - target: {fileID: 5058832837068200231, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.58
       objectReference: {fileID: 0}
     - target: {fileID: 5362579685574238625, guid: 17da3742ef196498d8831200a7d54b64, type: 3}
       propertyPath: m_LocalPosition.x

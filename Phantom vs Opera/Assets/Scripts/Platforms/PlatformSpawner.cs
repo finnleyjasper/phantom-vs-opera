@@ -14,6 +14,7 @@ public class PlatformSpawner : MonoBehaviour
 
     [Header("Spawn Point")]
     public Transform spawnPoint;
+    [SerializeField] private float _platformYPosition = 0f;
 
     [Header("Lane Management")]
     [Tooltip("Number of MIDI pitches at the low and high ends that will be clamped to the first and last lanes")] public int deadZone = 30;
@@ -92,7 +93,7 @@ public class PlatformSpawner : MonoBehaviour
         // Determine spawn position w/ GetLaneIndex() based on note pitch
         Vector3 spawnPos = new Vector3(
             spawnPoint.position.x,
-            0f,
+            _platformYPosition,
             laneTransforms[laneIndex].position.z
         );
 

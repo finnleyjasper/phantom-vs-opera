@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Production/Act 1.unity
     guid: 4d7364742d5cb4e7da2d2d236648b7d1
   - enabled: 1
-    path: Assets/Scenes/Production/Game Over2.unity
+    path: Assets/Scenes/Production/Game Over.unity
     guid: 3fa0756fae0134ff18ade547437bcad0
   - enabled: 0
     path: Assets/Scenes/DEV/branch_fernando_Playground.unity

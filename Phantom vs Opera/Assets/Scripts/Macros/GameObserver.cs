@@ -47,7 +47,9 @@ public class GameObserver : MonoBehaviour
         if (GameManager.Instance.CurrentGameState == GameManager.GameState.Play)
         {
             CheckForGameOver();
-            CheckForSwitchAct();
+
+            // Disabled for first build (only one act)
+            // CheckForSwitchAct();
 
             ProcessAudienceSupport();
             CheckFallenPlayer();
@@ -80,7 +82,7 @@ public class GameObserver : MonoBehaviour
         gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
     }
 
-    private void ProcessAudienceSupport()
+        private void ProcessAudienceSupport()
     {
         GameManager gm = GameManager.Instance;
         Player player = gm.Player;
@@ -107,13 +109,9 @@ public class GameObserver : MonoBehaviour
             _consecutivePhysicsNotOn = 0;
         }
         else if (_lastTimeSeenOnPlatform >= 0f)
-
-        // This results in the player being penalised when they leave a platform...??? Delete I think (Finn)
-        
-        /*if (!on && _leftPlatformAt >= 0f && !_fallOffPenaltyApplied)
         {
             _consecutivePhysicsNotOn++;
-        }*/
+        }
 
         bool shouldApplyRidingPerSecond = on
             || (_lastTimeSeenOnPlatform >= 0f && _consecutivePhysicsNotOn < _fixedStepsOffBeforeStopRidingRate);

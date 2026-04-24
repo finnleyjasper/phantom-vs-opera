@@ -93,7 +93,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   MainMenuSceneName: Main Menu
-  PlaySceneName: Main
+  PlaySceneName: Act 1
   EndSceneName: Game Over
   _levelStartDelay: 1
   _noteTimingPadding: -0.3
@@ -187,6 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d8f6c27a0b3420a8a0e64a1583e8d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameObserver
+  _fixedStepsOffBeforeStopRidingRate: 4
 --- !u!1 &7646803781779325847
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +237,7 @@ MonoBehaviour:
   _song: {fileID: 8300000, guid: a53e524b8d2464e148817f7825fd9d40, type: 3}
   _songTracks: []
   _pitchShifter: {fileID: 24100000, guid: c151fa38d17c5486b9b3bf1d6a83a76d, type: 2}
+  _pitchShifterParameter: AudioPitch
 --- !u!82 &5683869219787908381
 AudioSource:
   m_ObjectHideFlags: 0
