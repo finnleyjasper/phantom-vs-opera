@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>Runs after <see cref="Player"/> so <see cref="Player.IsOnPlatform"/> matches the latest fixed physics step.</summary>
 [DefaultExecutionOrder(20)]
 public class GameObserver : MonoBehaviour
 {
@@ -82,7 +81,7 @@ public class GameObserver : MonoBehaviour
         gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
     }
 
-        private void ProcessAudienceSupport()
+    private void ProcessAudienceSupport()
     {
         GameManager gm = GameManager.Instance;
         Player player = gm.Player;
