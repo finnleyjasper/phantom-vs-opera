@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8473822747706988625}
   - component: {fileID: 2685516184042676630}
   m_Layer: 0
-  m_Name: Slam
+  m_Name: Riding
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
