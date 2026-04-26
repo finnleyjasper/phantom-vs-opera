@@ -138,7 +138,7 @@ public class PlayerController : MonoBehaviour
             _isRidingPlatform = true;
             _currentPlatform = _player.CurrentPlatform;
 
-            ParticleFactory.Instance.CreateParticleSystem("Slam", _player.PlayerGround.position);
+            ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
         }
 
         //  riding platform
