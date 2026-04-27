@@ -8,6 +8,7 @@ public class PlayerSprite : MonoBehaviour
     [SerializeField] Sprite defaultSprite;
     [SerializeField] Sprite slamSprite;
     private Sprite currentSprite;
+    private bool lastIsSlamming;
     private PlayerController playerController;
     private SpriteRenderer spriteRenderer;
 
@@ -15,8 +16,7 @@ public class PlayerSprite : MonoBehaviour
     {
         playerController = GetComponentInParent<PlayerController>(); 
         spriteRenderer = GetComponent<SpriteRenderer>();
-        currentSprite = defaultSprite;
-        spriteRenderer.sprite = currentSprite;
+        spriteRenderer.sprite = defaultSprite;
     }
 
     void Update()
@@ -27,7 +27,23 @@ public class PlayerSprite : MonoBehaviour
     // Method to switch sprite when spacebar pressed 
     public void SetSlamSprite()
     {
-        if (playerController.IsSlamming == true)
+        // Checks if null
+        if (playerController == null || spriteRenderer == null)
+        {
+            Debug.LogWarning("playerController or spriteRenderer empty!");
+            return;
+        }
+
+        // Only continues running method if 'isSlamming' condition has changed
+        if (lastIsSlamming == playerController.IsSlamming)
+        {
+            return;
+        }
+
+        lastIsSlamming = playerController.IsSlamming;
+
+        //Switches Sprite
+        if (playerController.IsSlamming)
         {
             currentSprite = slamSprite;
         }
