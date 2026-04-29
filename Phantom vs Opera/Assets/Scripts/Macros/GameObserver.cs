@@ -17,6 +17,8 @@ public class GameObserver : MonoBehaviour
     private bool _wasOnPlatform;
     private float _lastTimeSeenOnPlatform = -1f;
     private int _consecutivePhysicsNotOn;
+    private int _consecutivePlatformLandings;
+    private float _currentComboLandingBonusPercent;
 
     private void OnEnable()
     {
@@ -69,6 +71,8 @@ public class GameObserver : MonoBehaviour
         _wasOnPlatform = false;
         _lastTimeSeenOnPlatform = -1f;
         _consecutivePhysicsNotOn = 0;
+        _consecutivePlatformLandings = 0;
+        _currentComboLandingBonusPercent = 0f;
         LastFixedStepAudienceDelta = 0f;
     }
 
@@ -79,6 +83,7 @@ public class GameObserver : MonoBehaviour
         if (gm == null || gm.AudienceSupport == null) return;
         if (gm.CurrentGameState != GameManager.GameState.Play) return;
         gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
+        EndCombo();
     }
 
     private void ProcessAudienceSupport()
@@ -98,7 +103,11 @@ public class GameObserver : MonoBehaviour
 
         if (on && !_wasOnPlatform)
         {
-            Apply(gm.LandingBonus);
+            _consecutivePlatformLandings++;
+            _currentComboLandingBonusPercent = CalculateLandingComboBonusPercent(gm, _consecutivePlatformLandings);
+
+            float landingMultiplier = 1f + (_currentComboLandingBonusPercent / 100f);
+            Apply(gm.LandingBonus * landingMultiplier);
         }
 
         float fdt = Time.fixedDeltaTime;
@@ -117,13 +126,56 @@ public class GameObserver : MonoBehaviour
 
         if (shouldApplyRidingPerSecond)
         {
-            Apply(gm.IncreasePerSecond * fdt);
+            float perSecondMultiplier = IsComboActive
+                ? 1f + (gm.ComboRidingIncreasePercent / 100f)
+                : 1f;
+
+            Apply(gm.IncreasePerSecond * perSecondMultiplier * fdt);
             if (on)
                 _lastTimeSeenOnPlatform = Time.time;
         }
 
         LastFixedStepAudienceDelta = stepSum;
         _wasOnPlatform = on;
+    }
+
+    private static float CalculateLandingComboBonusPercent(GameManager gm, int consecutiveLandings)
+    {
+        if (consecutiveLandings < gm.ComboStartsAtConsecutiveLandings)
+            return 0f;
+
+        int landingsAfterComboStart = consecutiveLandings - gm.ComboStartsAtConsecutiveLandings;
+        return gm.ComboLandingBonusStartPercent + (landingsAfterComboStart * gm.ComboLandingBonusStepPercent);
+    }
+
+    private void EndCombo()
+    {
+        _consecutivePlatformLandings = 0;
+        _currentComboLandingBonusPercent = 0f;
+    }
+
+    public void DebugSetComboActive(bool active)
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null) return;
+
+        if (!active)
+        {
+            EndCombo();
+            return;
+        }
+
+        _consecutivePlatformLandings = Mathf.Max(_consecutivePlatformLandings, gm.ComboStartsAtConsecutiveLandings);
+        _currentComboLandingBonusPercent = CalculateLandingComboBonusPercent(gm, _consecutivePlatformLandings);
+    }
+
+    public void DebugAddComboLanding()
+    {
+        GameManager gm = GameManager.Instance;
+        if (gm == null) return;
+
+        _consecutivePlatformLandings++;
+        _currentComboLandingBonusPercent = CalculateLandingComboBonusPercent(gm, _consecutivePlatformLandings);
     }
 
 
@@ -166,4 +218,10 @@ public class GameObserver : MonoBehaviour
             GameManager.Instance.StartGame();
         }
     }
+
+    public bool IsComboActive =>
+        GameManager.Instance != null &&
+        _consecutivePlatformLandings >= GameManager.Instance.ComboStartsAtConsecutiveLandings;
+    public float CurrentComboPercent => _currentComboLandingBonusPercent;
+    public int ConsecutivePlatformLandings => _consecutivePlatformLandings;
 }
