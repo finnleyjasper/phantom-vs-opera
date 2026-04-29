@@ -552,6 +552,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AudienceSupportBarUI
   _filling: {fileID: 0}
   _text: {fileID: 0}
+  _comboBarRoot: {fileID: 0}
+  _comboText: {fileID: 0}
 --- !u!1001 &6460277837924983227
 PrefabInstance:
   m_ObjectHideFlags: 0

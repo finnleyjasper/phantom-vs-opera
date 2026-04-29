@@ -21,6 +21,10 @@ public class LaneDespawnDebugUI : MonoBehaviour
     private TextMeshProUGUI _ridingGainPerSecondLine;
     private TextMeshProUGUI _lastAudienceDeltaLine;
     private TextMeshProUGUI _currentTrackLine;
+    private TextMeshProUGUI _comboDebugLine;
+    private TextMeshProUGUI _activeComboButtonLabel;
+    private Button _activeComboButton;
+    private Button _addComboButton;
     private int _laneCount;
     private bool _visible;
 
@@ -71,6 +75,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
                 RefreshAudienceSupportParams();
             if (_currentTrackLine != null)
                 RefreshCurrentTrackLine();
+            if (_comboDebugLine != null)
+                RefreshComboDebugUi();
         }
     }
 
@@ -171,6 +177,24 @@ public class LaneDespawnDebugUI : MonoBehaviour
         currentTrackLe.preferredHeight = 26f;
 
         BuildTrackSwitchRow(leftPanel);
+
+        var comboTopSpacer = new GameObject("ComboTopSpacer");
+        comboTopSpacer.transform.SetParent(leftPanel, false);
+        var comboTopSpacerLe = comboTopSpacer.AddComponent<LayoutElement>();
+        comboTopSpacerLe.minHeight = 8f;
+        comboTopSpacerLe.preferredHeight = 10f;
+
+        var comboSectionTitle = CreateTmpText(leftPanel, "ComboSectionTitle", "Combo debug", 22, FontStyles.Bold);
+        var comboSectionTitleLe = comboSectionTitle.gameObject.AddComponent<LayoutElement>();
+        comboSectionTitleLe.preferredHeight = 36f;
+
+        BuildComboDebugRow(leftPanel);
+
+        _comboDebugLine = CreateTmpText(leftPanel, "ComboDebugLine", "Combo count: —", 17f, FontStyles.Normal);
+        _comboDebugLine.color = new Color(0.85f, 0.9f, 1f);
+        var comboDebugLe = _comboDebugLine.gameObject.AddComponent<LayoutElement>();
+        comboDebugLe.minHeight = 24f;
+        comboDebugLe.preferredHeight = 40f;
 
         var leftBottomSpacer = new GameObject("LeftPanelBottomSpacer");
         leftBottomSpacer.transform.SetParent(leftPanel, false);
@@ -325,6 +349,71 @@ public class LaneDespawnDebugUI : MonoBehaviour
         GameManager.Instance.SwitchTrack(track);
     }
 
+    private void BuildComboDebugRow(RectTransform leftPanel)
+    {
+        var root = new GameObject("ComboDebugRow");
+        root.transform.SetParent(leftPanel, false);
+
+        var hlg = root.AddComponent<HorizontalLayoutGroup>();
+        hlg.childAlignment = TextAnchor.MiddleCenter;
+        hlg.spacing = 6f;
+        hlg.childControlWidth = true;
+        hlg.childControlHeight = true;
+        hlg.childForceExpandWidth = true;
+        hlg.childForceExpandHeight = false;
+
+        var rootLe = root.AddComponent<LayoutElement>();
+        rootLe.minHeight = 32f;
+        rootLe.preferredHeight = 36f;
+
+        _activeComboButton = CreateActionButton(root.transform, "ActiveComboButton", "Active Combo: OFF", out _activeComboButtonLabel);
+        _activeComboButton.onClick.AddListener(OnActiveComboButtonClicked);
+
+        _addComboButton = CreateActionButton(root.transform, "AddComboButton", "Add Combo", out _);
+        _addComboButton.onClick.AddListener(OnAddComboButtonClicked);
+    }
+
+    private static Button CreateActionButton(Transform parent, string name, string label, out TextMeshProUGUI labelTmp)
+    {
+        var go = new GameObject(name);
+        go.transform.SetParent(parent, false);
+
+        var img = go.AddComponent<Image>();
+        img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+        img.type = Image.Type.Sliced;
+        img.color = new Color(0.22f, 0.24f, 0.32f, 0.95f);
+
+        var btn = go.AddComponent<Button>();
+        btn.targetGraphic = img;
+        ColorBlock colors = btn.colors;
+        colors.highlightedColor = new Color(0.38f, 0.42f, 0.52f, 1f);
+        colors.pressedColor = new Color(0.14f, 0.16f, 0.22f, 1f);
+        btn.colors = colors;
+
+        var le = go.AddComponent<LayoutElement>();
+        le.flexibleWidth = 1f;
+        le.minHeight = 30f;
+        le.preferredHeight = 34f;
+
+        var textGo = new GameObject("Label");
+        textGo.transform.SetParent(go.transform, false);
+        var textRt = textGo.AddComponent<RectTransform>();
+        textRt.anchorMin = Vector2.zero;
+        textRt.anchorMax = Vector2.one;
+        textRt.offsetMin = Vector2.zero;
+        textRt.offsetMax = Vector2.zero;
+
+        labelTmp = textGo.AddComponent<TextMeshProUGUI>();
+        labelTmp.text = label;
+        labelTmp.fontSize = 14f;
+        labelTmp.fontStyle = FontStyles.Bold;
+        labelTmp.alignment = TextAlignmentOptions.Center;
+        labelTmp.color = Color.white;
+        labelTmp.raycastTarget = false;
+
+        return btn;
+    }
+
     private static void ApplyPanelContentVerticalLayout(VerticalLayoutGroup vlg)
     {
         vlg.padding = new RectOffset(14, 14, 14, 14);
@@ -382,6 +471,46 @@ public class LaneDespawnDebugUI : MonoBehaviour
         }
 
         _currentTrackLine.text = "Current track: " + GameManager.Instance.CurrentTrack;
+    }
+
+    private void OnActiveComboButtonClicked()
+    {
+        if (GameObserver.Instance == null)
+            return;
+
+        bool targetActive = !GameObserver.Instance.IsComboActive;
+        GameObserver.Instance.DebugSetComboActive(targetActive);
+        RefreshComboDebugUi();
+    }
+
+    private void OnAddComboButtonClicked()
+    {
+        if (GameObserver.Instance == null)
+            return;
+
+        GameObserver.Instance.DebugAddComboLanding();
+        RefreshComboDebugUi();
+    }
+
+    private void RefreshComboDebugUi()
+    {
+        if (_comboDebugLine == null || _activeComboButtonLabel == null)
+            return;
+
+        if (GameObserver.Instance == null)
+        {
+            _activeComboButtonLabel.text = "Active Combo: OFF";
+            _comboDebugLine.text = "Combo count: —";
+            return;
+        }
+
+        bool comboActive = GameObserver.Instance.IsComboActive;
+        int count = GameObserver.Instance.ConsecutivePlatformLandings;
+        float pct = GameObserver.Instance.CurrentComboPercent;
+        int required = GameManager.Instance != null ? GameManager.Instance.ComboStartsAtConsecutiveLandings : 0;
+
+        _activeComboButtonLabel.text = comboActive ? "Active Combo: ON" : "Active Combo: OFF";
+        _comboDebugLine.text = $"Combo: {count}/{required}  |  Active: {(comboActive ? "Yes" : "No")}  |  +{pct:0.#}%";
     }
 
     private RectTransform CreateSidePanel(Transform parent, string name, bool left)

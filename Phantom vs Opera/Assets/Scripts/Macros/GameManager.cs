@@ -43,6 +43,16 @@ public class GameManager : MonoBehaviour
     public float DecreasePerSecond = 0.5f;
     [Tooltip("Legacy: no longer used (leave-platform instant penalty removed). Kept for existing scenes / prefab data.")]
     public float PlatformLeaveGraceSeconds = 0.25f;
+    [Space(8)]
+    [Header("Audience Combo Settings")]
+    [Tooltip("Combo starts once this many consecutive platform landings are reached.")]
+    [Min(1)] public int ComboStartsAtConsecutiveLandings = 2;
+    [Tooltip("Landing bonus percent when combo first activates (for the threshold landing).")]
+    public float ComboLandingBonusStartPercent = 10f;
+    [Tooltip("Additional landing bonus percent added per landing after combo is active.")]
+    public float ComboLandingBonusStepPercent = 5f;
+    [Tooltip("Flat percent increase to per-second audience gain while combo is active.")]
+    public float ComboRidingIncreasePercent = 50f;
 
     private Player _player;
     private AudienceSupport _audienceSupport;
@@ -61,6 +71,9 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        // Enforce requested baseline so scene/prefab overrides do not silently keep old value.
+        ComboStartsAtConsecutiveLandings = 2;
     }
 
     private void Update()
