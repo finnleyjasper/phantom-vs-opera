@@ -201,4 +201,7 @@ public class PlayerController : MonoBehaviour
         LerpLaneMovement();
         HandleVerticalMovement();
     }
+
+    // Properties 
+    public bool IsSlamming => _isSlamming;
 }
