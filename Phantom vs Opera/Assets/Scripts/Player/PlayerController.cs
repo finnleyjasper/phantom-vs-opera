@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-        private int currentLaneIndex = 0; 
-        private Vector3[] lanePositions; 
+        private int currentLaneIndex = 0;
+        private Vector3[] lanePositions;
         private Vector3 targetLanePosition;
         private Player _player;
         private int minLaneIndex;
@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
         private Transform _currentPlatform;
 
 
-    // Variables for Editable KeyCodes 
+    // Variables for Editable KeyCodes
     [Space(10)]
     [Header("Z Axis Movements")]
     [SerializeField] private KeyCode _zFrontKeyCode = KeyCode.UpArrow;
@@ -33,36 +33,36 @@ public class PlayerController : MonoBehaviour
         _isSlamming = false;
     }
 
-    // Method to get Lane Positions 
-    public void SearchLanePositions() 
+    // Method to get Lane Positions
+    public void SearchLanePositions()
     {
-        GameObject[] lanes = GameObject.FindGameObjectsWithTag("Lane"); 
+        GameObject[] lanes = GameObject.FindGameObjectsWithTag("Lane");
 
         List<Vector3> lanePositionList = new List<Vector3>(); // temporary list to store lane positions in
 
-        // adds lane positions to Vector3 list 
+        // adds lane positions to Vector3 list
         foreach (GameObject lane in lanes)
         {
             if (lane != null)
             {
-                lanePositionList.Add(lane.transform.position); 
+                lanePositionList.Add(lane.transform.position);
             }
         }
-        
-        // Sort list from lowest to highest Z axis value 
+
+        // Sort list from lowest to highest Z axis value
         lanePositionList.Sort((a, b) => a.z.CompareTo(b.z));
 
-        // Convert temporary list to Array 
+        // Convert temporary list to Array
         lanePositions = lanePositionList.ToArray();
-            
-        // Assign min/max lane index 
+
+        // Assign min/max lane index
         minLaneIndex = 0;
         maxLaneIndex = lanePositions.Length - 1;
 
         FindInitialLaneIndex();
     }
 
-    // Method to find initial lane index 
+    // Method to find initial lane index
     public void FindInitialLaneIndex()
     {
         Vector3 currentPlayerPosition = _player_RigidBody.position; // gets player's current position
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         {
             float LaneDistance = Vector3.Distance(currentPlayerPosition, lanePositions[i]); // calculates distance between player's currernt position + lane's position
 
-            // if current lane is closer than previous, updates the closestLaneIndex 
+            // if current lane is closer than previous, updates the closestLaneIndex
             if (LaneDistance < closestLaneIndex)
             {
                 closestLaneIndex = LaneDistance;
@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
 
     // Method to Move Player via Keycodes
     private void PlayerInput()
-    {        
+    {
         if (GameManager.Instance.CurrentGameState != GameManager.GameState.Play)
         {
             return;
@@ -97,14 +97,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(_zFrontKeyCode))
         {
-            currentLaneIndex++; 
+            currentLaneIndex++;
             LaneIndexClamp();
-            targetLanePosition = lanePositions[currentLaneIndex]; 
+            targetLanePosition = lanePositions[currentLaneIndex];
         }
 
         if (Input.GetKeyDown(_zBackKeyCode))
         {
-            currentLaneIndex--; 
+            currentLaneIndex--;
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex];
         }
@@ -122,10 +122,10 @@ public class PlayerController : MonoBehaviour
 
     public void LerpLaneMovement()
     {
-        Vector3 currentPlayerPosition = _player_RigidBody.position; //player's current position  
+        Vector3 currentPlayerPosition = _player_RigidBody.position; //player's current position
 
         Vector3 lerpedPosition = Vector3.Lerp(currentPlayerPosition, targetLanePosition, lerpSpeed * Time.fixedDeltaTime);
-        _player_RigidBody.MovePosition(lerpedPosition); 
+        _player_RigidBody.MovePosition(lerpedPosition);
     }
 
     private void HandleVerticalMovement()
@@ -137,6 +137,8 @@ public class PlayerController : MonoBehaviour
         {
             _isRidingPlatform = true;
             _currentPlatform = _player.CurrentPlatform;
+
+            ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
         }
 
         //  riding platform
