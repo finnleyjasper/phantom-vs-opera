@@ -17,7 +17,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixer _pitchShifter; // an audio mixer that normalises the pitch after a tempo change
     [SerializeField] private string _pitchShifterParameter = "AudioPitch";
 
-    [SerializeField] public List<AudioClip> soundEffects; // List of sfx - Don't know if to make type this, or smth like 'SoundEffects' | also, dk if to make this private or public - Delete
+    [SerializeField] public List<AudioClip> soundEffects; // List of sfx 
 
 
     private void Awake()
@@ -102,8 +102,6 @@ public class AudioManager : MonoBehaviour
     // Method to play sfx
     public void PlaySoundEffect(string clipName, AudioSource source)
     {
-        // AudioClip newSoundEffect = null; - Do we need?  Delete
-
         foreach (AudioClip soundEffect in soundEffects)
         {
             if (soundEffect == null)
@@ -113,11 +111,11 @@ public class AudioManager : MonoBehaviour
             }
             else if (soundEffect.name == clipName)
             {
-                source.clip = soundEffect; // Check if this is right ?? Delete
+                source.clip = soundEffect;
             }
         }
 
-        source.Play(); // is it correct putting this outside of loop? - Delete
+        source.Play(); 
     }
 
     public AudioSource AudioSource => _audioSource;
