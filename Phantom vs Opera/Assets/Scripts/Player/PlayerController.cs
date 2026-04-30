@@ -35,16 +35,7 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        if (playerAudioSource == null)
-        {
-            playerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
-
-            if (playerAudioSource == null)
-            {
-                Debug.LogWarning("AudioManager could not find an audio source");
-                return;
-            }
-        }
+        GetPlayerAudioSource();
     }
 
     void Start()
@@ -64,7 +55,6 @@ public class PlayerController : MonoBehaviour
         LerpLaneMovement();
         HandleVerticalMovement();
     }
-
 
     public void StopSlam()
     {
@@ -138,6 +128,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex++;
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex];
+            AudioManager.Instance.PlaySoundEffect("zip", playerAudioSource); // Play SFX - arrow key pressed
         }
 
         if (Input.GetKeyDown(_zBackKeyCode))
@@ -145,6 +136,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex--;
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex];
+            AudioManager.Instance.PlaySoundEffect("zip", playerAudioSource); // Play SFX - arrow key pressed
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -155,6 +147,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space))
         {
             _isSlamming = false;
+            AudioManager.Instance.PlaySoundEffect("woosh", playerAudioSource); // Play SFX - lifting up spacebar
+
+
         }
     }
 
@@ -177,7 +172,7 @@ public class PlayerController : MonoBehaviour
             _currentPlatform = _player.CurrentPlatform;
 
             ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
-            AudioManager.Instance.PlaySoundEffect("applause", playerAudioSource); // Play SFX
+            AudioManager.Instance.PlaySoundEffect("trip", playerAudioSource); // Play SFX - landing on platform 
         }
 
         //  riding platform
@@ -223,6 +218,21 @@ public class PlayerController : MonoBehaviour
         }
 
         _player_RigidBody.MovePosition(pos);
+    }
+
+    // Method to get Audio Component 
+    public void GetPlayerAudioSource()
+    {
+        if (playerAudioSource == null)      
+        {
+        playerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
+
+            if (playerAudioSource == null)
+            {
+                Debug.LogWarning("AudioManager could not find an audio source");
+                return;
+            }
+        }
     }
 
     // Properties 
