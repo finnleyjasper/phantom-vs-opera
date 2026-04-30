@@ -33,6 +33,39 @@ public class PlayerController : MonoBehaviour
     [Header("Audio Source")]
     [SerializeField] private AudioSource playerAudioSource;
 
+    void Awake()
+    {
+        if (playerAudioSource == null)
+        {
+            playerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
+
+            if (playerAudioSource == null)
+            {
+                Debug.LogWarning("AudioManager could not find an audio source");
+                return;
+            }
+        }
+    }
+
+    void Start()
+    {
+        _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
+        _player = GetComponent<Player>();
+        SearchLanePositions();
+    }
+
+    void Update()
+    {
+        PlayerInput();
+    }
+
+    void FixedUpdate()
+    {
+        LerpLaneMovement();
+        HandleVerticalMovement();
+    }
+
+
     public void StopSlam()
     {
         _isSlamming = false;
@@ -190,24 +223,6 @@ public class PlayerController : MonoBehaviour
         }
 
         _player_RigidBody.MovePosition(pos);
-    }
-
-    void Start()
-    {
-        _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
-        _player = GetComponent<Player>();
-        SearchLanePositions();
-    }
-
-    void Update()
-    {
-        PlayerInput();
-    }
-
-    void FixedUpdate()
-    {
-        LerpLaneMovement();
-        HandleVerticalMovement();
     }
 
     // Properties 
