@@ -32,10 +32,12 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // if there's no audio source assigned, try to find one in the scene
+        // if there's no audio source assigned, try to get AudioSource component of game object
         if (_audioSource == null)
         {
-            _audioSource = FindFirstObjectByType<AudioSource>();
+            // _audioSource = FindFirstObjectByType<AudioSource>(); - Removed this as was detecting audio sources from other game objs
+            _audioSource = GetComponent<AudioSource>(); // gets AudioManager game object's AudioSource comp. instead
+
             if (_audioSource == null)
             {
                 Debug.LogWarning("AudioManager could not find an Audio Source.");
@@ -100,7 +102,7 @@ public class AudioManager : MonoBehaviour
     // Method to play sfx
     public void PlaySoundEffect(string clipName, AudioSource source)
     {
-        // AudioClip newSoundEffect = null; - Do we need? 
+        // AudioClip newSoundEffect = null; - Do we need?  Delete
 
         foreach (AudioClip soundEffect in soundEffects)
         {
