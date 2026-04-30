@@ -28,6 +28,34 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _slamSpeed = 25f;
     [SerializeField] private float _returnSpeed = 15f;
 
+    // Variable for Audio Source 
+    [Space(10)]
+    [Header("Audio Source")]
+    [SerializeField] private AudioSource playerAudioSource;
+
+    void Awake()
+    {
+        GetPlayerAudioSource();
+    }
+
+    void Start()
+    {
+        _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
+        _player = GetComponent<Player>();
+        SearchLanePositions();
+    }
+
+    void Update()
+    {
+        PlayerInput();
+    }
+
+    void FixedUpdate()
+    {
+        LerpLaneMovement();
+        HandleVerticalMovement();
+    }
+
     public void StopSlam()
     {
         _isSlamming = false;
@@ -100,6 +128,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex++;
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex];
+            AudioManager.Instance.PlaySoundEffect("zip", playerAudioSource); // Play SFX - arrow key pressed
         }
 
         if (Input.GetKeyDown(_zBackKeyCode))
@@ -107,6 +136,7 @@ public class PlayerController : MonoBehaviour
             currentLaneIndex--;
             LaneIndexClamp();
             targetLanePosition = lanePositions[currentLaneIndex];
+            AudioManager.Instance.PlaySoundEffect("zip", playerAudioSource); // Play SFX - arrow key pressed
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -117,6 +147,9 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space))
         {
             _isSlamming = false;
+            AudioManager.Instance.PlaySoundEffect("woosh", playerAudioSource); // Play SFX - lifting up spacebar
+
+
         }
     }
 
@@ -139,6 +172,7 @@ public class PlayerController : MonoBehaviour
             _currentPlatform = _player.CurrentPlatform;
 
             ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
+            AudioManager.Instance.PlaySoundEffect("trip", playerAudioSource); // Play SFX - landing on platform 
         }
 
         //  riding platform
@@ -186,22 +220,19 @@ public class PlayerController : MonoBehaviour
         _player_RigidBody.MovePosition(pos);
     }
 
-    void Start()
+    // Method to get Audio Component 
+    public void GetPlayerAudioSource()
     {
-        _player_RigidBody = GetComponent<Rigidbody>(); // Get Player's RigidBody Component
-        _player = GetComponent<Player>();
-        SearchLanePositions();
-    }
+        if (playerAudioSource == null)      
+        {
+        playerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
 
-    void Update()
-    {
-        PlayerInput();
-    }
-
-    void FixedUpdate()
-    {
-        LerpLaneMovement();
-        HandleVerticalMovement();
+            if (playerAudioSource == null)
+            {
+                Debug.LogWarning("AudioManager could not find an audio source");
+                return;
+            }
+        }
     }
 
     // Properties 

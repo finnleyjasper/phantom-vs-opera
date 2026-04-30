@@ -58,6 +58,11 @@ public class GameManager : MonoBehaviour
     private AudienceSupport _audienceSupport;
     [HideInInspector] public static GameManager Instance;
 
+    // Variables for Audio Source - for SFX
+    [Space(10)]
+    [Header("Audio Source")]
+    [SerializeField] private AudioSource gamemanagerAudioSource;
+
     private float _gameTime; // when StartGame() was called - used to time platform spawning
 
     private void Awake()
@@ -74,6 +79,8 @@ public class GameManager : MonoBehaviour
 
         // Enforce requested baseline so scene/prefab overrides do not silently keep old value.
         ComboStartsAtConsecutiveLandings = 2;
+
+        GetAudioSource(); // Gets Audio Source component for SFX
     }
 
     private void Update()
@@ -138,6 +145,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator TeleportRoutine()
     {
         _isTeleporting = true;
+        AudioManager.Instance.PlaySoundEffect("twinkle", gamemanagerAudioSource); // Play SFX - teleporting
 
         // Pause game systems
         SetGameState(GameState.Pause);
@@ -166,7 +174,6 @@ public class GameManager : MonoBehaviour
     public void HandlePlayerFall()
     {
         if (_isTeleporting) return;
-
         StartCoroutine(TeleportRoutine());
     }
 
@@ -228,6 +235,21 @@ public class GameManager : MonoBehaviour
     {
         _currentGameState = newState;
         Debug.Log("Game State changed to: " + _currentGameState);
+    }
+
+    // Method to get Audio Component 
+    public void GetAudioSource()
+    {
+        if (gamemanagerAudioSource == null)
+        {
+            gamemanagerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
+
+            if (gamemanagerAudioSource == null)
+            {
+                Debug.LogWarning("AudioManager could not find an audio source");
+                return;
+            }
+        }
     }
 
     // Properties
