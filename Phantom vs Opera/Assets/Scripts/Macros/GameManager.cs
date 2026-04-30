@@ -39,10 +39,8 @@ public class GameManager : MonoBehaviour
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
     public float IncreasePerSecond = 5.0f;
-    [Tooltip("Legacy: no longer used. Audience is reduced by LandingBonus × 1.5 on each floor touch, not per second in the air.")]
-    public float DecreasePerSecond = 0.5f;
-    [Tooltip("Legacy: no longer used (leave-platform instant penalty removed). Kept for existing scenes / prefab data.")]
-    public float PlatformLeaveGraceSeconds = 0.25f;
+    public float HitFloorPunishmentMultiplier = 2f;
+
     [Space(8)]
     [Header("Audience Combo Settings")]
     [Tooltip("Combo starts once this many consecutive platform landings are reached.")]
@@ -223,7 +221,7 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTempo(_currentTempoMultiplier);
         PlatformManager.Instance.ApplyTempoChange(); // speed?
     }
-    
+
     public void SwitchAct(int act)
     {
         _act = act;
@@ -237,7 +235,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game State changed to: " + _currentGameState);
     }
 
-    // Method to get Audio Component 
+    // Method to get Audio Component
     public void GetAudioSource()
     {
         if (gamemanagerAudioSource == null)

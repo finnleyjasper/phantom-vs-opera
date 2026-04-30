@@ -1,3 +1,4 @@
+
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,6 +57,7 @@ public class AudienceSupportBarUI : MonoBehaviour
     {
         float audienceSupportFillingAmount = (float)_audienceSupport.AudienceSupportValue / GameManager.Instance.MaxAudienceSupport;
         _filling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current audience support value
+        Debug.Log("Audience support bar is " + audienceSupportFillingAmount);
         UpdateText();
     }
 

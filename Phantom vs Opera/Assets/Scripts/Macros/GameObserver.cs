@@ -82,7 +82,7 @@ public class GameObserver : MonoBehaviour
         GameManager gm = GameManager.Instance;
         if (gm == null || gm.AudienceSupport == null) return;
         if (gm.CurrentGameState != GameManager.GameState.Play) return;
-        gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * 1.5f));
+        gm.AudienceSupport.ManageAudienceSupport(-(gm.LandingBonus * gm.HitFloorPunishmentMultiplier));
         EndCombo();
     }
 
