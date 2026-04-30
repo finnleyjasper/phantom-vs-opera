@@ -16,8 +16,8 @@ public class MIDIFacade : MonoBehaviour
     [HideInInspector] public static MIDIFacade Instance;
     private MidiFile _midiFile;
 
-    private int _minPitch = 0;
-    private int _maxPitch = 127; // MIDI standard range of pitches, from C-1
+    private int _minPitch = 60;
+    private int _maxPitch = 64; // MIDI standard range of pitches, from C-1
 
     // subsystems
     private MIDILoader _midiLoader; // loads in the MIDI file and extracts the relevant data for the parser to use

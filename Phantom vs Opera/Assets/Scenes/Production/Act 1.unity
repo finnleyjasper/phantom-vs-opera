@@ -876,6 +876,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 211273659}
     m_Modifications:
     - target: {fileID: 3922140471344816312, guid: b972769c91c8848a989b7acef563adc6, type: 3}
+      propertyPath: deadZone
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3922140471344816312, guid: b972769c91c8848a989b7acef563adc6, type: 3}
       propertyPath: _platformYPosition
       value: -1.5
       objectReference: {fileID: 0}
@@ -3034,7 +3038,7 @@ PrefabInstance:
     - target: {fileID: 191871884975869711, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _song
       value: 
-      objectReference: {fileID: 8300000, guid: 1db77b52a054143c7afeb2a13a43d6bd, type: 3}
+      objectReference: {fileID: 8300000, guid: 35417e5844c73294aac4c93c1e7dce92, type: 3}
     - target: {fileID: 191871884975869711, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _songTracks.Array.size
       value: 4
@@ -3061,11 +3065,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 551093074296408401, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: platformLengthMultiplier
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 894465346734256718, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: fileName
-      value: test4.mid
+      value: PvO.mid
       objectReference: {fileID: 0}
     - target: {fileID: 894465346734256718, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: debugMode
@@ -3101,7 +3105,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: IncreasePerSecond
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _currentGameState
@@ -3109,11 +3113,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: _noteTimingPadding
-      value: -0.03
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: StartingAudienceSupport
-      value: 15
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2287668474379322614, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
+      propertyPath: ComboStartsAtConsecutiveLandings
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2981977539050417958, guid: 403b121f17edf4e49ace1d185cbe7a23, type: 3}
       propertyPath: particleSystems.Array.size
