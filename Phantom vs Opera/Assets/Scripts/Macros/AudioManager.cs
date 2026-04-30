@@ -1,6 +1,8 @@
 
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections.Generic;
+
 
 public class AudioManager : MonoBehaviour
 {
@@ -15,7 +17,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixer _pitchShifter; // an audio mixer that normalises the pitch after a tempo change
     [SerializeField] private string _pitchShifterParameter = "AudioPitch";
 
-    [SerializedField] public List<AudioClip> soundEffects; // List of sfx - Don't know if to make type this, or smth like 'SoundEffects' | also, dk if to make this private or public - Delete
+    [SerializeField] public List<AudioClip> soundEffects; // List of sfx - Don't know if to make type this, or smth like 'SoundEffects' | also, dk if to make this private or public - Delete
 
 
     private void Awake()
@@ -98,25 +100,23 @@ public class AudioManager : MonoBehaviour
     // Method to play sfx
     public void PlaySoundEffect(string clipName, AudioSource source)
     {
-        AudioClip newSoundEffect = null;
+        // AudioClip newSoundEffect = null; - Do we need? 
 
         foreach (AudioClip soundEffect in soundEffects)
         {
-            if soundEffect.clip == clipName)
+            if (soundEffect == null)
+            {
+                Debug.LogWarning("Audio Manager cannot locate sfx with name: " + clipName);
+                return;
+            }
+            else if (soundEffect.name == clipName)
             {
                 source.clip = soundEffect; // Check if this is right ?? Delete
-=           }
-        }
-
-        if (newSoundEffect == null)
-        {
-            Debug.LogWarning("Audio Manager cannot locate sfx with name: " +  clipName);
-            return;
+            }
         }
 
         source.Play(); // is it correct putting this outside of loop? - Delete
     }
 
     public AudioSource AudioSource => _audioSource;
-
 }

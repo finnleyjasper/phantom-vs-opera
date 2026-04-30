@@ -28,6 +28,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _slamSpeed = 25f;
     [SerializeField] private float _returnSpeed = 15f;
 
+    // Variable for Audio Source 
+    [Space(10)]
+    [Header("Audio Source")]
+    [SerializeField] private AudioSource playerAudioSource;
+
     public void StopSlam()
     {
         _isSlamming = false;
@@ -139,6 +144,7 @@ public class PlayerController : MonoBehaviour
             _currentPlatform = _player.CurrentPlatform;
 
             ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
+            AudioManager.Instance.PlaySoundEffect("applause", playerAudioSource); // Play SFX
         }
 
         //  riding platform
