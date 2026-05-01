@@ -306,8 +306,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
         go.transform.SetParent(parent, false);
 
         var img = go.AddComponent<Image>();
-        img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
-        img.type = Image.Type.Sliced;
+        //img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+        //img.type = Image.Type.Sliced;
         img.color = new Color(0.22f, 0.24f, 0.32f, 0.95f);
 
         var btn = go.AddComponent<Button>();
@@ -379,8 +379,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
         go.transform.SetParent(parent, false);
 
         var img = go.AddComponent<Image>();
-        img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
-        img.type = Image.Type.Sliced;
+        //img.sprite = Resources.GetBuiltinResource<Sprite>("UI/Skin/UISprite.psd");
+        //img.type = Image.Type.Sliced;
         img.color = new Color(0.22f, 0.24f, 0.32f, 0.95f);
 
         var btn = go.AddComponent<Button>();
