@@ -1,6 +1,8 @@
 
 using UnityEngine;
 using UnityEngine.Audio;
+using System.Collections.Generic;
+
 
 public class AudioManager : MonoBehaviour
 {
@@ -15,6 +17,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixer _pitchShifter; // an audio mixer that normalises the pitch after a tempo change
     [SerializeField] private string _pitchShifterParameter = "AudioPitch";
 
+    [SerializeField] public List<AudioClip> soundEffects; // List of sfx 
+
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -27,10 +32,12 @@ public class AudioManager : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // if there's no audio source assigned, try to find one in the scene
+        // if there's no audio source assigned, try to get AudioSource component of game object
         if (_audioSource == null)
         {
-            _audioSource = FindFirstObjectByType<AudioSource>();
+            // _audioSource = FindFirstObjectByType<AudioSource>(); - Removed this as was detecting audio sources from other game objs
+            _audioSource = GetComponent<AudioSource>(); // gets AudioManager game object's AudioSource comp. instead
+
             if (_audioSource == null)
             {
                 Debug.LogWarning("AudioManager could not find an Audio Source.");
@@ -92,6 +99,24 @@ public class AudioManager : MonoBehaviour
         Debug.Log("Audio changed tempo");
     }
 
-    public AudioSource AudioSource => _audioSource;
+    // Method to play sfx
+    public void PlaySoundEffect(string clipName, AudioSource source)
+    {
+        foreach (AudioClip soundEffect in soundEffects)
+        {
+            if (soundEffect == null)
+            {
+                Debug.LogWarning("Audio Manager cannot locate sfx with name: " + clipName);
+                return;
+            }
+            else if (soundEffect.name == clipName)
+            {
+                source.clip = soundEffect;
+            }
+        }
 
+        source.Play(); 
+    }
+
+    public AudioSource AudioSource => _audioSource;
 }

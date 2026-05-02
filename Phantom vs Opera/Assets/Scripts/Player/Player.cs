@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[DefaultExecutionOrder(-20)]
 public class Player : PausableObject
 {
     // Private Variables
@@ -57,7 +58,6 @@ public class Player : PausableObject
             {
                 _isOnPlatform = true;
                 _currentPlatform = gameCollider.transform;
-//                Debug.Log("Collision! " + _isOnPlatform); // Debug
                 break;
             }
         }
@@ -85,7 +85,7 @@ public class Player : PausableObject
         if (_playerController != null)
         {
             _playerController.enabled = !shouldPause; // disable when paused, enable when unpaused
-            
+
             if (shouldPause)
             {
                 _playerController.StopSlam();
@@ -100,6 +100,8 @@ public class Player : PausableObject
         {
             Debug.Log("HIT FLOOR");
             _fellOnFloor = true;
+            if (GameObserver.Instance != null)
+                GameObserver.Instance.OnPlayerTouchedFloorForAudience();
         }
     }
 
@@ -116,4 +118,7 @@ public class Player : PausableObject
     public bool FellOnFloor => _fellOnFloor;
 
     public Vector3 StartPosition => _startPosition;
+
+    public Transform PlayerGround => _playerGround;
+
 }

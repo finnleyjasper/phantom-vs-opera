@@ -14,10 +14,17 @@ public class PlatformSpawner : MonoBehaviour
 
     [Header("Spawn Point")]
     public Transform spawnPoint;
+    [SerializeField] private float _platformYPosition = 0f;
 
     [Header("Lane Management")]
     [Tooltip("Number of MIDI pitches at the low and high ends that will be clamped to the first and last lanes")] public int deadZone = 30;
     public List<Transform> laneTransforms = new List<Transform>();
+
+    [Header("Lane appearance")]
+    [Tooltip("If any entry is set, platforms use these materials by lane index (cycles if there are fewer materials than lanes).")]
+    [SerializeField] private Material[] _laneMaterials;
+    [Tooltip("Per-lane tint when not using materials, or if a material slot is null. Cycles if shorter than lane count.")]
+    [SerializeField] private Color[] _laneColors;
 
     private List<MusicPlatform> activePlatforms = new List<MusicPlatform>();
     private List<NoteData> notes = new List<NoteData>(); // retrieved from MIDIFacade
@@ -86,7 +93,7 @@ public class PlatformSpawner : MonoBehaviour
         // Determine spawn position w/ GetLaneIndex() based on note pitch
         Vector3 spawnPos = new Vector3(
             spawnPoint.position.x,
-            0f,
+            _platformYPosition,
             laneTransforms[laneIndex].position.z
         );
 
@@ -107,9 +114,40 @@ public class PlatformSpawner : MonoBehaviour
         activePlatforms.Add(mp);
 
         if (mp != null)
+        {
+            ApplyLaneAppearance(mp);
             OnPlatformSpawned?.Invoke(mp);
+        }
 
         if (_debugMode){ Debug.Log($"Spawned platform for note {note.noteName} (Pitch: {note.pitch}) in lane {laneIndex+1}"); }
+    }
+
+    private void ApplyLaneAppearance(MusicPlatform mp)
+    {
+        if (laneTransforms.Count == 0) return;
+
+        int lane = Mathf.Clamp(mp.laneIndex, 0, laneTransforms.Count - 1);
+
+        if (_laneMaterials != null && _laneMaterials.Length > 0)
+        {
+            Material mat = _laneMaterials[lane % _laneMaterials.Length];
+            if (mat != null)
+            {
+                mp.ApplyLaneMaterial(mat);
+                return;
+            }
+        }
+
+        mp.ApplyLaneColor(ResolveLaneColor(lane, laneTransforms.Count));
+    }
+
+    private Color ResolveLaneColor(int laneIndex, int laneCount)
+    {
+        if (_laneColors != null && _laneColors.Length > 0)
+            return _laneColors[laneIndex % _laneColors.Length];
+
+        float h = laneCount <= 1 ? 0f : laneIndex / (float)(laneCount - 1);
+        return Color.HSVToRGB(h, 0.55f, 0.92f);
     }
 
     private float GetLaneIndex(int pitch)

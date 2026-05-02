@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.InputSystem;
 
 public class GameManager : MonoBehaviour
 {
@@ -38,13 +39,27 @@ public class GameManager : MonoBehaviour
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
     public float IncreasePerSecond = 5.0f;
-    public float DecreasePerSecond = 0.5f; // how much audience support decreases per second when player is not on platform
-    [Tooltip("Seconds in the air after leaving a platform before 'fall off' applies. Shorter hops ignore the fall-off penalty.")]
-    public float PlatformLeaveGraceSeconds = 0.25f;
+    public float HitFloorPunishmentMultiplier = 2f;
+
+    [Space(8)]
+    [Header("Audience Combo Settings")]
+    [Tooltip("Combo starts once this many consecutive platform landings are reached.")]
+    [Min(1)] public int ComboStartsAtConsecutiveLandings = 2;
+    [Tooltip("Landing bonus percent when combo first activates (for the threshold landing).")]
+    public float ComboLandingBonusStartPercent = 10f;
+    [Tooltip("Additional landing bonus percent added per landing after combo is active.")]
+    public float ComboLandingBonusStepPercent = 5f;
+    [Tooltip("Flat percent increase to per-second audience gain while combo is active.")]
+    public float ComboRidingIncreasePercent = 50f;
 
     private Player _player;
     private AudienceSupport _audienceSupport;
     [HideInInspector] public static GameManager Instance;
+
+    // Variables for Audio Source - for SFX
+    [Space(10)]
+    [Header("Audio Source")]
+    [SerializeField] private AudioSource gamemanagerAudioSource;
 
     private float _gameTime; // when StartGame() was called - used to time platform spawning
 
@@ -59,15 +74,36 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
+
+        // Enforce requested baseline so scene/prefab overrides do not silently keep old value.
+        ComboStartsAtConsecutiveLandings = 2;
+
+        GetAudioSource(); // Gets Audio Source component for SFX
     }
 
     private void Update()
     {
+        TryTogglePauseWithEscape();
+
         if (_currentGameState == GameState.Play)
         {
             // used to time platform spawning - in GameManager so Pause() and Play() still work
             _gameTime += Time.deltaTime * _currentTempoMultiplier;
         }
+    }
+
+    private void TryTogglePauseWithEscape()
+    {
+        if (_isTeleporting || _player == null) return;
+        if (_currentGameState != GameState.Play && _currentGameState != GameState.Pause) return;
+
+        Keyboard kb = Keyboard.current;
+        if (kb == null || !kb.escapeKey.wasPressedThisFrame) return;
+
+        if (_currentGameState == GameState.Play)
+            Pause();
+        else
+            Play();
     }
 
 
@@ -107,6 +143,7 @@ public class GameManager : MonoBehaviour
     private IEnumerator TeleportRoutine()
     {
         _isTeleporting = true;
+        AudioManager.Instance.PlaySoundEffect("twinkle", gamemanagerAudioSource); // Play SFX - teleporting
 
         // Pause game systems
         SetGameState(GameState.Pause);
@@ -115,10 +152,7 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
 
-        if (GameObserver.Instance != null)
-            GameObserver.Instance.ApplyFloorFallPenalty();
-        else
-            _audienceSupport.ManageAudienceSupport(-(LandingBonus * 1.5f));
+        // Floor audience penalty: applied on <see cref="Player"/> floor collision, not here.
 
         _player.Reset();
 
@@ -138,7 +172,6 @@ public class GameManager : MonoBehaviour
     public void HandlePlayerFall()
     {
         if (_isTeleporting) return;
-
         StartCoroutine(TeleportRoutine());
     }
 
@@ -188,7 +221,7 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.SwitchTempo(_currentTempoMultiplier);
         PlatformManager.Instance.ApplyTempoChange(); // speed?
     }
-    
+
     public void SwitchAct(int act)
     {
         _act = act;
@@ -200,6 +233,21 @@ public class GameManager : MonoBehaviour
     {
         _currentGameState = newState;
         Debug.Log("Game State changed to: " + _currentGameState);
+    }
+
+    // Method to get Audio Component
+    public void GetAudioSource()
+    {
+        if (gamemanagerAudioSource == null)
+        {
+            gamemanagerAudioSource = GetComponent<AudioSource>(); // gets AudioSource comp.
+
+            if (gamemanagerAudioSource == null)
+            {
+                Debug.LogWarning("AudioManager could not find an audio source");
+                return;
+            }
+        }
     }
 
     // Properties
