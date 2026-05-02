@@ -141,6 +141,46 @@ public class PlatformSpawner : MonoBehaviour
         mp.ApplyLaneColor(ResolveLaneColor(lane, laneTransforms.Count));
     }
 
+    public Color GetLaneColor(int laneIndex)
+    {
+        int laneCount = laneTransforms.Count;
+        if (laneCount == 0)
+            return Color.white;
+
+        int lane = Mathf.Clamp(laneIndex, 0, laneCount - 1);
+
+        if (_laneMaterials != null && _laneMaterials.Length > 0)
+        {
+            Material mat = _laneMaterials[lane % _laneMaterials.Length];
+            if (TryGetMaterialColor(mat, out Color materialColor))
+                return materialColor;
+        }
+
+        return ResolveLaneColor(lane, laneCount);
+    }
+
+    private static bool TryGetMaterialColor(Material material, out Color color)
+    {
+        color = Color.white;
+
+        if (material == null)
+            return false;
+
+        if (material.HasProperty("_BaseColor"))
+        {
+            color = material.GetColor("_BaseColor");
+            return true;
+        }
+
+        if (material.HasProperty("_Color"))
+        {
+            color = material.GetColor("_Color");
+            return true;
+        }
+
+        return false;
+    }
+
     private Color ResolveLaneColor(int laneIndex, int laneCount)
     {
         if (_laneColors != null && _laneColors.Length > 0)

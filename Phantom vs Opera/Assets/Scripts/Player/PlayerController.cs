@@ -237,4 +237,5 @@ public class PlayerController : MonoBehaviour
 
     // Properties 
     public bool IsSlamming => _isSlamming;
+    public int CurrentLaneIndex => currentLaneIndex;
 }
