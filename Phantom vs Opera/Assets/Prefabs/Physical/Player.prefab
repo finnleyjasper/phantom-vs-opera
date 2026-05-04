@@ -663,4 +663,6 @@ MonoBehaviour:
   slamSprite: {fileID: 21300000, guid: 285f911b3c66e1c42b46a40d26c6312b, type: 3}
   colourSwapMaterial: {fileID: 2100000, guid: d9bcb139300984c978b4efcf239dd10c, type: 2}
   originalAccentColor: {r: 0.6387422, g: 0.7075472, b: 0.43721077, a: 1}
-  colourMatchTolerance: 0.03
+  colourMatchTolerance: 0.29
+  secondaryOriginalAccentColor: {r: 0.17, g: 0.31, b: 0.08, a: 1}
+  secondaryColourMatchTolerance: 0.2

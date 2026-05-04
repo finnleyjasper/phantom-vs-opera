@@ -39,11 +39,9 @@ public class PlayerSprite : MonoBehaviour
         spriteRenderer.sprite = defaultSprite;
         platformSpawner = FindFirstObjectByType<PlatformSpawner>();
 
-        ApplyColourSwapMaterial();
-
         if (platformSpawner == null)
         {
-            platformSpawner = FindFirstObjectByType<PlatformSpawner>();
+            Debug.LogWarning("PlayerSprite couldn't find a PlatformSpawner in the scene.");
         }
 
         if (spriteRenderer.sharedMaterial == null || !spriteRenderer.sharedMaterial.HasProperty(ReplacementColorId))
@@ -51,6 +49,7 @@ public class PlayerSprite : MonoBehaviour
             Debug.LogWarning("PlayerSprite needs a material using ColourSwap.shader on the SpriteRenderer or in the Colour Swap Material field.");
         }
 
+        ApplyColourSwapMaterial();
         ApplyAccentColour();
     }
 
