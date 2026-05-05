@@ -441,9 +441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18a239a728cae65448914254f7cdfdd9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  earth: {fileID: 0}
-  room: {fileID: 0}
-  moon: {fileID: 0}
+  earth: {fileID: 1199130224}
+  room: {fileID: 1787152105}
+  moon: {fileID: 1714461461}
 --- !u!1 &206930607
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,7 +1722,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 4.74, y: 14.37, z: -1.3}
-  m_LocalScale: {x: 2.0617595, y: 2.0617595, z: 2.0617595}
+  m_LocalScale: {x: 2.8089411, y: 2.8089411, z: 2.8089411}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 135208143}
@@ -2696,7 +2696,7 @@ Transform:
   m_GameObject: {fileID: 1704220722}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.58309, y: 4.94, z: -0.27000046}
+  m_LocalPosition: {x: 2.58309, y: 4.94, z: -1.29}
   m_LocalScale: {x: 3.259755, y: 1, z: 1.5696001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2728,8 +2728,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714461461}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.12186928, w: 0.9925462}
-  m_LocalPosition: {x: -0.12, y: -11.28, z: 0.52000046}
+  m_LocalRotation: {x: 0, y: 0, z: -0.12186928, w: 0.9925462}
+  m_LocalPosition: {x: 0, y: -11.28, z: 0.52000046}
   m_LocalScale: {x: 29.029062, y: 29.029062, z: 29.02906}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2851,7 +2851,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 1.62, y: 4.6, z: -2.25}
-  m_LocalScale: {x: 4.0671, y: 4.0671, z: 4.0671}
+  m_LocalScale: {x: 3.9592404, y: 3.9592404, z: 3.9592404}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 135208143}
