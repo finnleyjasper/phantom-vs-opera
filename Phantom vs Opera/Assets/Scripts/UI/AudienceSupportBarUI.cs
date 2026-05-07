@@ -7,6 +7,7 @@ public class AudienceSupportBarUI : MonoBehaviour
 {
     // Private Variables
         [SerializeField] private Image _filling;
+        [SerializeField, Min(1f)] private float _meterMaxValue = 100f;
 
         [SerializeField] private TextMeshProUGUI _text;
         [SerializeField] private Transform _comboBarRoot;
@@ -55,9 +56,8 @@ public class AudienceSupportBarUI : MonoBehaviour
 
     void Update()
     {
-        float audienceSupportFillingAmount = (float)_audienceSupport.AudienceSupportValue / GameManager.Instance.MaxAudienceSupport;
+        float audienceSupportFillingAmount = _audienceSupport.AudienceSupportValue / _meterMaxValue;
         _filling.fillAmount = audienceSupportFillingAmount; // Setting fill amount value to current audience support value
-        Debug.Log("Audience support bar is " + audienceSupportFillingAmount);
         UpdateText();
     }
 
@@ -65,7 +65,7 @@ public class AudienceSupportBarUI : MonoBehaviour
     private void UpdateText()
     {
         int total = Mathf.RoundToInt(_audienceSupport.AudienceSupportValue);
-        _text.text = "Audience Support: " + total;
+        _text.text = "Audience: " + total;
 
         if (GameObserver.Instance != null && GameObserver.Instance.IsComboActive)
         {

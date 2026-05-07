@@ -34,7 +34,7 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
-    public float MaxAudienceSupport = 100f; // win condition
+    public float MaxAudienceSupport = 100f; // audience support cap
     [Tooltip("Audience support gained once each time the player lands on a platform (air → platform).")]
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
