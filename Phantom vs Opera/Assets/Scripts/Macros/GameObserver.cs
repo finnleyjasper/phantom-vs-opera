@@ -182,15 +182,27 @@ public class GameObserver : MonoBehaviour
     // GAME STATE -------------------------
     private void CheckForGameOver()
     {
-        // max audience support = win
-        if (GameManager.Instance.AudienceSupport.AudienceSupportValue >= GameManager.Instance.MaxAudienceSupport)
-        {
-            GameManager.Instance.GameOver(GameManager.GameState.Win);
-        }
-        else if (GameManager.Instance.AudienceSupport.AudienceSupportValue <= 0)
+        if (GameManager.Instance.AudienceSupport.AudienceSupportValue <= 0)
         {
             GameManager.Instance.GameOver(GameManager.GameState.Lose);
         }
+        else if (HasSongFinished())
+        {
+            GameManager.Instance.GameOver(GameManager.GameState.Win);
+        }
+    }
+
+    private static bool HasSongFinished()
+    {
+        if (AudioManager.Instance == null || AudioManager.Instance.AudioSource == null)
+            return false;
+
+        AudioSource source = AudioManager.Instance.AudioSource;
+        if (source.clip == null)
+            return false;
+
+        const float finishToleranceSeconds = 0.05f;
+        return !source.isPlaying && source.time >= source.clip.length - finishToleranceSeconds;
     }
 
     private void CheckForSwitchAct()

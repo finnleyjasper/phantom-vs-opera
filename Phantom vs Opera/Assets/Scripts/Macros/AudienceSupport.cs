@@ -21,7 +21,7 @@ public class AudienceSupport : MonoBehaviour
 
     private void ClampAudienceSupport()
     {
-        _audienceSupportValue = Mathf.Clamp(_audienceSupportValue, 0, GameManager.Instance.MaxAudienceSupport);
+        _audienceSupportValue = Mathf.Max(0f, _audienceSupportValue);
     }
 
     public float AudienceSupportValue =>_audienceSupportValue;
