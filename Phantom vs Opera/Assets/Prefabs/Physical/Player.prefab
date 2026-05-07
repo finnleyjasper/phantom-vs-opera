@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   _playerGround: {fileID: 3763522767947402904}
-  _playerGroundRadius: 0.1
+  _playerGroundRadius: 0.5
 --- !u!23 &1574887152641463190
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -596,6 +596,8 @@ MonoBehaviour:
   platformMask:
     serializedVersion: 2
     m_Bits: 8
+  idleState: Star
+  activeState: PlatformIndicator
 --- !u!1 &5571329350583366421
 GameObject:
   m_ObjectHideFlags: 0

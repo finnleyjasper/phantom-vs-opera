@@ -16,7 +16,7 @@ public class Player : PausableObject
     // References to Player Ground
         [Header("Player Ground")]
         [SerializeField] private Transform _playerGround;
-        [SerializeField] private float _playerGroundRadius = 0.1f;
+        [SerializeField] private float _playerGroundRadius = 0.5f;
 
     protected override void Awake()
     {

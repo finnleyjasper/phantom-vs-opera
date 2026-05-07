@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour
             _currentPlatform = _player.CurrentPlatform;
 
             ParticleFactory.Instance.CreateParticleSystem("Riding", _player.PlayerGround.position);
-            AudioManager.Instance.PlaySoundEffect("trip", playerAudioSource); // Play SFX - landing on platform 
+            // AudioManager.Instance.PlaySoundEffect("trip", playerAudioSource); // Play SFX - landing on platform - ** Removed, as designers do not want sfx in the game atm 
         }
 
         //  riding platform
