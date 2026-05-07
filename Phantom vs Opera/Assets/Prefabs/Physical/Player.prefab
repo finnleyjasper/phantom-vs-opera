@@ -304,7 +304,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   _zFrontKeyCode: 273
   _zBackKeyCode: 274
-  _slamSpeed: 25
+  _slamSpeed: 30
   _returnSpeed: 15
   playerAudioSource: {fileID: 0}
 --- !u!82 &7362721385246241253
@@ -505,6 +505,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4589326258206754220}
   - component: {fileID: 534762388667330628}
+  - component: {fileID: 5328360799443593661}
+  - component: {fileID: 1119058437378089896}
   m_Layer: 0
   m_Name: PlayerShadowProjector
   m_TagString: Untagged
@@ -555,6 +557,45 @@ MonoBehaviour:
   m_FadeFactor: 1
   version: 1
   m_DecalLayerMask: 1
+--- !u!95 &5328360799443593661
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4624270442528901527}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 63f515687b94cd14081ed53c90d8a9b4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1119058437378089896
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4624270442528901527}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c96c11763dfa431479494a98bcbf477a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlatformDetector
+  decalAnimator: {fileID: 5328360799443593661}
+  rayDistance: 6
+  platformMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &5571329350583366421
 GameObject:
   m_ObjectHideFlags: 0

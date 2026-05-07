@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
         private bool _isSlamming;
         private bool _isRidingPlatform;
         private Transform _currentPlatform;
+        private bool _blockingInput; 
+        private bool _inputWasHeldLastFrame;
+
 
 
     // Variables for Editable KeyCodes
@@ -59,6 +62,11 @@ public class PlayerController : MonoBehaviour
     public void StopSlam()
     {
         _isSlamming = false;
+    }
+    public void BlockingInput()
+    {
+        _blockingInput = true;
+        _isSlamming = false; // safety reset so you don’t stay stuck slamming
     }
 
     // Method to get Lane Positions
@@ -141,12 +149,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
+            if (_blockingInput)
+                return;
             _isSlamming = true;
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
             _isSlamming = false;
+            _blockingInput = false;
             AudioManager.Instance.PlaySoundEffect("woosh", playerAudioSource); // Play SFX - lifting up spacebar
 
 
