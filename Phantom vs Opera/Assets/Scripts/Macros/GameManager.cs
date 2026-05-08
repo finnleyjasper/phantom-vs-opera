@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioSource gamemanagerAudioSource;
 
     private float _gameTime; // when StartGame() was called - used to time platform spawning
+    private bool _blockingInput; // used to block player input during certain actions like teleporting
 
     private void Awake()
     {
@@ -145,7 +146,7 @@ public class GameManager : MonoBehaviour
         _isTeleporting = true;
         AudioManager.Instance.PlaySoundEffect("twinkle", gamemanagerAudioSource); // Play SFX - teleporting
 
-        // Pause game systems
+ /*       // Pause game systems
         SetGameState(GameState.Pause);
 
         _player.Pause(true);
@@ -153,19 +154,20 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.AudioSource.Pause();
 
         // Floor audience penalty: applied on <see cref="Player"/> floor collision, not here.
-
+*/
         _player.Reset();
+        _player.GetComponent<PlayerController>().BlockingInput();
 
         // Wait so player can react
-        yield return new WaitForSeconds(1.5f);
-
+        yield return new WaitForSeconds(0f);
+/*
         // Resume game
         _player.Pause(false);
         FindFirstObjectByType<PlatformManager>().Pause(false);
         AudioManager.Instance.AudioSource.Play();
 
         SetGameState(GameState.Play);
-
+*/
         _isTeleporting = false;
     }
 
