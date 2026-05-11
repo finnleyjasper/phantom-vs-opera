@@ -16,11 +16,6 @@ public class GameManager : MonoBehaviour
 
     private int _act = 1; // which "Act" the game is in
 
-    [Header("Scenes")]
-    public string MainMenuSceneName;
-    public string PlaySceneName;
-    public string EndSceneName;
-
     [Space(10)]
     [Header("Game Settings")]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
@@ -196,19 +191,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver(GameState result)
     {
-        // should pause the game momentarity so player can realise what happened
-
         AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
-
-        if (string.IsNullOrEmpty(EndSceneName))
-        {
-            Debug.LogWarning("Scene name is null or empty");
-        }
-        else
-        {
-            SceneManager.LoadScene(EndSceneName);
-        }
+        LevelLoader.Instance.LoadNextLevel();
     }
 
     public void SwitchTrack(float track)
