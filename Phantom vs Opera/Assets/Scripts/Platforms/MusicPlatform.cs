@@ -39,9 +39,21 @@ public class MusicPlatform : PausableObject
 
     void ApplyLengthScale()
     {
+        // Store the original position before scaling
+        Vector3 originalPos = transform.position;
+
+        // Apply the scale
         Vector3 scale = transform.localScale;
-        scale.x = length * PlatformManager.Instance.platformLengthMultiplier; // base length from MIDI is a bit short, so multiply it
+        float scaledLength = length * PlatformManager.Instance.platformLengthMultiplier;
+        scale.x = scaledLength;
         transform.localScale = scale;
+
+        // Adjust position so the right edge stays at the original spawn point
+        // The platform mesh has a default width (when localScale.x == 1), we need to account for that
+        // Shift left by: (scaledLength - 1) / 2, assuming default mesh width is 1 unit
+        Vector3 newPos = originalPos;
+        newPos.x -= (scaledLength - 1f) / 2f;
+        transform.position = newPos;
     }
 
     /// <summary>Swap to a full material for this lane (optional; set on PlatformSpawner).</summary>
