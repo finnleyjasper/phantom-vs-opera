@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections.Generic;
@@ -18,6 +17,10 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private string _pitchShifterParameter = "AudioPitch";
 
     [SerializeField] public List<AudioClip> soundEffects; // List of sfx 
+
+    [Header("Volume")]
+    [SerializeField] private float _musicVolume = 1f;
+    [SerializeField] private float _sfxVolume = 1f;
 
 
     private void Awake()
@@ -49,7 +52,10 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("No pitch shifter assigned!");
             return;
         }
-         _audioSource.clip = _song;
+        _musicVolume = PlayerPrefs.GetFloat("MusicVolume", 1f);
+        _sfxVolume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+        _audioSource.clip = _song;
+        _audioSource.volume = _musicVolume;
     }
 
     public void StartSong()
@@ -115,8 +121,24 @@ public class AudioManager : MonoBehaviour
             }
         }
 
+        source.volume = _sfxVolume;
         source.Play(); 
     }
 
+    public void SetMusicVolume(float volume)
+    {
+        _musicVolume = volume;
+        _audioSource.volume = volume;
+        PlayerPrefs.SetFloat("MusicVolume", volume);
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        _sfxVolume = volume;
+        PlayerPrefs.SetFloat("SFXVolume", volume);
+    }
+
     public AudioSource AudioSource => _audioSource;
+    public float MusicVolume => _musicVolume;
+    public float SFXVolume => _sfxVolume;
 }
