@@ -182,11 +182,13 @@ public class GameObserver : MonoBehaviour
     // GAME STATE -------------------------
     private void CheckForGameOver()
     {
-        if (GameManager.Instance.AudienceSupport.AudienceSupportValue <= 0)
-        {
-            GameManager.Instance.GameOver(GameManager.GameState.Lose);
-        }
-        else if (HasSongFinished())
+        // Lose on audience depletion disabled — run ends when the song finishes.
+        // if (GameManager.Instance.AudienceSupport.AudienceSupportValue <= 0)
+        // {
+        //     GameManager.Instance.GameOver(GameManager.GameState.Lose);
+        // }
+        // else
+        if (HasSongFinished())
         {
             GameManager.Instance.GameOver(GameManager.GameState.Win);
         }

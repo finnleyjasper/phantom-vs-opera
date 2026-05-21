@@ -6,12 +6,9 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
-/// Displays <see cref="LeaderboardStorage"/> entries on the Game Over (or menu) scene.
+/// Displays <see cref="LeaderboardStorage"/> entries on the Game Over scene.
 /// If no <see cref="_entriesText"/> is assigned, builds a simple full-screen overlay with list + arcade-style blinking hints (R / M).
 /// </summary>
-/// <remarks>
-/// Populate scores with <see cref="LeaderboardStorage.RecordRun"/> when a run ends (e.g. from <c>GameManager.GameOver</c>).
-/// </remarks>
 public class LeaderboardSceneUI : MonoBehaviour
 {
     [Header("Navigation")]
@@ -40,12 +37,39 @@ public class LeaderboardSceneUI : MonoBehaviour
     [SerializeField] private string _panelTitle = "Leaderboard";
     [SerializeField] private int _canvasSortOrder = 50;
 
+    [Header("Typography")]
+    [SerializeField] private float _titleFontSize = 52f;
+    [SerializeField] private float _entriesFontSize = 42f;
+    [SerializeField] private float _hintsFontSize = 36f;
+    [SerializeField] private float _entryLineSpacing = 12f;
+
+    private TextMeshProUGUI _titleText;
+
     private void Start()
     {
         if (_buildUiWhenNoText && _entriesText == null)
             BuildRuntimeLeaderboardUi();
 
+        ApplyTypography();
         RefreshEntriesText();
+    }
+
+    private void ApplyTypography()
+    {
+        if (_titleText != null)
+        {
+            _titleText.fontSize = _titleFontSize;
+            _titleText.fontStyle = FontStyles.Bold;
+        }
+
+        if (_entriesText != null)
+        {
+            _entriesText.fontSize = _entriesFontSize;
+            _entriesText.lineSpacing = _entryLineSpacing;
+        }
+
+        if (_arcadeHintsText != null)
+            _arcadeHintsText.fontSize = _hintsFontSize;
     }
 
     private void Update()
@@ -149,34 +173,31 @@ public class LeaderboardSceneUI : MonoBehaviour
 
         var titleGo = new GameObject("Title");
         titleGo.transform.SetParent(panel.transform, false);
-        var titleTmp = titleGo.AddComponent<TextMeshProUGUI>();
-        titleTmp.text = _panelTitle;
-        titleTmp.fontSize = 36;
-        titleTmp.fontStyle = FontStyles.Bold;
-        titleTmp.alignment = TextAlignmentOptions.Center;
-        titleTmp.color = Color.white;
+        _titleText = titleGo.AddComponent<TextMeshProUGUI>();
+        _titleText.text = _panelTitle;
+        _titleText.fontStyle = FontStyles.Bold;
+        _titleText.alignment = TextAlignmentOptions.Center;
+        _titleText.color = Color.white;
         var titleLe = titleGo.AddComponent<LayoutElement>();
-        titleLe.preferredHeight = 52f;
+        titleLe.preferredHeight = 72f;
 
         var bodyGo = new GameObject("Entries");
         bodyGo.transform.SetParent(panel.transform, false);
         _entriesText = bodyGo.AddComponent<TextMeshProUGUI>();
-        _entriesText.fontSize = 24;
         _entriesText.alignment = TextAlignmentOptions.Top;
         _entriesText.color = new Color(0.92f, 0.92f, 0.92f);
         _entriesText.enableWordWrapping = true;
         var bodyLe = bodyGo.AddComponent<LayoutElement>();
         bodyLe.flexibleHeight = 1f;
-        bodyLe.minHeight = 160f;
+        bodyLe.minHeight = 280f;
 
         var hintsGo = new GameObject("ArcadeHints");
         hintsGo.transform.SetParent(panel.transform, false);
         var hintsLe = hintsGo.AddComponent<LayoutElement>();
-        hintsLe.preferredHeight = 52f;
+        hintsLe.preferredHeight = 80f;
 
         _arcadeHintsText = hintsGo.AddComponent<TextMeshProUGUI>();
         _arcadeHintsText.text = $"{_hintRestartText}\n{_hintMainMenuText}";
-        _arcadeHintsText.fontSize = 30;
         _arcadeHintsText.fontStyle = FontStyles.Bold;
         _arcadeHintsText.alignment = TextAlignmentOptions.Center;
         _arcadeHintsText.color = Color.white;

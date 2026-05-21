@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     [Header("Scenes")]
     public string MainMenuSceneName;
     public string PlaySceneName;
+    public string NameRecordSceneName = "Name record";
     public string EndSceneName;
 
     [Space(10)]
@@ -63,6 +64,7 @@ public class GameManager : MonoBehaviour
 
     private float _gameTime; // when StartGame() was called - used to time platform spawning
     private bool _blockingInput; // used to block player input during certain actions like teleporting
+    private static float? _pendingLeaderboardScore;
 
     private void Awake()
     {
@@ -201,14 +203,44 @@ public class GameManager : MonoBehaviour
         AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
 
-        if (string.IsNullOrEmpty(EndSceneName))
+        bool queuedScore = TryQueuePendingLeaderboardScore();
+        string nextScene = queuedScore && !string.IsNullOrEmpty(NameRecordSceneName)
+            ? NameRecordSceneName
+            : EndSceneName;
+
+        if (string.IsNullOrEmpty(nextScene))
         {
             Debug.LogWarning("Scene name is null or empty");
         }
         else
         {
-            SceneManager.LoadScene(EndSceneName);
+            SceneManager.LoadScene(nextScene);
         }
+    }
+
+    public static bool TryTakePendingLeaderboardScore(out float score)
+    {
+        if (!_pendingLeaderboardScore.HasValue)
+        {
+            score = 0f;
+            return false;
+        }
+
+        score = _pendingLeaderboardScore.Value;
+        _pendingLeaderboardScore = null;
+        return true;
+    }
+
+    private bool TryQueuePendingLeaderboardScore()
+    {
+        _pendingLeaderboardScore = null;
+        if (_audienceSupport == null) return false;
+
+        float score = _audienceSupport.AudienceSupportValue;
+        if (score <= 0f) return false;
+
+        _pendingLeaderboardScore = score;
+        return true;
     }
 
     public void SwitchTrack(float track)
