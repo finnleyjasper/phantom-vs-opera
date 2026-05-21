@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4741373054726932326
 RectTransform:
   m_ObjectHideFlags: 0
@@ -92,7 +92,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2140818102046190429
 RectTransform:
   m_ObjectHideFlags: 0
@@ -366,7 +366,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &777155925873228109
 RectTransform:
   m_ObjectHideFlags: 0
@@ -512,7 +512,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5981969216858919512}
-  - component: {fileID: 6125914517993513773}
+  - component: {fileID: 6125914517993513774}
+  - component: {fileID: 6125914517993513775}
   m_Layer: 0
   m_Name: Audience Support
   m_TagString: Untagged
@@ -538,7 +539,7 @@ Transform:
   - {fileID: 2140818102046190429}
   m_Father: {fileID: 3175596450523566292}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6125914517993513773
+--- !u!114 &6125914517993513774
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -547,14 +548,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 9009344319748253992}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab6db9edd8fabf9438283ad75a8f52d0, type: 3}
+  m_Script: {fileID: 11500000, guid: 1919635c69f425b4a998c9e16b6ef783, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudienceSupportBarUI
-  _filling: {fileID: 0}
-  _meterMaxValue: 100
-  _text: {fileID: 0}
-  _comboBarRoot: {fileID: 0}
-  _comboText: {fileID: 0}
+  m_EditorClassIdentifier: UnityEngine.UIElements::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 08850bc30d10d6e45b1a8b25a03d927f, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ac57903e1264f88428e9937633790d2d, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCustomPivot: {x: 0, y: 0}
+--- !u!114 &6125914517993513775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9009344319748253992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c4e1f92a3d5476a9b0c2d8e5f71342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AudienceBarUI
+  _uiDocument: {fileID: 6125914517993513774}
+  _scoreLabelName: Score
 --- !u!1001 &6460277837924983227
 PrefabInstance:
   m_ObjectHideFlags: 0
