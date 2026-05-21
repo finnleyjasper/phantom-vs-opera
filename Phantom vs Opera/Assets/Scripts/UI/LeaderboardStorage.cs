@@ -29,7 +29,7 @@ public static class LeaderboardStorage
 
     public static void RecordRun(float audienceSupport, string playerName = "Player")
     {
-        if (audienceSupport < 0f) return;
+        if (audienceSupport <= 0f) return;
 
         var list = new List<LeaderboardEntry>(Load().entries ?? Array.Empty<LeaderboardEntry>());
         list.Add(new LeaderboardEntry { playerName = playerName, score = audienceSupport });
@@ -38,6 +38,49 @@ public static class LeaderboardStorage
             list.RemoveRange(MaxEntries, list.Count - MaxEntries);
 
         Save(new LeaderboardData { entries = list.ToArray() });
+    }
+
+    /// <summary>1-based rank if this score were added now (1 = best).</summary>
+    public static int GetPlacementForScore(float score)
+    {
+        var entries = GetTopEntries();
+        for (int i = 0; i < entries.Count; i++)
+        {
+            if (score >= entries[i].score)
+                return i + 1;
+        }
+
+        return entries.Count + 1;
+    }
+
+    public static bool IsNewHighScore(float score)
+    {
+        var entries = GetTopEntries();
+        if (entries.Count == 0) return true;
+        return score > entries[0].score;
+    }
+
+    public static void WipeLeaderboard()
+    {
+        PlayerPrefs.DeleteKey(PrefsKey);
+        PlayerPrefs.Save();
+    }
+
+    public static string FormatOrdinal(int placement)
+    {
+        if (placement <= 0) return "—";
+
+        int rem100 = placement % 100;
+        if (rem100 >= 11 && rem100 <= 13)
+            return placement + "th";
+
+        return (placement % 10) switch
+        {
+            1 => placement + "st",
+            2 => placement + "nd",
+            3 => placement + "rd",
+            _ => placement + "th"
+        };
     }
 
     static LeaderboardData Load()

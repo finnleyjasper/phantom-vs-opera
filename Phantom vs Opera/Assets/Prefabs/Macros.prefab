@@ -95,6 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   MainMenuSceneName: Main Menu
   PlaySceneName: Act 1
+  NameRecordSceneName: Name record
   EndSceneName: Game Over
   _levelStartDelay: 1
   _noteTimingPadding: -0.2
