@@ -99,7 +99,7 @@ public class MusicPlatform : PausableObject
         }
     }
 
-    // Method applies unnsuccessful 'passed colour' to platform without instancing materials (URP Lit)
+    // Method applies 'passed colour' to untouched platform without instancing materials (URP Lit)
     public void ApplyPassedColor(Color _passedPlatformColour)
     {
         if (_meshRenderer == null) return;
@@ -111,7 +111,7 @@ public class MusicPlatform : PausableObject
         _meshRenderer.SetPropertyBlock(_propertyBlock);
     }
 
-    // Method applies successful 'passed colour' to platform without instancing materials (URP Lit)
+    // Method applies 'passed colour' to touched platform without instancing materials (URP Lit)
     public void ApplyWasOnColor(Color _wasOnPlatformColour)
     {
         if (_meshRenderer == null) return;
