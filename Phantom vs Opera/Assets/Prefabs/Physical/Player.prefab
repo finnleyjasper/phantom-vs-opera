@@ -596,6 +596,8 @@ MonoBehaviour:
   platformMask:
     serializedVersion: 2
     m_Bits: 8
+  idleState: Star
+  activeState: PlatformIndicator
 --- !u!1 &5571329350583366421
 GameObject:
   m_ObjectHideFlags: 0
