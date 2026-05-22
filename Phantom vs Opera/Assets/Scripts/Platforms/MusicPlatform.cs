@@ -18,7 +18,10 @@ public class MusicPlatform : PausableObject
     [HideInInspector] public string noteName;
 
     // Variables for changing platform colour after passing player 
+    [Tooltip("Change the colour of untouched platforms once they pass player")]
     [SerializeField] private Color _passedPlatformColour = Color.grey;
+
+    [Tooltip("Change the colour of touched platforms once they pass player")]
     [SerializeField] private Color _wasOnPlatformColour = Color.darkGray;
 
     private float _platformPositionX;
