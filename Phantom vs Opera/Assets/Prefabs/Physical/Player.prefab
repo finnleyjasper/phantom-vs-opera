@@ -190,7 +190,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   _playerGround: {fileID: 3763522767947402904}
-  _playerGroundRadius: 0.1
+  _playerGroundRadius: 0.4
 --- !u!23 &1574887152641463190
 MeshRenderer:
   m_ObjectHideFlags: 0
