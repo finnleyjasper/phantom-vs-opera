@@ -130,6 +130,8 @@ MonoBehaviour:
   length: 1
   laneIndex: -1
   noteName: 
+  _passedPlatformColour: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  _wasOnPlatformColour: {r: 0.15471691, g: 0.15471691, b: 0.15471691, a: 1}
 --- !u!54 &-2482640243845940524
 Rigidbody:
   m_ObjectHideFlags: 0

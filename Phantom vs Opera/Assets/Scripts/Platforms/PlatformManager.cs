@@ -21,6 +21,8 @@ public class PlatformManager : MonoBehaviour
 
     private float _travelTime; // time between spawn and when the platform reaches the player
 
+    private float _playerX;
+
     private void Awake()
     {
         Instance = this;
@@ -35,14 +37,14 @@ public class PlatformManager : MonoBehaviour
 
         // find distance between spawner and player's x position
         float spawnerX = GameObject.Find("PlatformSpawnPoint").transform.position.x;
-        float playerX = GameObject.Find("Player").transform.position.x;
-        if (spawnerX == null || playerX == null)
+        _playerX = GameObject.Find("Player").transform.position.x;
+        if (spawnerX == null || _playerX == null)
         {
             Debug.LogError("Player or PlatformSpawner's X position not found. PlatformManager can not calculate distance.");
         }
 
         currentPlatformSpeed = defaultPlatformSpeed;
-        float distance = spawnerX - playerX;
+        float distance = spawnerX - _playerX;
         _travelTime = distance / currentPlatformSpeed;
 
     }
@@ -100,4 +102,5 @@ public class PlatformManager : MonoBehaviour
     }
 
     public float TravelTime => _travelTime;
+    public float PlayerX => _playerX;
 }

@@ -56,6 +56,14 @@ public class GameManager : MonoBehaviour
     [Header("Audio Source")]
     [SerializeField] private AudioSource gamemanagerAudioSource;
 
+    [Space(10)]
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject pauseMenuUI;
+
+    [Space(10)]
+    [Header("Options Menu")]
+    [SerializeField] private GameObject optionsMenuUI;
+
     private float _gameTime; // when StartGame() was called - used to time platform spawning
     private bool _blockingInput; // used to block player input during certain actions like teleporting
     private static float? _pendingLeaderboardScore;
@@ -98,9 +106,20 @@ public class GameManager : MonoBehaviour
         if (kb == null || !kb.escapeKey.wasPressedThisFrame) return;
 
         if (_currentGameState == GameState.Play)
+        {
             Pause();
+        }
         else
-            Play();
+        {
+            if (optionsMenuUI != null && optionsMenuUI.activeSelf)
+            {
+                CloseOptionsMenu();
+            }
+            else
+            {
+                Play();
+            }
+        }
     }
 
 
@@ -131,10 +150,25 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
     }
 
-    private IEnumerator StartMusic() // start music when first platform reaches the player
+    private IEnumerator StartMusic()
     {
-        yield return new WaitForSeconds(PlatformManager.Instance.TravelTime);
-        AudioManager.Instance.StartSong();
+        float timer = 0f;
+
+        while (timer < PlatformManager.Instance.TravelTime)
+        {
+            // only count time when actually playing
+            if (_currentGameState == GameState.Play)
+            {
+                timer += Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
+        if (_currentGameState == GameState.Play)
+        {
+            AudioManager.Instance.StartSong();
+        }
     }
 
     private IEnumerator TeleportRoutine()
@@ -179,6 +213,11 @@ public class GameManager : MonoBehaviour
         _player.Pause(true);
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
+
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(true);
+        }
     }
 
     public void Play()
@@ -186,8 +225,34 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.Play);
         _player.Pause(false);
         FindFirstObjectByType<PlatformManager>().Pause(false);
-       AudioManager.Instance.AudioSource.Play();
+        AudioManager.Instance.AudioSource.UnPause();
 
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(false);
+        }
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    public void OpenOptionsMenu()
+    {
+        pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true);
+    }
+
+    public void CloseOptionsMenu()
+    {
+        optionsMenuUI.SetActive(false);
+        pauseMenuUI.SetActive(true);
     }
 
     public void GameOver(GameState result)
