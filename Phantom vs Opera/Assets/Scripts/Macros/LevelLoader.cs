@@ -6,7 +6,9 @@ public class LevelLoader : MonoBehaviour
 {
     public Animator transition;
     [Tooltip("How long to pause on the black screen")]public float transitionTime = 1f;
-    [Tooltip("Name of the scene with the actual gameplay")] public string PlaySceneName = "Act 1"; // default play scene name, can be set in inspector
+    [Tooltip("Name of the scene with the actual gameplay")] public string PlaySceneName = "Act 1";
+    [Tooltip("Score + initials entry after a run ends.")] public string NameRecordSceneName = "Name record";
+    [Tooltip("Leaderboard / end-of-run scene.")] public string EndSceneName = "Game Over";
 
     [HideInInspector] public static LevelLoader Instance;
 
@@ -28,10 +30,30 @@ public class LevelLoader : MonoBehaviour
         StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
     }
 
+    public void LoadSceneByName(string sceneName)
+    {
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            Debug.LogWarning("LevelLoader: scene name is null or empty.");
+            return;
+        }
+
+        StartCoroutine(LoadSceneByNameRoutine(sceneName));
+    }
+
     IEnumerator LoadScene(int sceneIndex)
     {
-        transition.SetTrigger("Start");
+        if (transition != null)
+            transition.SetTrigger("Start");
         yield return new WaitForSeconds(transitionTime);
         SceneManager.LoadScene(sceneIndex);
+    }
+
+    IEnumerator LoadSceneByNameRoutine(string sceneName)
+    {
+        if (transition != null)
+            transition.SetTrigger("Start");
+        yield return new WaitForSeconds(transitionTime);
+        SceneManager.LoadScene(sceneName);
     }
 }

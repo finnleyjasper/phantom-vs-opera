@@ -48,6 +48,8 @@ MonoBehaviour:
   transition: {fileID: 7128389659728134273}
   transitionTime: 1
   PlaySceneName: Act 1
+  NameRecordSceneName: Name record
+  EndSceneName: Game Over
 --- !u!1 &290338436997692923
 GameObject:
   m_ObjectHideFlags: 0

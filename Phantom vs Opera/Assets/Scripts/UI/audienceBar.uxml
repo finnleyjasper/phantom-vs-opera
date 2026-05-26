@@ -1,0 +1,9 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="Ribbon" style="flex-grow: 1; position: absolute; width: 1200px; height: 204px; bottom: -2px; background-image: url(&quot;project://database/Assets/Art/UI/Audience%20Bar/AudienceBar_Ribbon.png?fileID=2800000&amp;guid=97b2e07ef349d70498e9064e3083e30e&amp;type=3#AudienceBar_Ribbon&quot;); left: 188px;"/>
+    <ui:VisualElement name="AudienceBar" style="flex-grow: 1; position: absolute; width: 1000px; height: 182px; bottom: 16px; right: auto; top: auto; left: 19%; background-image: url(&quot;project://database/Assets/Art/UI/Audience%20Bar/AudienceBar_Outline.png?fileID=2800000&amp;guid=b6d671ad2c9929546bb9ec69228c8c08&amp;type=3#AudienceBar_Outline&quot;);">
+        <ui:VisualElement name="Mask" style="flex-grow: 1; position: absolute; width: 100%; height: 100%; overflow: hidden; bottom: auto; left: auto;">
+            <ui:VisualElement name="Fill" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Art/UI/Audience%20Bar/AudienceBar_Fill.png?fileID=2800000&amp;guid=bbe131b79a2479d48995be19876668a0&amp;type=3#AudienceBar_Fill&quot;); position: absolute; width: 792px; height: 67px; overflow: hidden; top: 67px; left: 114px;"/>
+        </ui:VisualElement>
+        <ui:Label text="Label" name="Score" style="position: absolute; top: 1px; left: -4px; width: 100%; height: 100%; -unity-text-align: middle-center; font-size: 20px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; color: rgb(255, 255, 255);"/>
+    </ui:VisualElement>
+</ui:UXML>

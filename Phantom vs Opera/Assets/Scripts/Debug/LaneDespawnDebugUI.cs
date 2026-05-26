@@ -247,6 +247,48 @@ public class LaneDespawnDebugUI : MonoBehaviour
         var lastDeltaLe = _lastAudienceDeltaLine.gameObject.AddComponent<LayoutElement>();
         lastDeltaLe.minHeight = 24f;
         lastDeltaLe.preferredHeight = 40f;
+
+        BuildEndGameButton(rightPanel);
+        BuildLeaderboardWipeButton(rightPanel);
+    }
+
+    private void BuildEndGameButton(RectTransform rightPanel)
+    {
+        var endGameBtn = CreateActionButton(rightPanel, "EndGameButton", "End Game", out _);
+        endGameBtn.onClick.AddListener(OnEndGameButtonClicked);
+
+        var btnLe = endGameBtn.GetComponent<LayoutElement>();
+        if (btnLe != null)
+        {
+            btnLe.minHeight = 36f;
+            btnLe.preferredHeight = 40f;
+        }
+    }
+
+    private static void OnEndGameButtonClicked()
+    {
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.CurrentGameState != GameManager.GameState.Play) return;
+        GameManager.Instance.GameOver(GameManager.GameState.Win);
+    }
+
+    private void BuildLeaderboardWipeButton(RectTransform rightPanel)
+    {
+        var wipeBtn = CreateActionButton(rightPanel, "WipeLeaderboardButton", "Wipe Leaderboard", out _);
+        wipeBtn.onClick.AddListener(OnLeaderboardWipeButtonClicked);
+
+        var btnLe = wipeBtn.GetComponent<LayoutElement>();
+        if (btnLe != null)
+        {
+            btnLe.minHeight = 36f;
+            btnLe.preferredHeight = 40f;
+        }
+    }
+
+    private static void OnLeaderboardWipeButtonClicked()
+    {
+        LeaderboardStorage.WipeLeaderboard();
+        Debug.Log("[Debug] Leaderboard wiped.");
     }
 
     /// <summary>Matches <see cref="AudioManager.SwitchTrack"/>: 0 = full mix, 1–4 = isolated stems.</summary>

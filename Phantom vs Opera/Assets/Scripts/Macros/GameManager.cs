@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
-    public float MaxAudienceSupport = 100f; // audience support cap
+    public float MaxAudienceSupport = 100f; // UI meter reference (not win target)
     [Tooltip("Audience support gained once each time the player lands on a platform (air → platform).")]
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
 
     private float _gameTime; // when StartGame() was called - used to time platform spawning
     private bool _blockingInput; // used to block player input during certain actions like teleporting
+    private static float? _pendingLeaderboardScore;
 
     private void Awake()
     {
@@ -258,7 +259,45 @@ public class GameManager : MonoBehaviour
     {
         AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
-        LevelLoader.Instance.LoadNextLevel();
+
+        if (LevelLoader.Instance == null)
+        {
+            Debug.LogWarning("GameOver: LevelLoader missing.");
+            return;
+        }
+
+        bool queuedScore = TryQueuePendingLeaderboardScore();
+        if (queuedScore && !string.IsNullOrEmpty(LevelLoader.Instance.NameRecordSceneName))
+            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.NameRecordSceneName);
+        else if (!string.IsNullOrEmpty(LevelLoader.Instance.EndSceneName))
+            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.EndSceneName);
+        else
+            LevelLoader.Instance.LoadNextLevel();
+    }
+
+    public static bool TryTakePendingLeaderboardScore(out float score)
+    {
+        if (!_pendingLeaderboardScore.HasValue)
+        {
+            score = 0f;
+            return false;
+        }
+
+        score = _pendingLeaderboardScore.Value;
+        _pendingLeaderboardScore = null;
+        return true;
+    }
+
+    private bool TryQueuePendingLeaderboardScore()
+    {
+        _pendingLeaderboardScore = null;
+        if (_audienceSupport == null) return false;
+
+        float score = _audienceSupport.AudienceSupportValue;
+        if (score <= 0f) return false;
+
+        _pendingLeaderboardScore = score;
+        return true;
     }
 
     public void SwitchTrack(float track)
