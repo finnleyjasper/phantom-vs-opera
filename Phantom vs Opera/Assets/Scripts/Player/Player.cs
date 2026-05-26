@@ -14,13 +14,13 @@ public class Player : PausableObject
         public Transform CurrentPlatform => _currentPlatform;
 
     // References to Player Ground
-        [Tooltip("Part of the player that allows it to detect the platform")]
-        [Header("Player Ground")]
-        [SerializeField] private Transform _playerGround;
+    [Tooltip("Part of the player that allows it to detect the platform")]
+    [Header("Player Ground")]
+    [SerializeField] private Transform _playerGround;
 
-        [Tooltip("Decrease Radius <-----> Increase Radius")]
-        [Range(0.04f, 1.5f)] // 0.04f is the smallest radius size before player physics starts glitching 
-        [SerializeField] private float _playerGroundRadius = 0.5f;
+    [Tooltip("Decrease Radius <-----> Increase Radius")]
+    [Range(0.04f, 1.5f)] // 0.04f is the smallest radius size before player physics starts glitching 
+    [SerializeField] private float _playerGroundRadius = 0.5f;
 
     protected override void Awake()
     {
