@@ -300,6 +300,31 @@ public class GameManager : MonoBehaviour
         return true;
     }
 
+    public static bool TryTakePendingLeaderboardScore(out float score)
+    {
+        if (!_pendingLeaderboardScore.HasValue)
+        {
+            score = 0f;
+            return false;
+        }
+
+        score = _pendingLeaderboardScore.Value;
+        _pendingLeaderboardScore = null;
+        return true;
+    }
+
+    private bool TryQueuePendingLeaderboardScore()
+    {
+        _pendingLeaderboardScore = null;
+        if (_audienceSupport == null) return false;
+
+        float score = _audienceSupport.AudienceSupportValue;
+        if (score <= 0f) return false;
+
+        _pendingLeaderboardScore = score;
+        return true;
+    }
+
     public void SwitchTrack(float track)
     {
         _currentTrack = track;
