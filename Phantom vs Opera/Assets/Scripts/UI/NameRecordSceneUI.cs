@@ -1,7 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -9,9 +8,6 @@ using UnityEngine.UI;
 /// </summary>
 public class NameRecordSceneUI : MonoBehaviour
 {
-    [Header("Navigation")]
-    [SerializeField] private string _gameOverScene = "Game Over";
-
     [Header("Copy")]
     [SerializeField] private string _titleDefault = "Your Score";
     [SerializeField] private string _titleNewHigh = "New High Score!";
@@ -91,8 +87,7 @@ public class NameRecordSceneUI : MonoBehaviour
 
     private void CommitAndContinue()
     {
-        string name = FormatInitialsForSave(_initials);
-        LeaderboardStorage.RecordRun(_score, name);
+        LeaderboardStorage.RecordRun(_score, FormatInitialsForSave(_initials));
         LoadGameOver();
     }
 
@@ -105,11 +100,10 @@ public class NameRecordSceneUI : MonoBehaviour
 
     private void LoadGameOver()
     {
-        string scene = GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.EndSceneName)
-            ? GameManager.Instance.EndSceneName
-            : _gameOverScene;
-        if (!string.IsNullOrEmpty(scene))
-            SceneManager.LoadScene(scene);
+        if (LevelLoader.Instance != null && !string.IsNullOrEmpty(LevelLoader.Instance.EndSceneName))
+            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.EndSceneName);
+        else
+            Debug.LogWarning("NameRecordSceneUI: LevelLoader or EndSceneName missing.");
     }
 
     private void RefreshDisplay()

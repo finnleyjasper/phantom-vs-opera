@@ -7,27 +7,21 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Displays <see cref="LeaderboardStorage"/> entries on the Game Over scene.
-/// If no <see cref="_entriesText"/> is assigned, builds a simple full-screen overlay with list + arcade-style blinking hints (R / M).
 /// </summary>
 public class LeaderboardSceneUI : MonoBehaviour
 {
     [Header("Navigation")]
-    [SerializeField] private string _playAgainScene = "Main";
+    [SerializeField] private string _playAgainScene = "Act 1";
     [SerializeField] private string _mainMenuScene = "Main Menu";
 
     [Header("Optional UI")]
-    [Tooltip("If null and build-at-runtime is enabled, a list is created automatically.")]
     [SerializeField] private TextMeshProUGUI _entriesText;
-
-    [Tooltip("Optional: one TMP with two lines (R/M hints) for blinking. Leave empty when using runtime UI.")]
     [SerializeField] private TextMeshProUGUI _arcadeHintsText;
 
     [Header("Arcade hints")]
     [SerializeField] private string _hintRestartText = "PRESS R TO RESTART";
     [SerializeField] private string _hintMainMenuText = "PRESS M TO MAIN MENU";
-    [Tooltip("TMP line spacing between the two lines (0 = default; negative = tighter, positive = looser).")]
     [SerializeField] private float _hintLineSpacing = 0f;
-    [Tooltip("Seconds per flash state (on, then off, then on…). Smaller = faster blink.")]
     [SerializeField] private float _blinkToggleSeconds = 0.28f;
     [SerializeField] private float _alphaWhenOn = 1f;
     [SerializeField] private float _alphaWhenOff = 0f;
@@ -108,7 +102,6 @@ public class LeaderboardSceneUI : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    /// <summary>Rebuilds the list from <see cref="LeaderboardStorage"/>.</summary>
     public void RefreshEntriesText()
     {
         if (_entriesText == null) return;
@@ -144,12 +137,6 @@ public class LeaderboardSceneUI : MonoBehaviour
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
         scaler.referenceResolution = new Vector2(1920, 1080);
         scaler.matchWidthOrHeight = 0.5f;
-
-        RectTransform rootRt = canvasGo.GetComponent<RectTransform>();
-        rootRt.anchorMin = Vector2.zero;
-        rootRt.anchorMax = Vector2.one;
-        rootRt.offsetMin = Vector2.zero;
-        rootRt.offsetMax = Vector2.zero;
 
         var panel = new GameObject("Panel");
         panel.transform.SetParent(canvasGo.transform, false);
@@ -203,6 +190,5 @@ public class LeaderboardSceneUI : MonoBehaviour
         _arcadeHintsText.color = Color.white;
         _arcadeHintsText.enableWordWrapping = false;
         _arcadeHintsText.lineSpacing = _hintLineSpacing;
-        _arcadeHintsText.paragraphSpacing = 0f;
     }
 }

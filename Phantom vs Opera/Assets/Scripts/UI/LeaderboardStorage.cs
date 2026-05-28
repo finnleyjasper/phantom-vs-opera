@@ -40,6 +40,12 @@ public static class LeaderboardStorage
         Save(new LeaderboardData { entries = list.ToArray() });
     }
 
+    public static void WipeLeaderboard()
+    {
+        PlayerPrefs.DeleteKey(PrefsKey);
+        PlayerPrefs.Save();
+    }
+
     /// <summary>1-based rank if this score were added now (1 = best).</summary>
     public static int GetPlacementForScore(float score)
     {
@@ -58,12 +64,6 @@ public static class LeaderboardStorage
         var entries = GetTopEntries();
         if (entries.Count == 0) return true;
         return score > entries[0].score;
-    }
-
-    public static void WipeLeaderboard()
-    {
-        PlayerPrefs.DeleteKey(PrefsKey);
-        PlayerPrefs.Save();
     }
 
     public static string FormatOrdinal(int placement)

@@ -16,12 +16,6 @@ public class GameManager : MonoBehaviour
 
     private int _act = 1; // which "Act" the game is in
 
-    [Header("Scenes")]
-    public string MainMenuSceneName;
-    public string PlaySceneName;
-    public string NameRecordSceneName = "Name record";
-    public string EndSceneName;
-
     [Space(10)]
     [Header("Game Settings")]
     [SerializeField] [Tooltip("Delay before the level starts after loading")]private float _levelStartDelay = 2f;
@@ -35,7 +29,7 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Audience Support Settings")]
     public float StartingAudienceSupport = 5f; // starting value for audience support
-    public float MaxAudienceSupport = 100f; // audience support cap
+    public float MaxAudienceSupport = 100f; // UI meter reference (not win target)
     [Tooltip("Audience support gained once each time the player lands on a platform (air → platform).")]
     public float LandingBonus = 3f;
     [Tooltip("Audience support gained per second while the player stays on a platform.")]
@@ -61,6 +55,14 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("Audio Source")]
     [SerializeField] private AudioSource gamemanagerAudioSource;
+
+    [Space(10)]
+    [Header("Pause Menu")]
+    [SerializeField] private GameObject pauseMenuUI;
+
+    [Space(10)]
+    [Header("Options Menu")]
+    [SerializeField] private GameObject optionsMenuUI;
 
     private float _gameTime; // when StartGame() was called - used to time platform spawning
     private bool _blockingInput; // used to block player input during certain actions like teleporting
@@ -104,9 +106,20 @@ public class GameManager : MonoBehaviour
         if (kb == null || !kb.escapeKey.wasPressedThisFrame) return;
 
         if (_currentGameState == GameState.Play)
+        {
             Pause();
+        }
         else
-            Play();
+        {
+            if (optionsMenuUI != null && optionsMenuUI.activeSelf)
+            {
+                CloseOptionsMenu();
+            }
+            else
+            {
+                Play();
+            }
+        }
     }
 
 
@@ -137,10 +150,25 @@ public class GameManager : MonoBehaviour
         FindFirstObjectByType<PlatformSpawner>().StartSpawning();
     }
 
-    private IEnumerator StartMusic() // start music when first platform reaches the player
+    private IEnumerator StartMusic()
     {
-        yield return new WaitForSeconds(PlatformManager.Instance.TravelTime);
-        AudioManager.Instance.StartSong();
+        float timer = 0f;
+
+        while (timer < PlatformManager.Instance.TravelTime)
+        {
+            // only count time when actually playing
+            if (_currentGameState == GameState.Play)
+            {
+                timer += Time.deltaTime;
+            }
+
+            yield return null;
+        }
+
+        if (_currentGameState == GameState.Play)
+        {
+            AudioManager.Instance.StartSong();
+        }
     }
 
     private IEnumerator TeleportRoutine()
@@ -185,6 +213,11 @@ public class GameManager : MonoBehaviour
         _player.Pause(true);
         FindFirstObjectByType<PlatformManager>().Pause(true);
         AudioManager.Instance.AudioSource.Pause();
+
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(true);
+        }
     }
 
     public void Play()
@@ -192,30 +225,54 @@ public class GameManager : MonoBehaviour
         SetGameState(GameState.Play);
         _player.Pause(false);
         FindFirstObjectByType<PlatformManager>().Pause(false);
-       AudioManager.Instance.AudioSource.Play();
+        AudioManager.Instance.AudioSource.UnPause();
 
+        if (pauseMenuUI != null)
+        {
+            pauseMenuUI.SetActive(false);
+        }
+    }
+
+    public void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    public void OpenOptionsMenu()
+    {
+        pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true);
+    }
+
+    public void CloseOptionsMenu()
+    {
+        optionsMenuUI.SetActive(false);
+        pauseMenuUI.SetActive(true);
     }
 
     public void GameOver(GameState result)
     {
-        // should pause the game momentarity so player can realise what happened
-
         AudioManager.Instance.AudioSource.Stop();
         SetGameState(result);
 
-        bool queuedScore = TryQueuePendingLeaderboardScore();
-        string nextScene = queuedScore && !string.IsNullOrEmpty(NameRecordSceneName)
-            ? NameRecordSceneName
-            : EndSceneName;
+        if (LevelLoader.Instance == null)
+        {
+            Debug.LogWarning("GameOver: LevelLoader missing.");
+            return;
+        }
 
-        if (string.IsNullOrEmpty(nextScene))
-        {
-            Debug.LogWarning("Scene name is null or empty");
-        }
+        bool queuedScore = TryQueuePendingLeaderboardScore();
+        if (queuedScore && !string.IsNullOrEmpty(LevelLoader.Instance.NameRecordSceneName))
+            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.NameRecordSceneName);
+        else if (!string.IsNullOrEmpty(LevelLoader.Instance.EndSceneName))
+            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.EndSceneName);
         else
-        {
-            SceneManager.LoadScene(nextScene);
-        }
+            LevelLoader.Instance.LoadNextLevel();
     }
 
     public static bool TryTakePendingLeaderboardScore(out float score)

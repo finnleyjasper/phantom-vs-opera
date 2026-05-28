@@ -227,7 +227,7 @@ public class GameObserver : MonoBehaviour
     // SCENE MANAGEMENT -------------------
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (scene.name == GameManager.Instance.PlaySceneName)
+        if (scene.name == LevelLoader.Instance.PlaySceneName)
         {
             GameManager.Instance.StartGame();
         }

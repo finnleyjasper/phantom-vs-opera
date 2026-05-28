@@ -267,12 +267,8 @@ public class LaneDespawnDebugUI : MonoBehaviour
 
     private static void OnEndGameButtonClicked()
     {
-        if (GameManager.Instance == null)
-            return;
-
-        if (GameManager.Instance.CurrentGameState != GameManager.GameState.Play)
-            return;
-
+        if (GameManager.Instance == null) return;
+        if (GameManager.Instance.CurrentGameState != GameManager.GameState.Play) return;
         GameManager.Instance.GameOver(GameManager.GameState.Win);
     }
 
