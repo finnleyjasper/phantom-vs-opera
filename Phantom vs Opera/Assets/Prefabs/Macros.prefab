@@ -143,6 +143,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22434e325fcec429794031ef52a41834, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
+  MainMenuSceneName: Main Menu
+  PlaySceneName: Act 1
+  NameRecordSceneName: Name record
+  EndSceneName: Game Over
   _levelStartDelay: 1
   _noteTimingPadding: -0.2
   _currentGameState: 2
