@@ -70,13 +70,15 @@ public class LeaderboardSceneUI : MonoBehaviour
     {
         UpdateArcadeHintsBlink();
 
-        Keyboard kb = Keyboard.current;
-        if (kb == null) return;
-
-        if (kb.rKey.wasPressedThisFrame)
+        if (WasKeyPressedThisFrame(Key.R) || Input.GetKeyDown(KeyCode.R))
             LoadScene(_playAgainScene);
-        if (kb.mKey.wasPressedThisFrame)
+        if (WasKeyPressedThisFrame(Key.M) || Input.GetKeyDown(KeyCode.M))
             LoadScene(_mainMenuScene);
+    }
+
+    private static bool WasKeyPressedThisFrame(Key key)
+    {
+        return Keyboard.current != null && Keyboard.current[key].wasPressedThisFrame;
     }
 
     private void UpdateArcadeHintsBlink()

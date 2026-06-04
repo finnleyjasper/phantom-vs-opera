@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 /// <summary>
@@ -22,6 +23,9 @@ public class NameRecordSceneUI : MonoBehaviour
     [SerializeField] private int _canvasSortOrder = 50;
     [SerializeField] private int _initialLength = 3;
 
+    [Header("Navigation")]
+    [SerializeField] private string _leaderboardSceneName = "Game Over";
+
     private TextMeshProUGUI _titleText;
     private TextMeshProUGUI _scoreText;
     private TextMeshProUGUI _placementText;
@@ -32,6 +36,7 @@ public class NameRecordSceneUI : MonoBehaviour
     private int _placement;
     private bool _isNewHighScore;
     private string _initials = "";
+    private bool _hasContinued;
 
     private void Start()
     {
@@ -53,18 +58,14 @@ public class NameRecordSceneUI : MonoBehaviour
         UpdateContinueHintBlink();
         HandleInitialsInput();
 
-        Keyboard kb = Keyboard.current;
-        if (kb == null || !kb.spaceKey.wasPressedThisFrame) return;
+        if (!WasSpacePressedThisFrame()) return;
 
         CommitAndContinue();
     }
 
     private void HandleInitialsInput()
     {
-        Keyboard kb = Keyboard.current;
-        if (kb == null) return;
-
-        if (kb.backspaceKey.wasPressedThisFrame && _initials.Length > 0)
+        if (WasBackspacePressedThisFrame() && _initials.Length > 0)
         {
             _initials = _initials.Substring(0, _initials.Length - 1);
             RefreshDisplay();
@@ -75,8 +76,7 @@ public class NameRecordSceneUI : MonoBehaviour
 
         for (char c = 'A'; c <= 'Z'; c++)
         {
-            Key key = Key.A + (c - 'A');
-            if (kb[key].wasPressedThisFrame)
+            if (WasLetterPressedThisFrame(c))
             {
                 _initials += c;
                 RefreshDisplay();
@@ -87,6 +87,9 @@ public class NameRecordSceneUI : MonoBehaviour
 
     private void CommitAndContinue()
     {
+        if (_hasContinued) return;
+        _hasContinued = true;
+
         LeaderboardStorage.RecordRun(_score, FormatInitialsForSave(_initials));
         LoadGameOver();
     }
@@ -100,10 +103,48 @@ public class NameRecordSceneUI : MonoBehaviour
 
     private void LoadGameOver()
     {
+        string sceneName = _leaderboardSceneName;
         if (LevelLoader.Instance != null && !string.IsNullOrEmpty(LevelLoader.Instance.EndSceneName))
-            LevelLoader.Instance.LoadSceneByName(LevelLoader.Instance.EndSceneName);
-        else
-            Debug.LogWarning("NameRecordSceneUI: LevelLoader or EndSceneName missing.");
+            sceneName = LevelLoader.Instance.EndSceneName;
+
+        if (string.IsNullOrEmpty(sceneName))
+        {
+            Debug.LogWarning("NameRecordSceneUI: leaderboard scene name is missing.");
+            _hasContinued = false;
+            return;
+        }
+
+        SceneManager.LoadScene(sceneName);
+    }
+
+    private static bool WasSpacePressedThisFrame()
+    {
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            return true;
+
+        return Input.GetKeyDown(KeyCode.Space);
+    }
+
+    private static bool WasBackspacePressedThisFrame()
+    {
+        if (Keyboard.current != null && Keyboard.current.backspaceKey.wasPressedThisFrame)
+            return true;
+
+        return Input.GetKeyDown(KeyCode.Backspace);
+    }
+
+    private static bool WasLetterPressedThisFrame(char letter)
+    {
+        if (letter < 'A' || letter > 'Z') return false;
+
+        if (Keyboard.current != null)
+        {
+            Key key = Key.A + (letter - 'A');
+            if (Keyboard.current[key].wasPressedThisFrame)
+                return true;
+        }
+
+        return Input.GetKeyDown(KeyCode.A + (letter - 'A'));
     }
 
     private void RefreshDisplay()
